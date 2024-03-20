@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/black">
+    android:background="@color/md_black_1000">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,7 +21,7 @@
             android:layout_width="20dp"
             android:layout_height="34dp"
             android:layout_weight="2"
-            android:text="Audio Recorder"
+            android:text="@string/app_name"
             android:textColor="@color/white"
             android:textSize="20sp" />
 
@@ -30,9 +30,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:text="Records"
+            android:text="@string/toRecords"
             android:textSize="20sp"
-            android:backgroundTint="@color/black"
+            android:backgroundTint="@color/md_black_1000"
             android:padding="5dp"/>
 
         <ImageButton
@@ -40,7 +40,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:contentDescription="menu"
+            android:contentDescription="@string/toMenu"
             android:background="@color/cardview_dark_background"
             android:padding="3dp"
             app:srcCompat="@android:drawable/ic_menu_sort_by_size" />
@@ -93,8 +93,8 @@
             android:layout_weight="1"
             android:clickable="true"
             app:srcCompat="@android:drawable/ic_media_pause"
-            android:layout_marginRight="25dp"
-            android:contentDescription="pauseButton"
+            android:layout_marginEnd="25dp"
+            android:contentDescription="@string/pauseButton"
             android:background="@color/white"
             android:backgroundTint="@color/white"/>
 
@@ -107,9 +107,9 @@
             app:srcCompat="@android:drawable/ic_notification_overlay"
             android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp"
-            android:contentDescription="finishButton"
+            android:contentDescription="@string/finishButton"
             android:backgroundTint="@color/white"
-            android:tint="@color/red"/>
+            android:tint="@color/md_red_500"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/floatingActionButton3"
@@ -118,10 +118,10 @@
             android:layout_weight="1"
             android:clickable="true"
             app:srcCompat="@android:drawable/btn_star_big_on"
-            android:layout_marginLeft="25dp"
-            android:contentDescription="markButton"
+            android:layout_marginStart="25dp"
+            android:contentDescription="@string/markButton"
             android:backgroundTint="@color/white"
-            android:tint="@color/red"/>
+            android:tint="@color/md_red_500"/>
 
 
     </LinearLayout>
