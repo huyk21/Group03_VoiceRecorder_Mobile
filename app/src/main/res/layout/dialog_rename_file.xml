@@ -36,7 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_small"
-        android:text="Dont ask again"
+        android:text="Dont ask again!"
         android:textColor="@color/white"
         android:buttonTint="@color/color_checkbox"
         android:paddingStart="@dimen/spacing_small"
