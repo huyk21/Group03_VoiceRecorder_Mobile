@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/md_black_1000"
+    android:padding="20dp"
+    tools:viewBindingIgnore="true">
+
+    <!-- Dialog Title -->
+    <TextView
+        android:id="@+id/dialog_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_normal"
+        android:text="New name"
+        android:textAppearance="@style/TextAppearance.DialogTitle"
+        android:textColor="@color/white" />
+
+    <!-- Input Field -->
+    <EditText
+        android:id="@+id/input_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_xmedium"
+        android:textColor="@color/white_transparent_10"
+        android:imeOptions="actionDone"
+        android:inputType="text"
+        tools:text="Please allow!"
+        android:textAppearance="@style/TextAppearance.DialogContent" />
+
+
+    <CheckBox
+        android:id="@+id/check_box"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:text="Dont ask again"
+        android:textColor="@color/white"
+        android:buttonTint="@color/color_checkbox"
+        android:paddingStart="@dimen/spacing_small"
+        android:paddingEnd="@dimen/spacing_zero"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <!-- Buttons -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:layout_gravity="end"
+        android:layout_marginTop="@dimen/spacing_tiny">
+
+        <!-- Cancel Button -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/dialog_negative_btn"
+            style="@style/Widget.BorderlessButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_small"
+            android:text="Cancel"
+            android:textSize="@dimen/text_normal"
+            android:paddingStart="@dimen/spacing_normal"
+            android:paddingEnd="@dimen/spacing_normal" />
+
+        <!-- Save Button -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/dialog_positive_btn"
+            style="@style/Widget.RaisedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_small"
+            android:paddingStart="@dimen/spacing_normal"
+            android:paddingEnd="@dimen/spacing_normal"
+            android:text="Save"
+            android:textSize="@dimen/text_normal" />
+    </LinearLayout>
+</LinearLayout>
