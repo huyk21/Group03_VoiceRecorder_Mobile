@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/md_black_1000">
+    android:background="@color/md_grey_800xxx">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -32,7 +32,7 @@
             android:layout_weight="2"
             android:text="@string/toRecords"
             android:textSize="20sp"
-            android:backgroundTint="@color/md_black_1000"
+            android:backgroundTint="@color/md_grey_800xxx"
             android:padding="5dp"/>
 
         <ImageButton
@@ -41,7 +41,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:contentDescription="@string/toMenu"
-            android:background="@color/cardview_dark_background"
+            android:background="@color/md_grey_700"
             android:padding="3dp"
             app:srcCompat="@android:drawable/ic_menu_sort_by_size" />
 
