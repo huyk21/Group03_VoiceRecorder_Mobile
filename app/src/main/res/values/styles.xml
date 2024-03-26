@@ -151,4 +151,10 @@
         <item name="android:windowIsFloating">true</item>
         <item name="android:backgroundDimEnabled">false</item>
     </style>
+
+    <style name="CustomProgressBarStyle" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:progressBackgroundTint">@color/white</item>
+        <item name="android:progressTint">@color/md_green_600</item>
+    </style>
+
 </resources>

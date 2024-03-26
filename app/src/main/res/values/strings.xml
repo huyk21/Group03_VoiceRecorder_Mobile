@@ -1,8 +1,17 @@
 <resources>
     <string name="app_name">AudIOWave</string>
     <string name="pauseButton">Pause</string>
+    <string name="stop">Stop</string>
     <string name="finishButton">Finish</string>
     <string name="markButton">Highlight</string>
     <string name="toRecords">Records</string>
     <string name="toMenu">Menu</string>
+    <string name="playButton">Play</string>
+    <string name="recordName">Record No-01</string>
+    <string name="recordLength">00:05:00</string>
+    <string name="recordDate">27/Mar/24</string>
+    <string name="daysSinceDelete">30 days</string>
+    <string name="delete">Delete</string>
+    <string name="recover">Recover</string>
+    <string name="recordingInfo">Recording: 00:00:01</string>
 </resources>
