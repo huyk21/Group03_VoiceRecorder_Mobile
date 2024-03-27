@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="information_labels">
+        <item>Information</item>
+        <item>Name</item>
+        <item>Format</item>
+        <item>Bitrate</item>
+    </string-array>
+    <color name="black">#FF000000</color>
+    <color name="grey">#808080</color>
+    <color name="red">#FF0000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="yellow">#FFEB3B</color>
+    <string name="app_name">Group03_VoiceRecorder_Mobile</string>
+    <style name="Base.Theme.Group03_VoiceRecorder_Mobile" parent="Theme.Material3.DayNight.NoActionBar">
+        
+         <item name="colorPrimary">@color/grey</item>
+    </style>
+    <style name="Theme.Group03_VoiceRecorder_Mobile" parent="Base.Theme.Group03_VoiceRecorder_Mobile"/>
+</resources>

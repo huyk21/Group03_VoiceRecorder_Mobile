@@ -5,12 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ListView;
 
+import com.example.group03_voicerecorder_mobile.fragments.AllRecords;
+
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    String dateList[] = {"17/02/2024", "18/02/2024", "19/02/2024"};
-    String primaryDateList[] = {"17 thg 2", "18 thg 2", "19 thg 2"};
     ListView records;
+    String[] primaryDateList = {"25/01/2022 05:00"};
+    String[] dateList = {"25/01/2002"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,5 +20,13 @@ public class MainActivity extends AppCompatActivity {
         records = (ListView) findViewById(R.id.records);
         RecordAdapter recordAdapter = new RecordAdapter(getApplicationContext(), primaryDateList, dateList);
         records.setAdapter(recordAdapter);
+    }
+
+    private void updateFragment(String filter) {
+        Bundle bundle = new Bundle();
+        bundle.putString("filter", filter);
+        AllRecords newFragment = new AllRecords();
+        newFragment.setArguments(bundle);
+
     }
 }

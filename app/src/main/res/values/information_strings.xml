@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="information_labels">
+        <item>Information</item>
+        <item>Name</item>
+        <item>Format</item>
+        <item>Bitrate</item>
+    </string-array>
+</resources>
