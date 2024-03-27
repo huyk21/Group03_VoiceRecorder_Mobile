@@ -1,0 +1,46 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@color/text_primary_dark">
+
+    <TextView
+        android:id="@+id/totalTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="22:28"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <!-- Elapsed time or remaining time -->
+    <TextView
+        android:id="@+id/currentTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="00:03.00"
+        android:layout_below="@+id/totalTime"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:layout_centerHorizontal="true" />
+    <ProgressBar
+        android:id="@+id/playback_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/currentTime"
+        android:layout_marginTop="50dp"
+        android:background="@color/white"
+        />
+
+<!--    <ImageButton-->
+<!--        android:id="@+id/playPauseButton"-->
+<!--        android:layout_width="48dp"-->
+<!--        android:layout_height="48dp"-->
+<!--&lt;!&ndash;        android:src="@drawable/baseline_fiber_manual_record_24"&ndash;&gt;-->
+<!--        />-->
+
+
+</RelativeLayout>
