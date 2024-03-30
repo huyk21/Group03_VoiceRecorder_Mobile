@@ -4,9 +4,7 @@ import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Bundle;
-
-import com.example.group03_voicerecorder_mobile.R;
+import com.example.group03_voicerecorder_mobile.app.record.RecordAdapter;
 
 public class MainActivity extends AppCompatActivity {
     ListView records;

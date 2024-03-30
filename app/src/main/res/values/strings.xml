@@ -2,7 +2,7 @@
     <string name="app_name">AudIOWave</string>
     <string name="pauseButton">Pause</string>
     <string name="stop">Stop</string>
-    <string name="finishButton">Finish</string>
+    <string name="record_pauseButton">Record/Pause</string>
     <string name="markButton">Highlight</string>
     <string name="toRecords">Records</string>
     <string name="toMenu">Menu</string>

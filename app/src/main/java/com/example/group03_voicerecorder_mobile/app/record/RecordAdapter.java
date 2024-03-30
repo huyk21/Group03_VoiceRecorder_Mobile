@@ -1,4 +1,4 @@
-package com.example.group03_voicerecorder_mobile;
+package com.example.group03_voicerecorder_mobile.app.record;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.example.group03_voicerecorder_mobile.R;
 
 public class RecordAdapter extends BaseAdapter {
     Context context;
