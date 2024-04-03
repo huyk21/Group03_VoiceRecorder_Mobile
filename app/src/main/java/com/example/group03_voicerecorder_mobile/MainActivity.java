@@ -1,6 +1,9 @@
 package com.example.group03_voicerecorder_mobile;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,6 +20,12 @@ public class MainActivity extends AppCompatActivity {
         records = (ListView) findViewById(R.id.records);
         RecordAdapter recordAdapter = new RecordAdapter(getApplicationContext(), primaryDateList, dateList);
         records.setAdapter(recordAdapter);
+        records.setOnItemClickListener((parent, view, position, id) -> {
+            view.setBackgroundResource(R.drawable.list_selector_pressed);
+        });    }
+
+    private void showPopupMenu(View view) {
+        Toast.makeText(view.getContext(), "click too long", Toast.LENGTH_SHORT);
     }
 
     private void updateFragment(String filter) {
@@ -24,6 +33,5 @@ public class MainActivity extends AppCompatActivity {
         bundle.putString("filter", filter);
 //        AllRecords newFragment = new AllRecords();
 //        newFragment.setArguments(bundle);
-
     }
 }
