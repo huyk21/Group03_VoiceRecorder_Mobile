@@ -5,6 +5,7 @@
     <string name="record_pauseButton">Record/Pause</string>
     <string name="markButton">Highlight</string>
     <string name="toRecords">Records</string>
+    <string name="searchPlaceholder">Search all records</string>
     <string name="toMenu">Menu</string>
     <string name="playButton">Play</string>
     <string name="recordName">Record No-01</string>
