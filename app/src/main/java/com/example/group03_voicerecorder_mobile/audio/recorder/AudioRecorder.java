@@ -7,7 +7,7 @@ public class AudioRecorder implements RecorderInterface.Recorder{
     }
 
     @Override
-    public void startRecord(String output, int channel, int bitrate, int samplerate) {
+    public void startRecord(String output, int channel, int bitrate, int sampleRate) {
 
     }
 
