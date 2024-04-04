@@ -39,11 +39,11 @@ public class RecordAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        convertView = inflater.inflate(R.layout.record_item, null);
-        TextView textPrimary = (TextView) convertView.findViewById(R.id.textPrimary);
-        TextView textSecondary = (TextView) convertView.findViewById(R.id.textSecondary);
-        textPrimary.setText(primaryDateList[position]);
-        textSecondary.setText(dateList[position]);
+        convertView = inflater.inflate(R.layout.list_record_item, null);
+        TextView recordTitle = (TextView) convertView.findViewById(R.id.recordTitle);
+        TextView recordDate = (TextView) convertView.findViewById(R.id.recordDate);
+        recordTitle.setText(primaryDateList[position]);
+        recordDate.setText(dateList[position]);
         return convertView;
     }
 }
