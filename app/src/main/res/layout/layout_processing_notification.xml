@@ -16,7 +16,7 @@
         android:layout_weight="3"
         android:layout_gravity="center_vertical"
         android:contentDescription="@null"
-        android:src="@drawable/baseline_play_circle_24"/>
+        android:src="@mipmap/ic_launcher_round"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -46,10 +46,10 @@
             android:layout_marginBottom="5dp"
             />
 
-<!--        <ProgressBar-->
-<!--            android:id="@+id/progress_bar"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:style="@style/CustomProgressBarStyle" />-->
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/CustomProgressBarStyle" />
     </LinearLayout>
 </LinearLayout>

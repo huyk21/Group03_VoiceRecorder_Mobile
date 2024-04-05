@@ -1,48 +1,51 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/md_grey_800xxx"
     android:orientation="vertical"
-    tools:context=".MainActivity"
-    android:id="@+id/mainContainer">
+    tools:context=".app.main.MainActivity">
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/baseline_settings_48"
-        android:layout_gravity="end"
         android:id="@+id/btnToSettings"
-        android:background="@color/md_grey_800xxx"
-        android:layout_margin="8dp"
-
-        />
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_margin="8dp"
+        android:background="@color/md_grey_800xxx"
+        android:contentDescription="@string/toSettings"
+        android:src="@drawable/baseline_settings_48" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="10dp"
         android:text="@string/toRecords"
         android:textColor="@color/white"
-        android:textSize="24sp"
-        android:id="@+id/title"
-        android:layout_marginStart="24dp"
-        android:layout_marginBottom="10dp"/>
+        android:textSize="24sp" />
 
     <EditText
+        android:id="@+id/searchBar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/rounded_border"
-        android:layout_marginBottom="20dp"
         android:baselineAligned="false"
         android:drawableStart="@drawable/baseline_search_24"
+        android:inputType="text"
         android:text="@string/searchPlaceholder"
         android:textColor="@color/white" />
 
     <LinearLayout
+        android:id="@+id/slidingTabContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginBottom="10dp"
-        android:id="@+id/slidingTabContainer">
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/button1"
@@ -57,42 +60,42 @@
             android:id="@+id/button2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_border"
-
             android:layout_weight="1"
+
+            android:background="@drawable/rounded_border"
             android:text="Record" />
 
         <Button
             android:id="@+id/button3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_border"
             android:layout_weight="1"
+            android:background="@drawable/rounded_border"
             android:text="Call" />
     </LinearLayout>
 
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-
-    <ListView
-        android:id="@+id/records"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="wrap_content">
 
-        />
 
-    <ImageButton
-        android:id="@+id/recordButton"
-        android:layout_width="46dp"
-        android:layout_height="79dp"
-        android:background="@drawable/rounded_border"
-        android:backgroundTint="@color/md_red_500"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
+        <ListView
+            android:id="@+id/records"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
 
-    android:src="@drawable/baseline_fiber_manual_record_24" />
-</RelativeLayout>
+            />
+
+        <ImageButton
+            android:id="@+id/recordButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/rounded_border"
+            android:backgroundTint="@color/md_red_500"
+            android:contentDescription="@string/startRecord"
+            android:src="@drawable/baseline_fiber_manual_record_48" />
+    </RelativeLayout>
 
 </LinearLayout>
