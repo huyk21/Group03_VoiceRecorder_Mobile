@@ -32,6 +32,5 @@ public class RecordActivity extends AppCompatActivity {
         record_pauseBtn = findViewById(R.id.record_pauseButton);
         stopBtn = findViewById(R.id.stopButton);
 
-
     }
 }

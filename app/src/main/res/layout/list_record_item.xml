@@ -8,7 +8,9 @@
     android:background="@color/md_grey_800xxx"
     android:padding="20dp"
     tools:viewBindingIgnore="true"
-    android:baselineAligned="false">
+    android:baselineAligned="false"
+    android:clickable="true"
+    android:focusable="true">
 
     <LinearLayout
         android:id="@+id/playButtonContainer"
@@ -18,9 +20,11 @@
         android:layout_weight="4">
 
         <ImageButton
+            android:id="@+id/playButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/baseline_play_circle_24"
+            android:focusable="false"
             android:contentDescription="@string/playButton"/>
     </LinearLayout>
 
@@ -54,7 +58,7 @@
                 android:layout_marginEnd="20dp" />
 
             <TextView
-                android:layout_gravity="@+id/recordDate"
+                android:id="@+id/recordDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/recordDate"
