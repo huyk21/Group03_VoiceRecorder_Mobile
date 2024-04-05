@@ -1,4 +1,4 @@
-package com.example.group03_voicerecorder_mobile;
+package com.example.group03_voicerecorder_mobile.app;
 
 import android.app.PendingIntent;
 import android.os.Build;
