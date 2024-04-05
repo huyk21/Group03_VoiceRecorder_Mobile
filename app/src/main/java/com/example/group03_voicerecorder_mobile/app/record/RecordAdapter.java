@@ -11,20 +11,20 @@ import com.example.group03_voicerecorder_mobile.R;
 
 public class RecordAdapter extends BaseAdapter {
     Context context;
-    String dateList[];
+    String nameList[];
     String primaryDateList[];
     LayoutInflater inflater;
 
-    public RecordAdapter(Context ctx, String dateList[], String primaryDateList[]) {
+    public RecordAdapter(Context ctx, String nameList[], String primaryDateList[]) {
         this.context = ctx;
-        this.dateList = dateList;
+        this.nameList = nameList;
         this.primaryDateList = primaryDateList;
         inflater = LayoutInflater.from(ctx);
     }
 
     @Override
     public int getCount() {
-        return dateList.length;
+        return nameList.length;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class RecordAdapter extends BaseAdapter {
         TextView recordTitle = (TextView) convertView.findViewById(R.id.recordTitle);
         TextView recordDate = (TextView) convertView.findViewById(R.id.recordDate);
         recordTitle.setText(primaryDateList[position]);
-        recordDate.setText(dateList[position]);
+        recordDate.setText(nameList[position]);
         return convertView;
     }
 }
