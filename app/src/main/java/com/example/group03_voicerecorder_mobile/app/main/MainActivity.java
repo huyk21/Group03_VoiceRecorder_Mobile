@@ -17,7 +17,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.group03_voicerecorder_mobile.R;
+import com.example.group03_voicerecorder_mobile.app.record.Record;
 import com.example.group03_voicerecorder_mobile.app.record.RecordAdapter;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private ListView records;
@@ -25,8 +30,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView title;
     private EditText searchBar;
     private ImageButton btn_record;
-    String[] primaryDateList = {"25/01/2022", "29/02/2023"};
-    String[] nameList = {"Record-01", "Record-02"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +42,22 @@ public class MainActivity extends AppCompatActivity {
         searchBar = (EditText) findViewById(R.id.searchBar);
         btn_record = (ImageButton) findViewById(R.id.recordButton);
 
-        RecordAdapter recordAdapter = new RecordAdapter(getApplicationContext(), primaryDateList, nameList);
+        List<Record> recordList = new ArrayList<>();
+        // Creating mock data for records
+        String filename1 = "Record-01";
+        long durationMillis1 = 10000; // Example duration (10 seconds)
+        Date timestamp1 = new Date(); // Current timestamp
+        Record record1 = new Record(filename1, durationMillis1, timestamp1);
+        recordList.add(record1);
+
+        String filename2 = "Record-02";
+        long durationMillis2 = 20000; // Example duration (20 seconds)
+        Date timestamp2 = new Date(); // Current timestamp
+        Record record2 = new Record(filename2, durationMillis2, timestamp2);
+        recordList.add(record2);
+
+
+        RecordAdapter recordAdapter = new RecordAdapter(getApplicationContext(), recordList);
         records.setAdapter(recordAdapter);
         records.setOnItemClickListener((parent, view, position, id) -> {
             view.setBackgroundResource(R.drawable.list_selector_pressed);
@@ -57,6 +75,5 @@ public class MainActivity extends AppCompatActivity {
 //        AllRecords newFragment = new AllRecords();
 //        newFragment.setArguments(bundle);
     }
-
 
 }
