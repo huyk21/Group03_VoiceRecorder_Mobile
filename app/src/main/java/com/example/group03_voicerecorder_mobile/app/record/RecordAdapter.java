@@ -1,10 +1,12 @@
 package com.example.group03_voicerecorder_mobile.app.record;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.example.group03_voicerecorder_mobile.R;
@@ -44,6 +46,22 @@ public class RecordAdapter extends BaseAdapter {
         TextView recordDate = (TextView) convertView.findViewById(R.id.recordDate);
         recordTitle.setText(primaryDateList[position]);
         recordDate.setText(nameList[position]);
+
+        convertView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                // Show the popup menu
+                showPopupMenu(v, position);
+                return true;
+            }
+        });
         return convertView;
+    }
+    @SuppressLint("ResourceType")
+    private void showPopupMenu(View anchorView, int position) {
+        PopupMenu popupMenu = new PopupMenu(context, anchorView);
+        popupMenu.getMenuInflater().inflate(R.layout.record_item_popup, popupMenu.getMenu());
+
+        popupMenu.show();
     }
 }

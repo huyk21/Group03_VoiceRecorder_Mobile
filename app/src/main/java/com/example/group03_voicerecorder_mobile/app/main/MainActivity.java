@@ -1,10 +1,16 @@
 package com.example.group03_voicerecorder_mobile.app.main;
+
+import android.content.Context;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,7 +26,8 @@ public class MainActivity extends AppCompatActivity {
     private EditText searchBar;
     private ImageButton btn_record;
     String[] primaryDateList = {"25/01/2022", "29/02/2023"};
-    String[] nameList = {"Record-01","Record-02" };
+    String[] nameList = {"Record-01", "Record-02"};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +43,9 @@ public class MainActivity extends AppCompatActivity {
         records.setAdapter(recordAdapter);
         records.setOnItemClickListener((parent, view, position, id) -> {
             view.setBackgroundResource(R.drawable.list_selector_pressed);
-        });    }
+        });
+    }
+
 
     private void showPopupMenu(View view) {
         Toast.makeText(view.getContext(), "click too long", Toast.LENGTH_SHORT);
@@ -48,4 +57,6 @@ public class MainActivity extends AppCompatActivity {
 //        AllRecords newFragment = new AllRecords();
 //        newFragment.setArguments(bundle);
     }
+
+
 }
