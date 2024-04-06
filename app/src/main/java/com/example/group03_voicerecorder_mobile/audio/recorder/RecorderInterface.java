@@ -16,7 +16,7 @@ public interface RecorderInterface {
 
     interface Recorder {
         void setCallBack(RecorderCallback callBack);
-        void startRecord(String output, int channel, int bitrate, int samplerate);
+        void startRecord(String output, int channel, int bitrate, int sampleRate);
         void pauseRecord();
         void resumeRecord();
         void stopRecord();

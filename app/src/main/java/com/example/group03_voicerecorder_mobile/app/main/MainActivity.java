@@ -1,6 +1,7 @@
 package com.example.group03_voicerecorder_mobile.app.main;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.group03_voicerecorder_mobile.R;
 import com.example.group03_voicerecorder_mobile.app.record.Record;
+import com.example.group03_voicerecorder_mobile.app.record.RecordActivity;
 import com.example.group03_voicerecorder_mobile.app.record.RecordAdapter;
 
 import java.util.ArrayList;
@@ -41,6 +43,13 @@ public class MainActivity extends AppCompatActivity {
         title = (TextView) findViewById(R.id.title);
         searchBar = (EditText) findViewById(R.id.searchBar);
         btn_record = (ImageButton) findViewById(R.id.recordButton);
+
+        btn_record.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toRecordActivity(v);
+            }
+        });
 
         List<Record> recordList = new ArrayList<>();
         // Creating mock data for records
@@ -74,6 +83,11 @@ public class MainActivity extends AppCompatActivity {
         bundle.putString("filter", filter);
 //        AllRecords newFragment = new AllRecords();
 //        newFragment.setArguments(bundle);
+    }
+
+    public void toRecordActivity(View recordView) {
+        Intent intent = new Intent(this, RecordActivity.class);
+        startActivity(intent);
     }
 
 }
