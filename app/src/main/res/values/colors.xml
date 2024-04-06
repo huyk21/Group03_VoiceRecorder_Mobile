@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <color name="tab_strip">#b42929</color>
-
     <color name="text_primary_light">#ffffffff</color>
     <color name="text_primary_light2">#99FFFFFF</color>
     <color name="text_secondary_light">#b3ffffff</color> <!-- 70% -->

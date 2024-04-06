@@ -1,6 +1,9 @@
 package com.example.group03_voicerecorder_mobile.audio.recorder;
 
 public class AudioRecorder implements RecorderInterface.Recorder{
+    public AudioRecorder() {
+        super();
+    }
     @Override
     public void setCallBack(RecorderInterface.RecorderCallback callBack) {
         System.out.println("adu");

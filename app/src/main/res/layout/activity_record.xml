@@ -2,7 +2,6 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -42,7 +41,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:contentDescription="@string/toMenu"
-            android:background="@color/md_grey_700"
+            android:background="@drawable/btn_state"
             android:padding="3dp"
             app:srcCompat="@android:drawable/ic_menu_sort_by_size" />
 
@@ -55,25 +54,34 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="140dp"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/timerTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:padding="8dp"
-                android:layout_marginTop="20dp"
-                android:text="00:00:30"
-                android:textColor="@android:color/white"
-                android:textSize="45sp" />
+                <TextView
+                    android:id="@+id/recordStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="24sp"
+                    android:text="@string/status_not_record"
+                    android:gravity="center"
+                    android:layout_marginTop="10dp"/>
 
+                <Chronometer
+                    android:id="@+id/chronometer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="45sp"
+                    android:gravity="center"
+                    android:layout_marginTop="10dp"/>
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/waveformContainer"
             android:layout_width="match_parent"
-            android:layout_height="400dp">
+            android:layout_height="400dp"
+            android:orientation="vertical">
 
 
         </LinearLayout>
@@ -87,43 +95,43 @@
         android:gravity="center">
 
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/playButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="25dp"
-            android:layout_weight="1"
-            android:background="@color/white"
-            android:backgroundTint="@color/white"
-            android:clickable="true"
+        <ImageButton
+            android:id="@+id/playBtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/btn_state"
+            app:tint="@color/white"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
             android:contentDescription="@string/playButton"
             android:visibility="invisible"
-            app:srcCompat="@android:drawable/ic_media_play" />
+            android:clickable="false"
+            android:src="@android:drawable/ic_media_play" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/record_pauseButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
+        <ImageButton
+            android:id="@+id/btnRecord_Pause"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/rounded_border"
+            android:backgroundTint="@color/white"
+            app:tint="@color/md_red_500"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
             android:contentDescription="@string/record_pauseButton"
-            android:backgroundTint="@color/white"
-            app:srcCompat="@drawable/ic_record"/>
+            android:src="@drawable/ic_record" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/stopButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="25dp"
-            android:layout_weight="1"
-            android:backgroundTint="@color/white"
-            android:clickable="true"
+        <ImageButton
+            android:id="@+id/btnStop"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/btn_state"
+            app:tint="@color/white"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
             android:contentDescription="@string/stop"
-            android:tint="@color/md_red_500"
             android:visibility="invisible"
-            app:srcCompat="@drawable/ic_stop" />
+            android:clickable="false"
+            android:src="@drawable/ic_stop" />
 
 
     </LinearLayout>

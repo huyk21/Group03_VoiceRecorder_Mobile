@@ -2,6 +2,8 @@
     <string name="app_name">AudIOWave</string>
     <string name="pauseButton">Pause</string>
     <string name="stop">Stop</string>
+    <string name="status_record">Recording…</string>
+    <string name="status_not_record">Tap the button to start recording</string>
     <string name="startRecord">Start Record</string>
     <string name="record_pauseButton">Record/Pause</string>
     <string name="markButton">Highlight</string>
