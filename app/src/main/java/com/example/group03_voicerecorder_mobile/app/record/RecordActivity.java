@@ -13,15 +13,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.StringDef;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
 import com.example.group03_voicerecorder_mobile.R;
 import com.example.group03_voicerecorder_mobile.app.GlobalConstants;
 import com.example.group03_voicerecorder_mobile.audio.recorder.AudioRecorder;
-import com.example.group03_voicerecorder_mobile.audio.recorder.RecorderInterface;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.group03_voicerecorder_mobile.audio.recorder.RecordService;
 
 import java.io.File;
 
@@ -32,9 +29,8 @@ public class RecordActivity extends AppCompatActivity {
     private TextView status;
     private Chronometer chronometer;
     private ImageButton playBtn;
-    private ImageButton record_pauseBtn;
-    private ImageButton stopBtn;
-    private AudioRecorder recorder = new AudioRecorder();
+    private ImageButton record_stopBtn;
+    private ImageButton pauseBtn;
 
     private boolean mStartRecording = true;
     private boolean mPauseRecording = true;
@@ -50,25 +46,24 @@ public class RecordActivity extends AppCompatActivity {
         status = findViewById(R.id.recordStatus);
         chronometer = findViewById(R.id.chronometer);
         playBtn = findViewById(R.id.playBtn);
-        record_pauseBtn = findViewById(R.id.btnRecord_Pause);
-        stopBtn = findViewById(R.id.btnStop);
+        record_stopBtn = findViewById(R.id.btnRecord_Stop);
+        pauseBtn = findViewById(R.id.btn_pause);
 
-        record_pauseBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startRecord(mStartRecording);
-                mStartRecording = !mStartRecording;
-            }
+        record_stopBtn.setOnClickListener(v -> {
+            startRecord(mStartRecording);
+            mStartRecording = !mStartRecording;
         });
     }
 
     public void startRecord(boolean start) {
-        //Intent intent = new Intent(getApplicationContext(), RecordingService.class);
+        Intent intent = new Intent(getApplicationContext(), RecordService.class);
 
         if (start) {
             playBtn.setVisibility(View.VISIBLE);
-            stopBtn.setVisibility(View.VISIBLE);
-            record_pauseBtn.setImageResource(R.drawable.ic_pause);
+            pauseBtn.setVisibility(View.VISIBLE);
+            pauseBtn.setClickable(true);
+
+            record_stopBtn.setImageResource(R.drawable.ic_stop);
 
             Toast.makeText(getApplicationContext(), "Recording Started", Toast.LENGTH_LONG).show();
 
@@ -81,18 +76,53 @@ public class RecordActivity extends AppCompatActivity {
             chronometer.start();
 
             status.setText(R.string.status_record);
-            //startService(intent);
+            startService(intent);
+            pauseBtn.setOnClickListener(v -> {
+                pauseRecording(mPauseRecording);
+                mPauseRecording = !mPauseRecording;
+            });
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
 
         else {
-            record_pauseBtn.setImageResource(R.drawable.ic_record);
+            record_stopBtn.setImageResource(R.drawable.ic_record);
             chronometer.stop();
             chronometer.setBase(SystemClock.elapsedRealtime());
             timeWhenPaused = 0;
             status.setText(R.string.status_not_record);
 
-            //stopService(intent);
+            stopService(intent);
         }
     }
+
+    public void pauseRecording(boolean pause) {
+        Intent intent = new Intent(getApplicationContext(), RecordService.class);
+        stopService(intent);
+
+        if (pause) {
+            playBtn.setClickable(true);
+            pauseBtn.setClickable(false);
+            status.setText(R.string.paused_status);
+
+            // Improved chronometer handling during pause
+            timeWhenPaused = chronometer.getBase() - SystemClock.elapsedRealtime();
+            chronometer.stop();
+
+            intent.putExtra("pauseFlag", true);
+            startService(intent);
+
+            playBtn.setOnClickListener(v -> {
+                playBtn.setClickable(false);
+                pauseBtn.setClickable(true);
+                chronometer.setBase(SystemClock.elapsedRealtime() + timeWhenPaused);
+                chronometer.start();
+                status.setText(R.string.status_record);
+                mPauseRecording = !mPauseRecording;
+
+                intent.putExtra("resumeFlag", true);
+                startService(intent);
+            });
+        }
+    }
+
 }

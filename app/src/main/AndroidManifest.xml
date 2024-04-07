@@ -46,6 +46,8 @@
             android:name=".app.record.RecordActivity"
             android:screenOrientation="portrait"/>
 
+        <service android:name=".audio.recorder.RecordService"/>
+
     </application>
 
 </manifest>

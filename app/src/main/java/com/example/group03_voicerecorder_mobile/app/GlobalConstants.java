@@ -14,7 +14,7 @@ public class GlobalConstants {
     public static final String STORAGE_DIR = "records";
     public static final String SEPARATOR = ", ";
     public static final String EXTENSION_SEPARATOR = ".";
-    public static final String DEFAULT_RECORD_NAME = "Record No-";
+    public static final String DEFAULT_RECORD_NAME = "Record -";
     public static final String THEME_BLACK = "black";
     public static final String THEME_TEAL = "teal";
     public static final String THEME_BLUE = "blue";

@@ -8,4 +8,5 @@ public abstract class ApplicationException extends Exception{
     public static final int RECORDING_EXCEPTION = 2;
     public static final int RECORDER_EXCEPTION = 3;
     public static final int PERMISSION_READ_EXCEPTION = 4;
+    public static final int DATABASE_WRITE_EXCEPTION = 5;
 }

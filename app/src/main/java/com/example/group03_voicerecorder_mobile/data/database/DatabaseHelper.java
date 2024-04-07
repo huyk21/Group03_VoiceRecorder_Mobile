@@ -59,12 +59,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // Create operation
-    public long addRecording(String filename, long duration, long timestamp) {
+    public long addRecording(Record record) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(KEY_FILENAME, filename);
-        values.put(KEY_DURATION, duration);
-        values.put(KEY_TIMESTAMP, timestamp);
+        values.put(KEY_FILENAME, record.getFilename());
+        values.put(KEY_DURATION, record.getDurationMillis());
+        values.put(KEY_TIMESTAMP, record.getTimestampString());
         long id = db.insert(TABLE_RECORDINGS, null, values);
         db.close();
         return id;

@@ -5,7 +5,7 @@
     <string name="status_record">Recording…</string>
     <string name="status_not_record">Tap the button to start recording</string>
     <string name="startRecord">Start Record</string>
-    <string name="record_pauseButton">Record/Pause</string>
+    <string name="record_stopButton">Record/Stop</string>
     <string name="markButton">Highlight</string>
     <string name="toRecords">Records</string>
     <string name="calls">Calls</string>
@@ -17,8 +17,8 @@
     <string name="recordLength">00:05:00</string>
     <string name="recordDate">27/Mar/24</string>
     <string name="daysSinceDelete">30 days</string>
-    <string name="slider">Slider</string>
     <string name="delete">Delete</string>
     <string name="recover">Recover</string>
     <string name="recordingInfo">Recording: 00:00:01</string>
+    <string name="paused_status">Recording Paused</string>
 </resources>
