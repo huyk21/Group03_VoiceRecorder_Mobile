@@ -1,13 +1,19 @@
 package com.example.group03_voicerecorder_mobile.app.record;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.group03_voicerecorder_mobile.R;
 import com.example.group03_voicerecorder_mobile.data.database.DatabaseHelper;
@@ -60,6 +66,7 @@ public class RecordAdapter extends BaseAdapter {
         });
         return convertView;
     }
+
     @SuppressLint({"ResourceType", "NonConstantResourceId"})
     private void showPopupMenu(View anchorView, int position) {
         PopupMenu popupMenu = new PopupMenu(context, anchorView);
@@ -68,8 +75,10 @@ public class RecordAdapter extends BaseAdapter {
 //            System.out.println(item.getTitle());
             switch (item.getTitle().toString()) {
                 case "Delete":
-                    // Delete the record at the specified position
                     deleteRecord(position);
+                    return true;
+                case "Edit":
+                    showRenameFileDialog(position);
                     return true;
                 default:
                     return false;
@@ -77,9 +86,9 @@ public class RecordAdapter extends BaseAdapter {
         });
         popupMenu.show();
     }
+
     private void deleteRecord(int position) {
         int recordId = records.get(position).getId();
-
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
         databaseHelper.deleteRecording(recordId);
 
@@ -88,4 +97,36 @@ public class RecordAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    private void showRenameFileDialog(int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_rename_file, null);
+        EditText editTextFileName = dialogView.findViewById(R.id.editTextFileName);
+        editTextFileName.setText(records.get(position).getFilename());
+        builder.setView(dialogView);
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String newFileName = editTextFileName.getText().toString().trim();
+                if (!newFileName.isEmpty()) {
+                    // Update file name in the list
+                    records.get(position).setFilename(newFileName);
+                    notifyDataSetChanged();
+                    // Update file name in the database
+                    updateFileNameInDatabase(records.get(position).getId(), newFileName);
+                }
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+    private void updateFileNameInDatabase(int recordId, String newFileName) {
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        int rowsAffected = databaseHelper.updateFileName(recordId, newFileName);
+        if (rowsAffected > 0) {
+            notifyDataSetChanged();
+        } else {
+            Toast.makeText(context, "Failed to update filename", Toast.LENGTH_SHORT).show();
+        }
+    }
 }

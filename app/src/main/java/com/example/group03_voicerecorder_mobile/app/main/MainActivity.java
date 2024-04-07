@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "No records found", Toast.LENGTH_SHORT).show();
         } else {
             // Populate ListView with records
-            RecordAdapter recordAdapter = new RecordAdapter(getApplicationContext(), recordList);
+            RecordAdapter recordAdapter = new RecordAdapter(this, recordList);
             records.setAdapter(recordAdapter);
             records.setOnItemClickListener((parent, view, position, id) -> {
                 view.setBackgroundResource(R.drawable.list_selector_pressed);

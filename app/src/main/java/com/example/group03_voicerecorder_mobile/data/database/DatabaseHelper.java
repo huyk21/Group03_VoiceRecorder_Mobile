@@ -109,15 +109,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     // Update operation
-//    public int updateRecording(Recording recording) {
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        ContentValues values = new ContentValues();
-//        values.put(KEY_FILENAME, recording.getFilename());
-//        values.put(KEY_DURATION, recording.getDuration());
-//        values.put(KEY_TIMESTAMP, recording.getTimestamp());
-//        return db.update(TABLE_RECORDINGS, values, KEY_ID + " = ?",
-//                new String[]{String.valueOf(recording.getId())});
-//    }
+    public int updateFileName(Integer recordId, String filename) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_FILENAME, filename);
+        return db.update(TABLE_RECORDINGS, values, KEY_ID + " = ?",
+                new String[]{String.valueOf(recordId)});
+    }
 
     // Delete operation
     public void deleteRecording(long id) {
