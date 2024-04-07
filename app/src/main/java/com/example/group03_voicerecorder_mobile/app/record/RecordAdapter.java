@@ -10,13 +10,12 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.example.group03_voicerecorder_mobile.R;
+import com.example.group03_voicerecorder_mobile.data.database.DatabaseHelper;
 
 import java.util.List;
 
 public class RecordAdapter extends BaseAdapter {
     Context context;
-    String nameList[];
-    String primaryDateList[];
     List<Record> records;
     LayoutInflater inflater;
 
@@ -61,10 +60,32 @@ public class RecordAdapter extends BaseAdapter {
         });
         return convertView;
     }
-    @SuppressLint("ResourceType")
+    @SuppressLint({"ResourceType", "NonConstantResourceId"})
     private void showPopupMenu(View anchorView, int position) {
         PopupMenu popupMenu = new PopupMenu(context, anchorView);
         popupMenu.getMenuInflater().inflate(R.layout.record_item_popup, popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(item -> {
+//            System.out.println(item.getTitle());
+            switch (item.getTitle().toString()) {
+                case "Delete":
+                    // Delete the record at the specified position
+                    deleteRecord(position);
+                    return true;
+                default:
+                    return false;
+            }
+        });
         popupMenu.show();
     }
+    private void deleteRecord(int position) {
+        int recordId = records.get(position).getId();
+
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        databaseHelper.deleteRecording(recordId);
+
+        records.remove(position);
+
+        notifyDataSetChanged();
+    }
+
 }

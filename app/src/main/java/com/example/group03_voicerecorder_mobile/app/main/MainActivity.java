@@ -21,6 +21,7 @@ import com.example.group03_voicerecorder_mobile.R;
 import com.example.group03_voicerecorder_mobile.app.record.Record;
 import com.example.group03_voicerecorder_mobile.app.record.RecordActivity;
 import com.example.group03_voicerecorder_mobile.app.record.RecordAdapter;
+import com.example.group03_voicerecorder_mobile.data.database.DatabaseHelper;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView title;
     private EditText searchBar;
     private ImageButton btn_record;
+    private DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,33 +45,29 @@ public class MainActivity extends AppCompatActivity {
         title = (TextView) findViewById(R.id.title);
         searchBar = (EditText) findViewById(R.id.searchBar);
         btn_record = (ImageButton) findViewById(R.id.recordButton);
+        databaseHelper = new DatabaseHelper(this);
+
+
+        // Fetch records from the database
+        List<Record> recordList = databaseHelper.getAllRecordings();
+
+        // Check if the recordList is empty
+        if (recordList.isEmpty()) {
+            Toast.makeText(MainActivity.this, "No records found", Toast.LENGTH_SHORT).show();
+        } else {
+            // Populate ListView with records
+            RecordAdapter recordAdapter = new RecordAdapter(getApplicationContext(), recordList);
+            records.setAdapter(recordAdapter);
+            records.setOnItemClickListener((parent, view, position, id) -> {
+                view.setBackgroundResource(R.drawable.list_selector_pressed);
+            });
+        }
 
         btn_record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 toRecordActivity(v);
             }
-        });
-
-        List<Record> recordList = new ArrayList<>();
-        // Creating mock data for records
-        String filename1 = "Record-01";
-        long durationMillis1 = 10000; // Example duration (10 seconds)
-        Date timestamp1 = new Date(); // Current timestamp
-        Record record1 = new Record(filename1, durationMillis1, timestamp1);
-        recordList.add(record1);
-
-        String filename2 = "Record-02";
-        long durationMillis2 = 20000; // Example duration (20 seconds)
-        Date timestamp2 = new Date(); // Current timestamp
-        Record record2 = new Record(filename2, durationMillis2, timestamp2);
-        recordList.add(record2);
-
-
-        RecordAdapter recordAdapter = new RecordAdapter(getApplicationContext(), recordList);
-        records.setAdapter(recordAdapter);
-        records.setOnItemClickListener((parent, view, position, id) -> {
-            view.setBackgroundResource(R.drawable.list_selector_pressed);
         });
     }
 

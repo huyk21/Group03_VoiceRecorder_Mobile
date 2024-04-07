@@ -5,15 +5,18 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class Record {
+    private Integer id;
     private String filename;
     private String filePath;
     private long durationMillis;
     private Date timestamp;
+    private boolean bookmarked;
     public Record() {
         this.filename = "";
         this.filePath = "";
         this.durationMillis = 0;
         this.timestamp = new Date();
+        this.bookmarked = false;
     }
 
     public Record(String filename, long durationMillis, Date timestamp) {
@@ -22,9 +25,9 @@ public class Record {
         this.timestamp = timestamp;
     }
 
-    public Record(String filename, String filePath, long durationMillis, Date timestamp) {
+    public Record(Integer id, String filename, long durationMillis, Date timestamp) {
+        this.id = id;
         this.filename = filename;
-        this.filePath = filePath;
         this.durationMillis = durationMillis;
         this.timestamp = timestamp;
     }
@@ -32,6 +35,14 @@ public class Record {
     // Getters and setters
     public String getFilename() {
         return filename;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public boolean isBookmarked() {
+        return bookmarked;
     }
 
     public void setFilename(String filename) {
