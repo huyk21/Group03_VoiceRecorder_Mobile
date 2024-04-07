@@ -109,7 +109,7 @@
             android:src="@android:drawable/ic_media_play" />
 
         <ImageButton
-            android:id="@+id/btnRecord_Pause"
+            android:id="@+id/btnRecord_Stop"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/rounded_border"
@@ -117,21 +117,21 @@
             app:tint="@color/md_red_500"
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
-            android:contentDescription="@string/record_pauseButton"
+            android:contentDescription="@string/record_stopButton"
             android:src="@drawable/ic_record" />
 
         <ImageButton
-            android:id="@+id/btnStop"
+            android:id="@+id/btn_pause"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/btn_state"
             app:tint="@color/white"
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
-            android:contentDescription="@string/stop"
+            android:contentDescription="@string/pauseButton"
             android:visibility="invisible"
             android:clickable="false"
-            android:src="@drawable/ic_stop" />
+            android:src="@drawable/ic_pause" />
 
 
     </LinearLayout>
