@@ -2,46 +2,33 @@ package com.example.group03_voicerecorder_mobile.app.record;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.SystemClock;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.group03_voicerecorder_mobile.R;
-import com.example.group03_voicerecorder_mobile.app.GlobalConstants;
-import com.example.group03_voicerecorder_mobile.audio.recorder.AudioRecorder;
 import com.example.group03_voicerecorder_mobile.audio.recorder.RecordService;
 
-import java.io.File;
-
 public class RecordActivity extends AppCompatActivity {
-    private TextView appName;
-    private Button toRecords;
-    private ImageButton toMenu;
-    private TextView status;
+    private TextView appName, status;
+    private ImageButton toRecords, toMenu, playBtn, record_stopBtn, pauseBtn;
     private Chronometer chronometer;
-    private ImageButton playBtn;
-    private ImageButton record_stopBtn;
-    private ImageButton pauseBtn;
+    private boolean mStartRecording = true, mPauseRecording = false;
+    private long timeWhenPaused = 0;
 
-    private boolean mStartRecording = true;
-    private boolean mPauseRecording = true;
-    long timeWhenPaused = 0;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
 
         appName = findViewById(R.id.appName);
-        toRecords = findViewById(R.id.toRecords);
+
         toMenu = findViewById(R.id.toMenu);
         status = findViewById(R.id.recordStatus);
         chronometer = findViewById(R.id.chronometer);
@@ -50,79 +37,80 @@ public class RecordActivity extends AppCompatActivity {
         pauseBtn = findViewById(R.id.btn_pause);
 
         record_stopBtn.setOnClickListener(v -> {
-            startRecord(mStartRecording);
-            mStartRecording = !mStartRecording;
+            if (mStartRecording) {
+                startRecording();
+            } else {
+                stopRecording();
+            }
+            mStartRecording = !mStartRecording; // Toggle the recording state
+        });
+
+        pauseBtn.setOnClickListener(v -> {
+            pauseRecording();
+            mPauseRecording = true; // Set pause state to true
+            playBtn.setVisibility(View.VISIBLE);
+            pauseBtn.setVisibility(View.INVISIBLE);
+        });
+
+        playBtn.setOnClickListener(v -> {
+            resumeRecording();
+            mPauseRecording = false; // Set pause state to false
+            playBtn.setVisibility(View.INVISIBLE);
+            pauseBtn.setVisibility(View.VISIBLE);
         });
     }
 
-    public void startRecord(boolean start) {
-        Intent intent = new Intent(getApplicationContext(), RecordService.class);
+    private void startRecording() {
+        Intent intent = new Intent(this, RecordService.class);
+        intent.setAction("ACTION_START_RECORDING");
+        startService(intent);
+        Toast.makeText(this, "Recording Started", Toast.LENGTH_SHORT).show();
 
-        if (start) {
-            playBtn.setVisibility(View.VISIBLE);
-            pauseBtn.setVisibility(View.VISIBLE);
-            pauseBtn.setClickable(true);
-
-            record_stopBtn.setImageResource(R.drawable.ic_stop);
-
-            Toast.makeText(getApplicationContext(), "Recording Started", Toast.LENGTH_LONG).show();
-
-            File folder = new File(Environment.getExternalStorageDirectory() + GlobalConstants.STORAGE_DIR);
-            if (!folder.exists()) {
-                folder.mkdir();
-            }
-
-            chronometer.setBase(SystemClock.elapsedRealtime());
-            chronometer.start();
-
-            status.setText(R.string.status_record);
-            startService(intent);
-            pauseBtn.setOnClickListener(v -> {
-                pauseRecording(mPauseRecording);
-                mPauseRecording = !mPauseRecording;
-            });
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        }
-
-        else {
-            record_stopBtn.setImageResource(R.drawable.ic_record);
-            chronometer.stop();
-            chronometer.setBase(SystemClock.elapsedRealtime());
-            timeWhenPaused = 0;
-            status.setText(R.string.status_not_record);
-
-            stopService(intent);
-        }
+        record_stopBtn.setImageResource(R.drawable.ic_stop);
+        pauseBtn.setVisibility(View.VISIBLE);
+        playBtn.setVisibility(View.INVISIBLE); // Initially, the play button is hidden
+        status.setText(R.string.status_record);
+        chronometer.setBase(SystemClock.elapsedRealtime());
+        chronometer.start();
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
-    public void pauseRecording(boolean pause) {
-        Intent intent = new Intent(getApplicationContext(), RecordService.class);
-        stopService(intent);
+    private void stopRecording() {
+        Intent intent = new Intent(this, RecordService.class);
+        intent.setAction("ACTION_STOP_RECORDING");
+        startService(intent); // You may choose to use stopService if your service design requires it
+        Toast.makeText(this, "Recording Stopped", Toast.LENGTH_SHORT).show();
 
-        if (pause) {
-            playBtn.setClickable(true);
-            pauseBtn.setClickable(false);
-            status.setText(R.string.paused_status);
-
-            // Improved chronometer handling during pause
-            timeWhenPaused = chronometer.getBase() - SystemClock.elapsedRealtime();
-            chronometer.stop();
-
-            intent.putExtra("pauseFlag", true);
-            startService(intent);
-
-            playBtn.setOnClickListener(v -> {
-                playBtn.setClickable(false);
-                pauseBtn.setClickable(true);
-                chronometer.setBase(SystemClock.elapsedRealtime() + timeWhenPaused);
-                chronometer.start();
-                status.setText(R.string.status_record);
-                mPauseRecording = !mPauseRecording;
-
-                intent.putExtra("resumeFlag", true);
-                startService(intent);
-            });
-        }
+        record_stopBtn.setImageResource(R.drawable.ic_record);
+        pauseBtn.setVisibility(View.INVISIBLE);
+        playBtn.setVisibility(View.INVISIBLE);
+        status.setText(R.string.status_not_record);
+        chronometer.stop();
+        chronometer.setBase(SystemClock.elapsedRealtime());
+        timeWhenPaused = 0;
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
+    private void pauseRecording() {
+        Intent intent = new Intent(this, RecordService.class);
+        intent.setAction("ACTION_PAUSE_RECORDING");
+        startService(intent);
+        Toast.makeText(this, "Recording Paused", Toast.LENGTH_SHORT).show();
+
+        status.setText(R.string.paused_status);
+        chronometer.stop();
+        timeWhenPaused = SystemClock.elapsedRealtime() - chronometer.getBase();
+
+    }
+
+    private void resumeRecording() {
+        Intent intent = new Intent(this, RecordService.class);
+        intent.setAction("ACTION_RESUME_RECORDING");
+        startService(intent);
+        Toast.makeText(this, "Recording Resumed", Toast.LENGTH_SHORT).show();
+
+        status.setText(R.string.status_record);
+        chronometer.setBase(SystemClock.elapsedRealtime() - timeWhenPaused);
+        chronometer.start();
+    }
 }
