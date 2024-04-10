@@ -2,15 +2,12 @@ package com.example.group03_voicerecorder_mobile.app.record;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
@@ -59,7 +56,7 @@ public class RecordAdapter extends BaseAdapter {
         recordDate.setText(records.get(position).getTimestampString());
         recordDuration.setText(records.get(position).getDurationString());
         if (records.get(position).getBookmarked() == 1)
-            bookmarkedBtn.setImageResource(R.drawable.bookmark_fill);
+            bookmarkedBtn.setImageResource(R.drawable.baseline_bookmark_48);
         else
             bookmarkedBtn.setImageResource(R.drawable.bookmark_border_24);
 
@@ -154,7 +151,7 @@ public class RecordAdapter extends BaseAdapter {
 
     private void setBookmarkIcon(ImageButton bookmarkButton, int bookmarked) {
         if (bookmarked == 1) {
-            bookmarkButton.setImageResource(R.drawable.bookmark_fill);
+            bookmarkButton.setImageResource(R.drawable.baseline_bookmark_48);
         } else {
             bookmarkButton.setImageResource(R.drawable.bookmark_border_24);
         }
