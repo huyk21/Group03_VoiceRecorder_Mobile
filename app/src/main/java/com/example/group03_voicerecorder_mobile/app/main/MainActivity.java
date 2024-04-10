@@ -15,6 +15,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.group03_voicerecorder_mobile.R;
@@ -34,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     private EditText searchBar;
     private ImageButton btn_record;
     private DatabaseHelper databaseHelper;
+    private static final int REQUEST_CODE = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +75,27 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Fetch records from the database
+        List<Record> recordList = databaseHelper.getAllRecordings();
+
+        // Check if the recordList is empty
+        if (recordList.isEmpty()) {
+            Toast.makeText(MainActivity.this, "No records found", Toast.LENGTH_SHORT).show();
+        } else {
+            // Populate ListView with records
+            RecordAdapter recordAdapter = new RecordAdapter(this, recordList);
+            records.setAdapter(recordAdapter);
+            records.setOnItemClickListener((parent, view, position, id) -> {
+                view.setBackgroundResource(R.drawable.list_selector_pressed);
+            });
+        }
+    }
+
+
 
     private void showPopupMenu(View view) {
         Toast.makeText(view.getContext(), "click too long", Toast.LENGTH_SHORT);
@@ -109,5 +133,4 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "Failed to add mock data", Toast.LENGTH_SHORT).show();
         }
     }
-
 }

@@ -32,6 +32,10 @@ public class RecordAdapter extends BaseAdapter {
         this.records = records;
         inflater = LayoutInflater.from(ctx);
     }
+    public void setRecordList(List<Record> updatedRecords) {
+        this.records = updatedRecords;
+        notifyDataSetChanged();
+    }
 
     @Override
     public int getCount() {

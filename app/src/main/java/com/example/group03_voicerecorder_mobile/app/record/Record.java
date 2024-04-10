@@ -23,8 +23,6 @@ public class Record {
         this.filename = filename;
         this.durationMillis = durationMillis;
         this.timestamp = timestamp;
-        System.out.println(this.timestamp.toString());
-        System.out.println(this.getTimestampString());
     }
 
     public Record(int id, String filename, long duration, Date timestamp, int bookmarked) {
@@ -87,14 +85,12 @@ public class Record {
         this.timestamp = timestamp;
     }
     public String getDurationString() {
-        long hours = TimeUnit.MILLISECONDS.toHours(durationMillis);
-        long minutes = TimeUnit.MILLISECONDS.toMinutes(durationMillis) % 60;
-
+        long hours = TimeUnit.MILLISECONDS.toMinutes(durationMillis);
+        long minutes = TimeUnit.MILLISECONDS.toSeconds(durationMillis);
         return String.format("%02d:%02d", hours, minutes);
     }
     public String getTimestampString() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-
         // Format the timestamp using the specified pattern
         String formattedDate = dateFormat.format(this.timestamp);
         return formattedDate;

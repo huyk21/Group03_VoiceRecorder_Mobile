@@ -1,5 +1,7 @@
 package com.example.group03_voicerecorder_mobile.app.record;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -18,6 +20,7 @@ import com.example.group03_voicerecorder_mobile.data.database.DatabaseHelper;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 public class RecordActivity extends AppCompatActivity {
     private TextView appName, status;
@@ -136,8 +139,6 @@ public class RecordActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "Failed to save recording.", Toast.LENGTH_SHORT).show();
             }
-
-            finish();
         }
     }
 
