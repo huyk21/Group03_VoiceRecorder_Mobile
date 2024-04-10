@@ -3,6 +3,7 @@ package com.example.group03_voicerecorder_mobile.app.record;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.View;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
@@ -159,6 +160,7 @@ public class RecordActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (mediaRecorder != null) {
+            Log.e("RecordActivity", "MediaRecorder is not null");
             mediaRecorder.release();
         }
     }
