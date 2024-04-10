@@ -14,36 +14,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_normal"
-        android:text="New name"
+        android:layout_gravity="center"
+        android:text="Permanently delete record?"
         android:textAppearance="@style/TextAppearance.DialogTitle"
         android:textColor="@color/white" />
 
-    <!-- Input Field -->
-    <EditText
-        android:id="@+id/editTextFileName"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/dialog_detail"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/text_xmedium"
-        android:textColor="@color/white_transparent_10"
-        android:imeOptions="actionDone"
-        android:inputType="text"
-        tools:text="Please allow!"
-        android:textAppearance="@style/TextAppearance.DialogContent" />
-
-
-    <CheckBox
-        android:id="@+id/check_box"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_small"
-        android:text="Dont ask again!"
+        android:layout_marginBottom="@dimen/spacing_normal"
+        android:layout_gravity="center"
+        android:text="Do you wish to permanently delete the selected record(s) in the recycle bin? They can not be recovered afterwards."
         android:textColor="@color/white"
-        android:buttonTint="@color/color_checkbox"
-        android:paddingStart="@dimen/spacing_small"
-        android:paddingEnd="@dimen/spacing_zero"
-        android:visibility="gone"
-        tools:visibility="visible" />
-
+        android:textSize="18sp"
+        android:textAppearance="@style/TextAppearance.DialogContent"/>
+w
     <!-- Buttons -->
     <LinearLayout
         android:layout_width="wrap_content"
@@ -55,7 +41,7 @@
 
         <!-- Cancel Button -->
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnStop"
+            android:id="@+id/btnCancel"
             style="@style/Widget.BorderlessButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -68,14 +54,15 @@
 
         <!-- Save Button -->
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnSave"
+            android:id="@+id/btnAccept"
             style="@style/Widget.RaisedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/spacing_small"
             android:paddingStart="@dimen/spacing_normal"
             android:paddingEnd="@dimen/spacing_normal"
-            android:text="Save"
-            android:textSize="@dimen/text_normal" />
+            android:text="Delete"
+            android:textSize="@dimen/text_normal"
+            android:backgroundTint="@color/md_red_500"/>
     </LinearLayout>
 </LinearLayout>

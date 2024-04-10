@@ -52,10 +52,10 @@ public class RecordAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         convertView = inflater.inflate(R.layout.list_record_item, null);
-        TextView recordTitle = (TextView) convertView.findViewById(R.id.recordTitle);
-        TextView recordDate = (TextView) convertView.findViewById(R.id.recordDate);
-        TextView recordDuration = (TextView) convertView.findViewById(R.id.recordDuration);
-        ImageButton bookmarkedBtn = (ImageButton) convertView.findViewById(R.id.bookmarkButton);
+        TextView recordTitle = convertView.findViewById(R.id.recordTitle);
+        TextView recordDate = convertView.findViewById(R.id.recordDate);
+        TextView recordDuration = convertView.findViewById(R.id.recordDuration);
+        ImageButton bookmarkedBtn = convertView.findViewById(R.id.bookmarkButton);
 
         String fileNameNoExt = records.get(position).getFilename().substring(0, records.get(position).getFilename().lastIndexOf("."));
         recordTitle.setText(fileNameNoExt);
@@ -116,8 +116,7 @@ public class RecordAdapter extends BaseAdapter {
     private void deleteRecord(int position) {
         int recordId = records.get(position).getId();
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
-        databaseHelper.deleteRecording(recordId);
-
+        databaseHelper.updateDeletedState(recordId, 1);
         records.remove(position);
         notifyDataSetChanged();
     }

@@ -23,6 +23,7 @@
             android:layout_marginEnd="20dp">
 
             <TextView
+                android:id="@+id/recordName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/recordName"
@@ -36,6 +37,7 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/recordDuration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/recordLength"
@@ -44,26 +46,13 @@
                     android:layout_marginEnd="20dp" />
 
                 <TextView
+                    android:id="@+id/recordDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/recordDate"
                     android:textSize="16sp"
                     android:textColor="@color/white"/>
             </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:layout_marginStart="20dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/daysSinceDelete"
-                android:textSize="16sp"
-                android:textColor="@color/white_transparent_50"/>
         </LinearLayout>
     </LinearLayout>
 

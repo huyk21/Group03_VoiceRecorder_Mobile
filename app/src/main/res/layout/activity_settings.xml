@@ -169,9 +169,7 @@
                     android:layout_height="wrap_content"
                     android:paddingStart="16dp"
                     android:text="Auto remove unecessary silence sound  "
-
                     android:textColor="#b3ffffff"
-
                     android:textSize="14dp" />
             </LinearLayout>
 

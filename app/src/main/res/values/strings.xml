@@ -18,7 +18,9 @@
     <string name="recordDate">27/Mar/24</string>
     <string name="daysSinceDelete">30 days</string>
     <string name="delete">Delete</string>
+    <string name="deleteAll">Delete All</string>
     <string name="recover">Recover</string>
     <string name="recordingInfo">Recording: 00:00:01</string>
     <string name="paused_status">Recording Paused</string>
+    <string name="deleted_title">Recently Deleted Recordings</string>
 </resources>

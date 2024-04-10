@@ -157,6 +157,7 @@ public class RecordActivity extends AppCompatActivity {
 
             if (newRowId != -1) {
                 Toast.makeText(this, "Recording saved to database.", Toast.LENGTH_SHORT).show();
+                finish();
             } else {
                 Toast.makeText(this, "Failed to save recording.", Toast.LENGTH_SHORT).show();
             }
@@ -168,8 +169,8 @@ public class RecordActivity extends AppCompatActivity {
         if (isRecording) {
             // Recording is ongoing
 
-            pauseBtn.setVisibility(View.VISIBLE); // Show pause button
-            playBtn.setVisibility(View.GONE); // Hide resume button
+            pauseBtn.setVisibility(View.VISIBLE);
+            playBtn.setVisibility(View.GONE);
         } else {
             // Recording is paused or stopped
 

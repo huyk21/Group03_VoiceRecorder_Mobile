@@ -11,6 +11,7 @@ public class Record {
     private long durationMillis;
     private Date timestamp;
     private int bookmarked;
+    private int deleted;
     public Record() {
         this.filename = "";
         this.filePath = "";
@@ -33,13 +34,21 @@ public class Record {
         this.bookmarked = bookmarked;
     }
 
+    public Record(int id, String filename, long duration, Date timestamp, int bookmarked, int deleted) {
+        this.id = id;
+        this.filename = filename;
+        this.durationMillis = duration;
+        this.timestamp = timestamp;
+        this.bookmarked = bookmarked;
+        this.deleted = deleted;
+    }
+
     public Record(String filename, long elapsedMillis, Date timestamp, int bookmarked) {
         this.filename = filename;
         this.durationMillis = elapsedMillis;
         this.timestamp = timestamp;
         this.bookmarked = bookmarked;
     }
-
 
     // Getters and setters
     public String getFilename() {
@@ -84,6 +93,8 @@ public class Record {
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
+    public int getDeleted(){return deleted; }
+    public void setDeleted(int deleted) {this.deleted = deleted;}
     public String getDurationString() {
         long hours = TimeUnit.MILLISECONDS.toMinutes(durationMillis);
         long minutes = TimeUnit.MILLISECONDS.toSeconds(durationMillis);
