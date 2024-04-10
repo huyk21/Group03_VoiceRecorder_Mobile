@@ -126,7 +126,7 @@ public class RecordActivity extends AppCompatActivity {
             updateRecordingButtons();
 
             Date timestamp = new Date(); // Current time as the end of the recording
-            Record record = new Record(currentFilePath, elapsedMillis, timestamp, false);
+            Record record = new Record(currentFilePath, elapsedMillis, timestamp, 0);
 
             long newRowId = databaseHelper.addRecording(record);
 

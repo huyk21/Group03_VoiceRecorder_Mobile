@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.example.group03_voicerecorder_mobile.app.record.Record;
+import com.example.group03_voicerecorder_mobile.utils.Utilities;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -17,12 +18,11 @@ import java.util.List;
 import java.util.Locale;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-
-    private static final String TAG = DatabaseHelper.class.getSimpleName();
+    private Context context;
 
     // Database Version
-    private static final int DATABASE_VERSION = 1;
-    private boolean bookmarked;
+    private static final int DATABASE_VERSION = 2;
+
     // Database Name
     private static final String DATABASE_NAME = "RecorderDB";
 
@@ -36,25 +36,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_TIMESTAMP = "timestamp";
     private static final String KEY_BOOKMARKED = "bookmarked";
 
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     @Override
-
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_RECORDINGS_TABLE = "CREATE TABLE " + TABLE_RECORDINGS + "("
-                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+        String CREATE_TABLE = "CREATE TABLE " + TABLE_RECORDINGS + "("
+                + KEY_ID + " INTEGER PRIMARY KEY,"
                 + KEY_FILENAME + " TEXT,"
                 + KEY_DURATION + " INTEGER,"
-                + KEY_TIMESTAMP + " TEXT,"
+                + KEY_TIMESTAMP + " TEXT,"  
                 + KEY_BOOKMARKED + " INTEGER DEFAULT 0"  // 0 for false, 1 for true
                 + ")";
-        db.execSQL(CREATE_RECORDINGS_TABLE);
+        db.execSQL(CREATE_TABLE);
     }
-
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -62,76 +59,78 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    // Create operation
     public long addRecording(Record record) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_FILENAME, record.getFilename());
         values.put(KEY_DURATION, record.getDurationMillis());
-        values.put(KEY_TIMESTAMP, dateFormat.format(record.getTimestamp()));
-        values.put(KEY_BOOKMARKED, record.isBookmarked() ? 1 : 0);
-
+        values.put(KEY_TIMESTAMP, record.getTimestampString());
+        values.put(KEY_BOOKMARKED, record.getBookmarked()); // Add the bookmarked field
         long id = db.insert(TABLE_RECORDINGS, null, values);
         db.close();
         return id;
     }
 
+    // Read operation
     public List<Record> getAllRecordings() {
         List<Record> recordingList = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TABLE_RECORDINGS;
         SQLiteDatabase db = this.getReadableDatabase();
+
         Cursor cursor = db.rawQuery(selectQuery, null);
 
-        if (cursor.moveToFirst()) {
-            do {
-                int idIndex = cursor.getColumnIndex(KEY_ID);
-                int filenameIndex = cursor.getColumnIndex(KEY_FILENAME);
-                int durationIndex = cursor.getColumnIndex(KEY_DURATION);
-                int timestampIndex = cursor.getColumnIndex(KEY_TIMESTAMP);
-                int bookmarkedIndex = cursor.getColumnIndex(KEY_BOOKMARKED);
-                if (idIndex != -1 && filenameIndex != -1 && durationIndex != -1 &&
-                        timestampIndex != -1 && bookmarkedIndex != -1) {
+        if (cursor != null) {
+            try {
+                if (cursor.moveToFirst()) {
+                    do {
+                        int id = cursor.getInt(cursor.getColumnIndex(KEY_ID));
+                        String filename = cursor.getString(cursor.getColumnIndex(KEY_FILENAME));
+                        long duration = cursor.getLong(cursor.getColumnIndex(KEY_DURATION));
+                        String timestamp = cursor.getString(cursor.getColumnIndex(KEY_TIMESTAMP));
+                        int bookmarked = cursor.getInt(cursor.getColumnIndex(KEY_BOOKMARKED));
+                        System.out.println(timestamp);
+                        String pattern = "dd/MM/yyyy"; // Date format pattern
+                        Date date = Utilities.stringToDate(timestamp, pattern);
+                        if (date == null) continue;
 
-                    int id = cursor.getInt(idIndex);
-                    String filename = cursor.getString(filenameIndex);
-                    long duration = cursor.getLong(durationIndex);
-                    String timestampString = cursor.getString(timestampIndex);
-                    Date timestamp = null;
-                    try {
-                        if (timestampString != null) {
-                            timestamp = dateFormat.parse(timestampString);
-                        }
-                    } catch (ParseException e) {
-                        Log.e(TAG, "Date parsing error", e);
-                    }
-                    boolean bookmarked = cursor.getInt(bookmarkedIndex) == 1;
-
-                    Record recording = new Record(id, filename, duration, timestamp);
-                    recording.setBookmarked(bookmarked);
-                    recordingList.add(recording);
+                        Record recording = new Record(id, filename, duration, date, bookmarked);
+                        recordingList.add(recording);
+                    } while (cursor.moveToNext());
                 }
-
-            } while (cursor.moveToNext());
+            } finally {
+                cursor.close();
+            }
         }
-        cursor.close();
+
+        db.close();
 
         return recordingList;
     }
 
-    public int updateFileName(int recordId, String filename) {
+
+
+    // Update operation
+    public int updateFileName(Integer recordId, String filename) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_FILENAME, filename);
-        int rowsAffected = db.update(TABLE_RECORDINGS, values, KEY_ID + "=?", new String[]{String.valueOf(recordId)});
-        db.close();
-        return rowsAffected;
+        return db.update(TABLE_RECORDINGS, values, KEY_ID + " = ?",
+                new String[]{String.valueOf(recordId)});
     }
 
-    public void deleteRecording(int recordId) {
+    // Delete operation
+    public void deleteRecording(long id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_RECORDINGS, KEY_ID + "=?", new String[]{String.valueOf(recordId)});
+        db.delete(TABLE_RECORDINGS, KEY_ID + " = ?",
+                new String[]{String.valueOf(id)});
         db.close();
     }
-    public void setBookmarked(boolean bookmarked) {
-        this.bookmarked = bookmarked;
+    public int updateBookmarkState(long recordId, int bookmarkedState) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_BOOKMARKED, bookmarkedState);
+        return db.update(TABLE_RECORDINGS, values, KEY_ID + " = ?",
+                new String[]{String.valueOf(recordId)});
     }
 }

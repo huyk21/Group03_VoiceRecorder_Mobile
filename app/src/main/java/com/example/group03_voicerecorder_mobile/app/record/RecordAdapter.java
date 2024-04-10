@@ -5,12 +5,14 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,9 +54,14 @@ public class RecordAdapter extends BaseAdapter {
         TextView recordTitle = (TextView) convertView.findViewById(R.id.recordTitle);
         TextView recordDate = (TextView) convertView.findViewById(R.id.recordDate);
         TextView recordDuration = (TextView) convertView.findViewById(R.id.recordDuration);
+        ImageButton bookmarkedBtn = (ImageButton) convertView.findViewById(R.id.bookmarkButton);
         recordTitle.setText(records.get(position).getFilename());
         recordDate.setText(records.get(position).getTimestampString());
         recordDuration.setText(records.get(position).getDurationString());
+        if (records.get(position).getBookmarked() == 1)
+            bookmarkedBtn.setImageResource(R.drawable.bookmark_fill);
+        else
+            bookmarkedBtn.setImageResource(R.drawable.bookmark_border_24);
 
         convertView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -63,6 +70,22 @@ public class RecordAdapter extends BaseAdapter {
                 showPopupMenu(v, position);
                 return true;
             }
+        });
+        ImageButton bookmarkButton = convertView.findViewById(R.id.bookmarkButton);
+
+        // Set initial bookmark state based on the record's bookmarked field
+        int isBookmarked = records.get(position).getBookmarked();
+        setBookmarkIcon(bookmarkButton, isBookmarked);
+
+        bookmarkButton.setOnClickListener(v -> {
+            // Update the UI with the new bookmark state
+            records.get(position).setBookmarked(records.get(position).getBookmarked() == 1 ? 0 : 1);
+
+            setBookmarkIcon(bookmarkButton, records.get(position).getBookmarked());
+
+            // Update the database with the new bookmark state
+            updateBookmarkState(records.get(position).getId(), records.get(position).getBookmarked());
+
         });
         return convertView;
     }
@@ -93,7 +116,6 @@ public class RecordAdapter extends BaseAdapter {
         databaseHelper.deleteRecording(recordId);
 
         records.remove(position);
-
         notifyDataSetChanged();
     }
 
@@ -127,6 +149,24 @@ public class RecordAdapter extends BaseAdapter {
             notifyDataSetChanged();
         } else {
             Toast.makeText(context, "Failed to update filename", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void setBookmarkIcon(ImageButton bookmarkButton, int bookmarked) {
+        if (bookmarked == 1) {
+            bookmarkButton.setImageResource(R.drawable.bookmark_fill);
+        } else {
+            bookmarkButton.setImageResource(R.drawable.bookmark_border_24);
+        }
+    }
+
+    private void updateBookmarkState(int recordId, int bookmarked) {
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        int rowsAffected = databaseHelper.updateBookmarkState(recordId, bookmarked);
+        if (rowsAffected > 0) {
+            Toast.makeText(context, "Bookmark state updated", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Failed to update bookmark state", Toast.LENGTH_SHORT).show();
         }
     }
 }

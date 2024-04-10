@@ -10,34 +10,38 @@ public class Record {
     private String filePath;
     private long durationMillis;
     private Date timestamp;
-    private boolean bookmarked;
+    private int bookmarked;
     public Record() {
         this.filename = "";
         this.filePath = "";
         this.durationMillis = 0;
         this.timestamp = new Date();
-        this.bookmarked = false;
+        this.bookmarked = 0;
     }
 
     public Record(String filename, long durationMillis, Date timestamp) {
         this.filename = filename;
         this.durationMillis = durationMillis;
         this.timestamp = timestamp;
+        System.out.println(this.timestamp.toString());
+        System.out.println(this.getTimestampString());
     }
 
-    public Record(Integer id, String filename, long durationMillis, Date timestamp) {
+    public Record(int id, String filename, long duration, Date timestamp, int bookmarked) {
         this.id = id;
         this.filename = filename;
-        this.durationMillis = durationMillis;
+        this.durationMillis = duration;
         this.timestamp = timestamp;
+        this.bookmarked = bookmarked;
     }
 
-    public Record(String filename, long elapsedMillis, Date timestamp, boolean bookmarked) {
+    public Record(String filename, long elapsedMillis, Date timestamp, int bookmarked) {
         this.filename = filename;
         this.durationMillis = elapsedMillis;
         this.timestamp = timestamp;
         this.bookmarked = bookmarked;
     }
+
 
     // Getters and setters
     public String getFilename() {
@@ -48,8 +52,11 @@ public class Record {
         return id;
     }
 
-    public boolean isBookmarked() {
+    public int getBookmarked() {
         return bookmarked;
+    }
+    public void setBookmarked(int bookmarked) {
+        this.bookmarked = bookmarked;
     }
 
     public void setFilename(String filename) {

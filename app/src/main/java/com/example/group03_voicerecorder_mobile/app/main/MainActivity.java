@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
                 toRecordActivity(v);
             }
         });
+
     }
 
 
@@ -86,6 +87,27 @@ public class MainActivity extends AppCompatActivity {
     public void toRecordActivity(View recordView) {
         Intent intent = new Intent(this, RecordActivity.class);
         startActivity(intent);
+    }
+
+    private void addMockDataToDatabase() {
+        // Create some dummy records
+        Record record1 = new Record(1, "dummy_record_1.mp3", 60000, new Date(), 0);
+        Record record2 = new Record(2, "dummy_record_2.mp3", 120000, new Date(), 1);
+        Record record3 = new Record(3, "dummy_record_3.mp3", 90000, new Date(), 0);
+
+        // Add the records to the database
+        long id1 = databaseHelper.addRecording(record1);
+        long id2 = databaseHelper.addRecording(record2);
+        long id3 = databaseHelper.addRecording(record3);
+
+        // Check if the records were successfully added
+        if (id1 != -1 && id2 != -1 && id3 != -1) {
+            // Show a toast message indicating success
+            Toast.makeText(MainActivity.this, "Mock data added successfully", Toast.LENGTH_SHORT).show();
+        } else {
+            // Show a toast message indicating failure
+            Toast.makeText(MainActivity.this, "Failed to add mock data", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }
