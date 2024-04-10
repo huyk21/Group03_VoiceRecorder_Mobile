@@ -21,7 +21,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private Context context;
 
     // Database Version
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     // Database Name
     private static final String DATABASE_NAME = "RecorderDB";
@@ -35,6 +35,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_DURATION = "duration";
     private static final String KEY_TIMESTAMP = "timestamp";
     private static final String KEY_BOOKMARKED = "bookmarked";
+    private static final String KEY_DELETED = "deleted";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -43,12 +44,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        // Modified table creation SQL statement to include the deleted field
         String CREATE_TABLE = "CREATE TABLE " + TABLE_RECORDINGS + "("
                 + KEY_ID + " INTEGER PRIMARY KEY,"
                 + KEY_FILENAME + " TEXT,"
                 + KEY_DURATION + " INTEGER,"
-                + KEY_TIMESTAMP + " TEXT,"  
-                + KEY_BOOKMARKED + " INTEGER DEFAULT 0"  // 0 for false, 1 for true
+                + KEY_TIMESTAMP + " TEXT,"
+                + KEY_BOOKMARKED + " INTEGER DEFAULT 0,"
+                + KEY_DELETED + " INTEGER DEFAULT 0"
                 + ")";
         db.execSQL(CREATE_TABLE);
     }
@@ -74,12 +77,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // Read operation
-    public List<Record> getAllRecordings() {
-        List<Record> recordingList = new ArrayList<>();
-        String selectQuery = "SELECT * FROM " + TABLE_RECORDINGS;
-        SQLiteDatabase db = this.getReadableDatabase();
+    // Method to retrieve all deleted records from the database
+    public List<Record> getAllDeletedRecords() {
+        return getAllRecords(true);
+    }
 
-        Cursor cursor = db.rawQuery(selectQuery, null);
+    // Method to retrieve all undeleted records from the database
+    public List<Record> getAllUndeletedRecords() {
+        return getAllRecords(false);
+    }
+
+    // Helper method to retrieve records based on the deleted state
+    private List<Record> getAllRecords(boolean deleted) {
+        List<Record> recordingList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT * FROM " + TABLE_RECORDINGS + " WHERE " + KEY_DELETED + " = ?";
+        Cursor cursor = db.rawQuery(selectQuery, new String[]{deleted ? "1" : "0"});
 
         if (cursor != null) {
             try {
@@ -90,12 +103,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         long duration = cursor.getLong(cursor.getColumnIndex(KEY_DURATION));
                         String timestamp = cursor.getString(cursor.getColumnIndex(KEY_TIMESTAMP));
                         int bookmarked = cursor.getInt(cursor.getColumnIndex(KEY_BOOKMARKED));
-                        System.out.println(timestamp);
+                        int deletedValue = cursor.getInt(cursor.getColumnIndex(KEY_DELETED)); // Retrieve the deleted field
                         String pattern = "dd/MM/yyyy"; // Date format pattern
                         Date date = Utilities.stringToDate(timestamp, pattern);
                         if (date == null) continue;
 
-                        Record recording = new Record(id, filename, duration, date, bookmarked);
+                        Record recording = new Record(id, filename, duration, date, bookmarked, deletedValue);
                         recordingList.add(recording);
                     } while (cursor.moveToNext());
                 }
@@ -108,8 +121,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return recordingList;
     }
-
-
 
     // Update operation
     public int updateFileName(Integer recordId, String filename) {
@@ -131,6 +142,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_BOOKMARKED, bookmarkedState);
+        return db.update(TABLE_RECORDINGS, values, KEY_ID + " = ?",
+                new String[]{String.valueOf(recordId)});
+    }
+
+    public int updateDeletedState(long recordId, int deletedState) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_DELETED, deletedState);
         return db.update(TABLE_RECORDINGS, values, KEY_ID + " = ?",
                 new String[]{String.valueOf(recordId)});
     }

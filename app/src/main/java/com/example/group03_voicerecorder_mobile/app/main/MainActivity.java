@@ -1,5 +1,6 @@
 package com.example.group03_voicerecorder_mobile.app.main;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +24,7 @@ import com.example.group03_voicerecorder_mobile.R;
 import com.example.group03_voicerecorder_mobile.app.record.Record;
 import com.example.group03_voicerecorder_mobile.app.record.RecordActivity;
 import com.example.group03_voicerecorder_mobile.app.record.RecordAdapter;
+import com.example.group03_voicerecorder_mobile.app.settings.SettingsActivity;
 import com.example.group03_voicerecorder_mobile.data.database.DatabaseHelper;
 
 import java.util.ArrayList;
@@ -30,7 +33,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private ListView records;
-    private ImageButton btn_settings;
+    private ImageButton btn_more;
     private TextView title;
     private EditText searchBar;
     private ImageButton btn_record;
@@ -44,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         records = (ListView) findViewById(R.id.records);
-        btn_settings = (ImageButton) findViewById(R.id.btnToSettings);
+        btn_more = (ImageButton) findViewById(R.id.btnMore);
         title = (TextView) findViewById(R.id.title);
         searchBar = (EditText) findViewById(R.id.searchBar);
         btn_record = (ImageButton) findViewById(R.id.recordButton);
@@ -52,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         // Fetch records from the database
-        List<Record> recordList = databaseHelper.getAllRecordings();
+        List<Record> recordList = databaseHelper.getAllUndeletedRecords();
 
         // Check if the recordList is empty
         if (recordList.isEmpty()) {
@@ -73,6 +76,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        btn_more.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopupMenu(v);
+            }
+        });
+
     }
 
     @Override
@@ -80,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         // Fetch records from the database
-        List<Record> recordList = databaseHelper.getAllRecordings();
+        List<Record> recordList = databaseHelper.getAllUndeletedRecords();
 
         // Check if the recordList is empty
         if (recordList.isEmpty()) {
@@ -94,12 +104,27 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
-
-
-
-    private void showPopupMenu(View view) {
-        Toast.makeText(view.getContext(), "click too long", Toast.LENGTH_SHORT);
+    @SuppressLint("ResourceType")
+    private void showPopupMenu(View anchorView) {
+        PopupMenu popupMenu = new PopupMenu(this, anchorView);
+        popupMenu.getMenuInflater().inflate(R.layout.options_more_popup, popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(item -> {
+//            System.out.println(item.getTitle());
+            switch (item.getTitle().toString()) {
+                case "Settings":
+                    toSettingsActivity();
+                    return true;
+                case "Edit":
+                    return true;
+                default:
+                    return false;
+            }
+        });
+        popupMenu.show();
     }
+
+
+
 
     private void updateFragment(String filter) {
         Bundle bundle = new Bundle();
@@ -110,6 +135,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void toRecordActivity(View recordView) {
         Intent intent = new Intent(this, RecordActivity.class);
+        startActivity(intent);
+    }
+
+    public void toSettingsActivity() {
+        Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }
 

@@ -116,8 +116,7 @@ public class RecordAdapter extends BaseAdapter {
     private void deleteRecord(int position) {
         int recordId = records.get(position).getId();
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
-        databaseHelper.deleteRecording(recordId);
-
+        databaseHelper.updateDeletedState(recordId, 1);
         records.remove(position);
         notifyDataSetChanged();
     }
