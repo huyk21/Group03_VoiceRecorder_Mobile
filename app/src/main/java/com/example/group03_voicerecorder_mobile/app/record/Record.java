@@ -32,6 +32,13 @@ public class Record {
         this.timestamp = timestamp;
     }
 
+    public Record(String filename, long elapsedMillis, Date timestamp, boolean bookmarked) {
+        this.filename = filename;
+        this.durationMillis = elapsedMillis;
+        this.timestamp = timestamp;
+        this.bookmarked = bookmarked;
+    }
+
     // Getters and setters
     public String getFilename() {
         return filename;
@@ -84,6 +91,9 @@ public class Record {
         // Format the timestamp using the specified pattern
         String formattedDate = dateFormat.format(this.timestamp);
         return formattedDate;
+    }
+
+    public void setBookmarked(boolean bookmarked) {
     }
 }
 

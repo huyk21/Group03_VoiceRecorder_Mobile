@@ -1,12 +1,7 @@
 package com.example.group03_voicerecorder_mobile.app.record;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.media.AudioFormat;
-import android.media.AudioRecord;
-import android.media.MediaRecorder.AudioSource;
+import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.SystemClock;
 import android.view.View;
 import android.widget.Chronometer;
@@ -16,60 +11,38 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
 import com.example.group03_voicerecorder_mobile.R;
-import com.example.group03_voicerecorder_mobile.app.main.WaveformView;
+import com.example.group03_voicerecorder_mobile.data.database.DatabaseHelper;
+
+import java.io.IOException;
+import java.util.Date;
 
 public class RecordActivity extends AppCompatActivity {
     private TextView appName, status;
+    private DatabaseHelper databaseHelper;
     private ImageButton toRecords, toMenu, playBtn, record_stopBtn, pauseBtn;
     private Chronometer chronometer;
-    private WaveformView waveformView;
     private boolean isRecording = false;
     private long timeWhenPaused = 0;
-
-    // Audio recording settings
-    private static final int SAMPLE_RATE = 44100; // Sample rate in Hz
-    private static final int CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO;
-    private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
-    private AudioRecord audioRecorder;
-    private Thread recordingThread;
-    private int bufferSize;
-
-    // Handler for posting updates to the UI thread
-    private Handler uiHandler = new Handler();
+    private MediaRecorder mediaRecorder;
+    private String currentFilePath;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
+        databaseHelper = new DatabaseHelper(this);
 
-        // Initialize views
         appName = findViewById(R.id.appName);
         status = findViewById(R.id.recordStatus);
         chronometer = findViewById(R.id.chronometer);
-        waveformView = findViewById(R.id.waveformView);
         playBtn = findViewById(R.id.playBtn);
         record_stopBtn = findViewById(R.id.btnRecord_Stop);
         pauseBtn = findViewById(R.id.btn_pause);
 
         // Setup button click listeners
         setupButtonClickListeners();
-
-        // Prepare the AudioRecord
-        bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        audioRecorder = new AudioRecord(AudioSource.MIC, SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT, bufferSize);
     }
 
     private void setupButtonClickListeners() {
@@ -82,111 +55,111 @@ public class RecordActivity extends AppCompatActivity {
         });
 
         pauseBtn.setOnClickListener(v -> {
-            if (isRecording) {
-                pauseRecording();
-            }
+            pauseRecording();
         });
 
         playBtn.setOnClickListener(v -> {
-            if (!isRecording) {
-                resumeRecording();
-            }
+            resumeRecording();
         });
+    }
+    private void pauseRecording() {
+        if (mediaRecorder != null) {
+            mediaRecorder.pause();
+            isRecording = false;
+            status.setText("Recording Paused");
+            chronometer.stop();
+            // Calculate the time elapsed before pausing to adjust the chronometer base when resuming
+            timeWhenPaused = SystemClock.elapsedRealtime() - chronometer.getBase();
+            updateRecordingButtons(); // Update the UI when recording is paused.
+        }
+    }
+
+    private void resumeRecording() {
+        if (mediaRecorder != null) {
+            mediaRecorder.resume();
+            isRecording = true;
+            status.setText("Recording...");
+            // Set the chronometer base to the current time minus the amount of time that had already elapsed before pausing
+            // This effectively continues the chronometer from where it left off
+            chronometer.setBase(SystemClock.elapsedRealtime() - timeWhenPaused);
+            chronometer.start();
+            updateRecordingButtons(); // Update the UI when recording is resumed.
+        }
     }
 
     private void startRecording() {
-        if (audioRecorder.getState() != AudioRecord.STATE_INITIALIZED) {
-            Toast.makeText(this, "Audio Record can't initialize!", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        mediaRecorder = new MediaRecorder();
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+        mediaRecorder.setAudioSamplingRate(44100);
+        mediaRecorder.setAudioChannels(1);
 
-        audioRecorder.startRecording();
-        isRecording = true;
-        status.setText("Recording...");
-        chronometer.setBase(SystemClock.elapsedRealtime() - timeWhenPaused);
-        chronometer.start();
+        currentFilePath = getExternalFilesDir(null).getAbsolutePath() + "/recording.m4a";
+        mediaRecorder.setOutputFile(currentFilePath);
 
-        // Start recording thread
-        recordingThread = new Thread(this::readAudioData, "AudioRecorder Thread");
-        recordingThread.start();
-
-        // UI updates for recording state
-        updateRecordingButtons();
-    }
-
-    private void readAudioData() {
-        short[] audioBuffer = new short[bufferSize];
-        while (isRecording) {
-            int numberOfShort = audioRecorder.read(audioBuffer, 0, audioBuffer.length);
-            float maxAmplitude = 0;
-            for (int i = 0; i < numberOfShort; i++) {
-                maxAmplitude += Math.abs(audioBuffer[i]);
-            }
-            maxAmplitude /= numberOfShort;
-            final float finalMaxAmplitude = maxAmplitude;
-            uiHandler.post(() -> waveformView.addAmplitude(finalMaxAmplitude));
+        try {
+            mediaRecorder.prepare();
+            mediaRecorder.start();
+            isRecording = true;
+            status.setText("Recording...");
+            chronometer.setBase(SystemClock.elapsedRealtime() - timeWhenPaused);
+            chronometer.start();
+            updateRecordingButtons();
+        } catch (IOException e) {
+            Toast.makeText(this, "Recording failed to start", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
         }
     }
 
     private void stopRecording() {
-        // Stop recording and release resources
-        isRecording = false;
-        audioRecorder.stop();
-        audioRecorder.release();
-        recordingThread = null;
-        status.setText("Recording stopped.");
-        chronometer.stop();
-        timeWhenPaused = SystemClock.elapsedRealtime() - chronometer.getBase();
+        if (mediaRecorder != null) {
+            mediaRecorder.stop();
+            mediaRecorder.release();
+            mediaRecorder = null;
+            isRecording = false;
+            status.setText("Recording stopped.");
+            chronometer.stop();
+            long elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
+            timeWhenPaused = 0;
 
-        // UI updates for non-recording state
-        updateRecordingButtons();
-    }
+            updateRecordingButtons();
 
-    private void pauseRecording() {
-        // Pause recording logic here...
-        isRecording = false;
-        audioRecorder.stop();
-        status.setText("Recording Paused.");
-        chronometer.stop();
-        timeWhenPaused = SystemClock.elapsedRealtime() - chronometer.getBase();
+            Date timestamp = new Date(); // Current time as the end of the recording
+            Record record = new Record(currentFilePath, elapsedMillis, timestamp, false);
 
-        // UI updates for paused state
-        updateRecordingButtons();
-    }
+            long newRowId = databaseHelper.addRecording(record);
 
-    private void resumeRecording() {
-        // Resume recording logic here...
-        audioRecorder.startRecording();
-        isRecording = true;
-        status.setText("Recording Resumed.");
-        chronometer.setBase(SystemClock.elapsedRealtime() - timeWhenPaused);
-        chronometer.start();
+            if (newRowId != -1) {
+                Toast.makeText(this, "Recording saved to database.", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Failed to save recording.", Toast.LENGTH_SHORT).show();
+            }
 
-        // Restart recording thread
-        recordingThread = new Thread(this::readAudioData, "AudioRecorder Thread");
-        recordingThread.start();
-
-        // UI updates for recording state
-        updateRecordingButtons();
+            finish();
+        }
     }
 
     private void updateRecordingButtons() {
-        // UI updates for button states...
-        playBtn.setVisibility(isRecording ? View.INVISIBLE : View.VISIBLE);
-        pauseBtn.setVisibility(isRecording ? View.VISIBLE : View.INVISIBLE);
-        record_stopBtn.setImageResource(isRecording ? R.drawable.ic_stop : R.drawable.ic_record);
+        // Here, we'll manage the visibility and appearance of buttons based on the recording state.
+        if (isRecording) {
+            // Recording is ongoing
+
+            pauseBtn.setVisibility(View.VISIBLE); // Show pause button
+            playBtn.setVisibility(View.GONE); // Hide resume button
+        } else {
+            // Recording is paused or stopped
+
+            pauseBtn.setVisibility(View.GONE); // Hide pause button
+            playBtn.setVisibility(isRecording ? View.GONE : View.VISIBLE); // Show resume button if recording is paused
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (audioRecorder != null) {
-            audioRecorder.release();
-        }
-
-        if (recordingThread != null) {
-            isRecording = false;
-            recordingThread.interrupt();
+        if (mediaRecorder != null) {
+            mediaRecorder.release();
         }
     }
 }
