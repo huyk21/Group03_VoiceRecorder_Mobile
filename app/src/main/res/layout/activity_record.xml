@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="10dp"
     android:orientation="vertical"
     android:background="@color/md_grey_800xxx">
 
@@ -57,34 +58,32 @@
             android:layout_height="140dp"
             android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/recordStatus"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:textSize="24sp"
-                    android:text="@string/status_not_record"
-                    android:gravity="center"
-                    android:layout_marginTop="10dp"/>
+            <TextView
+                android:id="@+id/recordStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="@string/status_not_record"
+                android:textColor="@color/white"
+                android:textSize="24sp" />
 
-                <Chronometer
-                    android:id="@+id/chronometer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:textSize="45sp"
-                    android:gravity="center"
-                    android:layout_marginTop="10dp"/>
+            <Chronometer
+                android:id="@+id/chronometer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="45sp" />
+
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/waveformContainer"
+        <com.example.group03_voicerecorder_mobile.app.main.WaveformView
+            android:id="@+id/waveformView"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:orientation="vertical">
+            android:layout_height="325dp" />
 
-
-        </LinearLayout>
 
     </LinearLayout>
 
@@ -92,8 +91,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center">
-
+        android:gravity="center"
+        android:layout_alignParentBottom="true">
 
         <ImageButton
             android:id="@+id/playBtn"
