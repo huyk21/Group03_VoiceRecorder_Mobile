@@ -118,7 +118,7 @@ public class RecordActivity extends AppCompatActivity {
         currentFilePath = getExternalFilesDir(null).getAbsolutePath() + "/" + GlobalConstants.DEFAULT_RECORD_NAME + " " + System.currentTimeMillis() / 1000 + GlobalConstants.FORMAT_M4A;
         mediaRecorder.setOutputFile(currentFilePath);
 
-        try {
+
 
 
         try {
