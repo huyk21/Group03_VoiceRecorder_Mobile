@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +17,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.group03_voicerecorder_mobile.R;
+import com.example.group03_voicerecorder_mobile.app.GlobalConstants;
+import com.example.group03_voicerecorder_mobile.app.main.WaveformView;
 import com.example.group03_voicerecorder_mobile.data.database.DatabaseHelper;
 
 import java.io.IOException;
@@ -31,13 +34,24 @@ public class RecordActivity extends AppCompatActivity {
     private long timeWhenPaused = 0;
     private MediaRecorder mediaRecorder;
     private String currentFilePath;
-
+    private Handler waveformHandler = new Handler();
+    private WaveformView waveformView;
+    private Runnable updateWaveformRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (isRecording && mediaRecorder != null) {
+                int maxAmplitude = mediaRecorder.getMaxAmplitude();
+                waveformView.addAmplitude(maxAmplitude); // Scale this value if necessary
+                waveformHandler.postDelayed(this, 100); // Update the waveform every 100 milliseconds
+            }
+        }
+    };
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
         databaseHelper = new DatabaseHelper(this);
-
+        waveformView = findViewById(R.id.waveformView);
         appName = findViewById(R.id.appName);
         status = findViewById(R.id.recordStatus);
         chronometer = findViewById(R.id.chronometer);
@@ -74,6 +88,7 @@ public class RecordActivity extends AppCompatActivity {
             chronometer.stop();
             // Calculate the time elapsed before pausing to adjust the chronometer base when resuming
             timeWhenPaused = SystemClock.elapsedRealtime() - chronometer.getBase();
+            waveformHandler.removeCallbacks(updateWaveformRunnable);
             updateRecordingButtons(); // Update the UI when recording is paused.
         }
     }
@@ -87,6 +102,7 @@ public class RecordActivity extends AppCompatActivity {
             // This effectively continues the chronometer from where it left off
             chronometer.setBase(SystemClock.elapsedRealtime() - timeWhenPaused);
             chronometer.start();
+            waveformHandler.post(updateWaveformRunnable);
             updateRecordingButtons(); // Update the UI when recording is resumed.
         }
     }
@@ -99,8 +115,11 @@ public class RecordActivity extends AppCompatActivity {
         mediaRecorder.setAudioSamplingRate(44100);
         mediaRecorder.setAudioChannels(1);
 
-        currentFilePath = getExternalFilesDir(null).getAbsolutePath() + "/recording.m4a";
+        currentFilePath = getExternalFilesDir(null).getAbsolutePath() + "/" + GlobalConstants.DEFAULT_RECORD_NAME + " " + System.currentTimeMillis() / 1000 + GlobalConstants.FORMAT_M4A;
         mediaRecorder.setOutputFile(currentFilePath);
+
+        try {
+
 
         try {
             mediaRecorder.prepare();
@@ -109,6 +128,7 @@ public class RecordActivity extends AppCompatActivity {
             status.setText("Recording...");
             chronometer.setBase(SystemClock.elapsedRealtime() - timeWhenPaused);
             chronometer.start();
+            waveformHandler.post(updateWaveformRunnable);
             updateRecordingButtons();
         } catch (IOException e) {
             Toast.makeText(this, "Recording failed to start", Toast.LENGTH_SHORT).show();
@@ -133,6 +153,7 @@ public class RecordActivity extends AppCompatActivity {
             Record record = new Record(currentFilePath, elapsedMillis, timestamp, 0);
 
             long newRowId = databaseHelper.addRecording(record);
+            waveformHandler.removeCallbacks(updateWaveformRunnable);
 
             if (newRowId != -1) {
                 Toast.makeText(this, "Recording saved to database.", Toast.LENGTH_SHORT).show();

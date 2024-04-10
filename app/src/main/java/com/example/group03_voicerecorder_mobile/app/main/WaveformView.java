@@ -7,6 +7,8 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.example.group03_voicerecorder_mobile.R;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -17,7 +19,7 @@ public class WaveformView extends View {
     private int maxAmplitudesToDisplay;
     private Paint linePaint; // Paint for the waveform lines
     private Paint centerLinePaint; // Paint for the central line
-
+    private Paint backgroundPaint; // Paint for the background
     public WaveformView(Context context, AttributeSet attrs) {
         super(context, attrs);
         amplitudes = new LinkedList<>();
@@ -27,9 +29,11 @@ public class WaveformView extends View {
 
         centerLinePaint = new Paint();
         centerLinePaint.setColor(Color.RED); // red color for the central line
-        centerLinePaint.setStrokeWidth(4f); // width for the central line
+        centerLinePaint.setStrokeWidth(6f); // width for the central line
 
-        maxAmplitudesToDisplay = -1; // We'll calculate this later
+
+        backgroundPaint = new Paint();
+        backgroundPaint.setColor(Color.parseColor("#80F5F5F5")); // Adjust the color and transparency as needed
     }
 
     public void addAmplitude(float amplitude) {
@@ -56,12 +60,18 @@ public class WaveformView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        canvas.drawRect(0, 0, getWidth(), getHeight(), backgroundPaint);
         super.onDraw(canvas);
         int centerY = getHeight() / 2;
         int centerX = getWidth() / 2;
 
-        // Draw the central red line
-        canvas.drawLine(centerX, 0, centerX, getHeight(), centerLinePaint);
+        // Set the length of the central line (e.g., half of the view's height)
+        float centralLineLength = getHeight() / 2f;
+        float centralLineTop = centerY - (centralLineLength / 2);
+        float centralLineBottom = centerY + (centralLineLength / 2);
+
+        // Draw the central red line with the new top and bottom points
+        canvas.drawLine(centerX, centralLineTop, centerX, centralLineBottom, centerLinePaint);
 
         // Start drawing the waveform to the left of the central line
         int xPosToLeft = centerX;
@@ -73,7 +83,7 @@ public class WaveformView extends View {
         for (int i = amplitudes.size() - 1; i >= 0; i--) {
             float amplitude = (float) ((LinkedList) amplitudes).get(i);
             // Scaled amplitude relative to the height of the view, 32768 is the max amplitude for 16-bit PCM
-            float scaledAmplitude = (amplitude / 32768f) * centerY;
+            float scaledAmplitude = (amplitude / 32768f) * centerY * 2f;
 
             // Draw the waveform line for this amplitude segment
             xPosToLeft -= (width + space);

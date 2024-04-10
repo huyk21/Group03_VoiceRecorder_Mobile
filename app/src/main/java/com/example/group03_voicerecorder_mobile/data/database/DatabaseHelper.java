@@ -63,7 +63,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public long addRecording(Record record) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(KEY_FILENAME, record.getFilename());
+        String fileName = record.getFilename().substring(record.getFilename().lastIndexOf("/") + 1);
+        values.put(KEY_FILENAME, fileName);
         values.put(KEY_DURATION, record.getDurationMillis());
         values.put(KEY_TIMESTAMP, record.getTimestampString());
         values.put(KEY_BOOKMARKED, record.getBookmarked()); // Add the bookmarked field

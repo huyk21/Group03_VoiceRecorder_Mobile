@@ -27,16 +27,16 @@ public class GlobalConstants {
 
     public static final String[] FORMATS_SUPPORTED = {"mp4", "wav", "mp3", "3gpp", "3gp", "amr", "aac", "flac", "ogg", "m4a"};
 
-    public static final String FORMAT_MP4 = "mp4";
-    public static final String FORMAT_WAV = "wav";
-    public static final String FORMAT_MP3 = "mp3";
-    public static final String FORMAT_3GPP = "3gpp";
-    public static final String FORMAT_3GP = "3gp";
-    public static final String FORMAT_AMR = "amr";
-    public static final String FORMAT_AAC = "aac";
-    public static final String FORMAT_FLAC = "flac";
-    public static final String FORMAT_OGG = "ogg";
-    public static final String FORMAT_M4A = "m4a";
+    public static final String FORMAT_MP4 = ".mp4";
+    public static final String FORMAT_WAV = ".wav";
+    public static final String FORMAT_MP3 = ".mp3";
+    public static final String FORMAT_3GPP = ".3gpp";
+    public static final String FORMAT_3GP = ".3gp";
+    public static final String FORMAT_AMR = ".amr";
+    public static final String FORMAT_AAC = ".aac";
+    public static final String FORMAT_FLAC = ".flac";
+    public static final String FORMAT_OGG = ".ogg";
+    public static final String FORMAT_M4A = ".m4a";
 
 
 }
