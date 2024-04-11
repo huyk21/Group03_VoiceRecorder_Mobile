@@ -16,8 +16,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.group03_voicerecorder_mobile.R;
+import com.example.group03_voicerecorder_mobile.app.GlobalConstants;
 import com.example.group03_voicerecorder_mobile.app.audio_player.PlayBackActivity;
 import com.example.group03_voicerecorder_mobile.data.database.DatabaseHelper;
+import com.example.group03_voicerecorder_mobile.utils.Utilities;
 
 import java.util.List;
 
@@ -146,7 +148,7 @@ public class RecordAdapter extends BaseAdapter {
                     records.get(position).setFilename(newFileName);
                     notifyDataSetChanged();
                     // Update file name in the database
-                    updateFileNameInDatabase(records.get(position).getId(), newFileName);
+                    updateFileNameInDatabase(position, records.get(position).getId(), newFileName);
                 }
             }
         });
@@ -154,9 +156,11 @@ public class RecordAdapter extends BaseAdapter {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-    private void updateFileNameInDatabase(int recordId, String newFileName) {
+    private void updateFileNameInDatabase(int position, int recordId, String newFileName) {
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
         int rowsAffected = databaseHelper.updateFileName(recordId, newFileName);
+        String filePath = records.get(position).getFilePath();
+        Utilities.changeFileName(newFileName + GlobalConstants.FORMAT_M4A, filePath, context);
         if (rowsAffected > 0) {
             notifyDataSetChanged();
         } else {
