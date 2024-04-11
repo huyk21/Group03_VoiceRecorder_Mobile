@@ -54,13 +54,13 @@
         android:textColorHint="@color/white"
         android:textColor="@color/white" />
 
-    <ScrollView
+    <ListView
         android:id="@+id/scrollList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbarAlwaysDrawVerticalTrack="true"
         android:contentDescription="scrollView">
 
-    </ScrollView>
+    </ListView>
 
 </LinearLayout>
