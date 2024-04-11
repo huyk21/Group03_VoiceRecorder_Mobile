@@ -1,46 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:background="@color/text_primary_dark">
+    android:background="#FF000000"> <!-- Black background -->
 
-    <TextView
-        android:id="@+id/totalTime"
+    <!-- Go Back button -->
+    <ImageButton
+        android:id="@+id/btnBack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="22:28"
-        android:textColor="#FFFFFF"
-        android:textSize="14sp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="?android:selectableItemBackground"
+        android:contentDescription="@string/go_back"
+        android:src="@drawable/ic_arrow_back" />
 
-    <!-- Elapsed time or remaining time -->
-    <TextView
-        android:id="@+id/currentTime"
+    <!-- Properties button -->
+    <ImageButton
+        android:id="@+id/button_properties"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="00:03.00"
-        android:layout_below="@+id/totalTime"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        android:layout_centerHorizontal="true" />
-    <ProgressBar
-        android:id="@+id/playback_progress"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:background="?android:selectableItemBackground"
+        android:contentDescription="@string/properties"
+        android:src="@drawable/ic_more_vert" />
+
+    <!-- Chronometer to display the playback time -->
+    <Chronometer
+        android:id="@+id/chronometer_playback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/btnBack"
+        android:layout_marginTop="32dp"
+        android:textSize="48sp"
+        android:textColor="#FFFFFFFF" /> <!-- White text -->
+
+    <!-- Custom WaveformView -->
+
+    <!-- Playback controls -->
+    <com.example.group03_voicerecorder_mobile.app.main.WaveformView
+        android:id="@+id/waveform_view"
         android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@id/chronometer_playback"
+        android:layout_marginTop="150dp"
+        android:background="#FF333333" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/currentTime"
-        android:layout_marginTop="50dp"
-        android:background="@color/white"
-        />
+        android:layout_below="@id/waveform_view"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="32dp"
+        android:gravity="center"
+        android:orientation="horizontal">
 
-<!--    <ImageButton-->
-<!--        android:id="@+id/playPauseButton"-->
-<!--        android:layout_width="48dp"-->
-<!--        android:layout_height="48dp"-->
-<!--&lt;!&ndash;        android:src="@drawable/baseline_fiber_manual_record_24"&ndash;&gt;-->
-<!--        />-->
+        <!-- Rewind button -->
+        <ImageButton
+            android:id="@+id/button_rewind"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:selectableItemBackground"
+            android:contentDescription="@string/rewind"
+            android:src="@android:drawable/ic_media_rew" />
 
+        <!-- Play/Pause button -->
+        <ImageButton
+            android:id="@+id/button_play_pause"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:background="?android:selectableItemBackground"
+            android:contentDescription="@string/play"
+            android:src="@android:drawable/ic_media_play" />
+
+        <!-- Fast forward button -->
+        <ImageButton
+            android:id="@+id/button_fast_forward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:selectableItemBackground"
+            android:contentDescription="@string/fast_forward"
+            android:src="@android:drawable/ic_media_ff" />
+    </LinearLayout>
+
+    <!-- Additional controls or information could be added here -->
 
 </RelativeLayout>
