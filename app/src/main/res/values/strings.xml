@@ -30,4 +30,5 @@
     <string name="bookmarkButton">BookMark</string>
 
     <string name="deleted_title">Recently Deleted Recordings</string>
+    <string name="deleteAll">delete all</string>
 </resources>
