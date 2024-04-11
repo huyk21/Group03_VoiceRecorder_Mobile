@@ -60,8 +60,7 @@ public class RecordAdapter extends BaseAdapter {
         ImageButton bookmarkedBtn = convertView.findViewById(R.id.bookmarkButton);
         ImageButton playBtn = convertView.findViewById(R.id.playBtn);
 
-        String fileNameNoExt = records.get(position).getFilename().substring(0, records.get(position).getFilename().lastIndexOf("."));
-        recordTitle.setText(fileNameNoExt);
+        recordTitle.setText(records.get(position).getFilename());
         recordDate.setText(records.get(position).getTimestampString());
         recordDuration.setText(records.get(position).getDurationString());
         if (records.get(position).getBookmarked() == 1)

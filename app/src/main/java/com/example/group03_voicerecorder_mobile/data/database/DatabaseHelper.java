@@ -21,7 +21,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private Context context;
 
     // Database Version
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 5;
 
     // Database Name
     private static final String DATABASE_NAME = "RecorderDB";
@@ -36,6 +36,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_TIMESTAMP = "timestamp";
     private static final String KEY_BOOKMARKED = "bookmarked";
     private static final String KEY_DELETED = "deleted";
+    private static final String KEY_FILEPATH = "filepath";
+
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -44,14 +46,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // Modified table creation SQL statement to include the deleted field
+        // Modified table creation SQL statement to include the new column for filepath
         String CREATE_TABLE = "CREATE TABLE " + TABLE_RECORDINGS + "("
                 + KEY_ID + " INTEGER PRIMARY KEY,"
                 + KEY_FILENAME + " TEXT,"
                 + KEY_DURATION + " INTEGER,"
                 + KEY_TIMESTAMP + " TEXT,"
                 + KEY_BOOKMARKED + " INTEGER DEFAULT 0,"
-                + KEY_DELETED + " INTEGER DEFAULT 0"
+                + KEY_DELETED + " INTEGER DEFAULT 0,"
+                + KEY_FILEPATH + " TEXT"
                 + ")";
         db.execSQL(CREATE_TABLE);
     }
@@ -66,11 +69,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public long addRecording(Record record) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        String fileName = record.getFilename().substring(record.getFilename().lastIndexOf("/") + 1);
+        String fileName = record.getFilename();
         values.put(KEY_FILENAME, fileName);
         values.put(KEY_DURATION, record.getDurationMillis());
         values.put(KEY_TIMESTAMP, record.getTimestampString());
         values.put(KEY_BOOKMARKED, record.getBookmarked()); // Add the bookmarked field
+        values.put(KEY_FILEPATH, record.getFilePath()); // Add the filepath
         long id = db.insert(TABLE_RECORDINGS, null, values);
         db.close();
         return id;
@@ -103,12 +107,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         long duration = cursor.getLong(cursor.getColumnIndex(KEY_DURATION));
                         String timestamp = cursor.getString(cursor.getColumnIndex(KEY_TIMESTAMP));
                         int bookmarked = cursor.getInt(cursor.getColumnIndex(KEY_BOOKMARKED));
-                        int deletedValue = cursor.getInt(cursor.getColumnIndex(KEY_DELETED)); // Retrieve the deleted field
+                        int deletedValue = cursor.getInt(cursor.getColumnIndex(KEY_DELETED));
+                        String filePath = cursor.getString(cursor.getColumnIndex(KEY_FILEPATH));
                         String pattern = "dd/MM/yyyy"; // Date format pattern
                         Date date = Utilities.stringToDate(timestamp, pattern);
                         if (date == null) continue;
 
-                        Record recording = new Record(id, filename, duration, date, bookmarked, deletedValue);
+                        Record recording = new Record(id, filename, duration, date, bookmarked, deletedValue, filePath);
+                        recording.setTimestamp(Utilities.stringToDate(timestamp, pattern));
                         recordingList.add(recording);
                     } while (cursor.moveToNext());
                 }
@@ -137,12 +143,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         String timestamp = cursor.getString(cursor.getColumnIndex(KEY_TIMESTAMP));
                         int bookmarked = cursor.getInt(cursor.getColumnIndex(KEY_BOOKMARKED));
                         int deletedValue = cursor.getInt(cursor.getColumnIndex(KEY_DELETED)); // Retrieve the deleted field
+                        String filePath = cursor.getString(cursor.getColumnIndex(KEY_FILEPATH));
                         String pattern = "dd/MM/yyyy"; // Date format pattern
                         Date date = Utilities.stringToDate(timestamp, pattern);
                         if (date == null) continue;
 
                         // Modify the constructor call to include the deleted field
-                        Record recording = new Record(id, recordFilename, duration, date, bookmarked, deletedValue);
+                        Record recording = new Record(id, recordFilename, duration, date, bookmarked, deletedValue, filePath);
                         recordingList.add(recording);
                     } while (cursor.moveToNext());
                 }

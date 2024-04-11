@@ -18,6 +18,11 @@ public class Record {
         this.durationMillis = 0;
         this.timestamp = new Date();
         this.bookmarked = 0;
+        this.deleted = 0;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Record(String filename, long durationMillis, Date timestamp) {
@@ -34,20 +39,21 @@ public class Record {
         this.bookmarked = bookmarked;
     }
 
-    public Record(int id, String filename, long duration, Date timestamp, int bookmarked, int deleted) {
+    public Record(String filename, long elapsedMillis, Date timestamp, int bookmarked) {
+        this.filename = filename;
+        this.durationMillis = elapsedMillis;
+        this.timestamp = timestamp;
+        this.bookmarked = bookmarked;
+    }
+
+    public Record(int id, String filename, long duration, Date date, int bookmarked, int deletedValue, String filePath) {
         this.id = id;
         this.filename = filename;
         this.durationMillis = duration;
         this.timestamp = timestamp;
         this.bookmarked = bookmarked;
         this.deleted = deleted;
-    }
-
-    public Record(String filename, long elapsedMillis, Date timestamp, int bookmarked) {
-        this.filename = filename;
-        this.durationMillis = elapsedMillis;
-        this.timestamp = timestamp;
-        this.bookmarked = bookmarked;
+        this.filePath = filePath;
     }
 
     // Getters and setters
@@ -103,8 +109,13 @@ public class Record {
     public String getTimestampString() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         // Format the timestamp using the specified pattern
-        String formattedDate = dateFormat.format(this.timestamp);
-        return formattedDate;
+        System.out.println("timestamp" + " " + this.timestamp);
+        if (this.timestamp != null) {
+            String formattedDate = dateFormat.format(this.timestamp);
+            return formattedDate;
+        }
+        else
+            return "Not";
     }
 
     public void setBookmarked(boolean bookmarked) {
