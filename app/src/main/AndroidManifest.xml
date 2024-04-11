@@ -49,6 +49,9 @@
         <activity
             android:name=".app.settings.SettingsActivity"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".app.audio_player.PlayBackActivity"
+            android:screenOrientation="portrait"/>
 
         <service android:name=".audio.recorder.RecordService"/>
 
