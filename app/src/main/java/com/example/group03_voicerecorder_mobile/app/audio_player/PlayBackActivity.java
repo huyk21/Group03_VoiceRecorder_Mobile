@@ -2,12 +2,20 @@ package com.example.group03_voicerecorder_mobile.app.audio_player;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
+import android.util.Log;
 import android.view.View;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.group03_voicerecorder_mobile.R;
+import com.example.group03_voicerecorder_mobile.app.main.WaveformView;
+
+import java.io.IOException;
 
 public class PlayBackActivity extends AppCompatActivity {
 
@@ -16,76 +24,124 @@ public class PlayBackActivity extends AppCompatActivity {
     private ImageButton rewindButton;
     private ImageButton fastForwardButton;
     private Chronometer chronometer;
-    private TextView fileNameTextView;
-    private ImageButton btnBack;
+    private TextView textViewFileName;
+    private long pauseOffset;
+    private final int SKIP_TIME_MS = 5000; // Amount of milliseconds to skip
+    private String filePath;
+    private WaveformView waveformView;
+    private Handler waveformHandler = new Handler();
+    private final int UPDATE_FREQUENCY_MS = 100; // Update waveform every 100 ms
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playback);
-        btnBack = (ImageButton) findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getOnBackPressedDispatcher().onBackPressed();
-            }
-        });
-        // Initialize UI components
+        textViewFileName = findViewById(R.id.textView_fileName);
+        waveformView = findViewById(R.id.waveform_view); // Assuming you have a WaveformView in your layout
         playPauseButton = findViewById(R.id.button_play_pause);
         rewindButton = findViewById(R.id.button_rewind);
         fastForwardButton = findViewById(R.id.button_fast_forward);
         chronometer = findViewById(R.id.chronometer_playback);
-        fileNameTextView = findViewById(R.id.textView_fileName);
-        // Retrieve the filename from the intent
-        String fileName = getIntent().getStringExtra("record_name");
-        fileNameTextView.setText(fileName); // Set the filename in the TextView
 
-        // Initialize MediaPlayer
-        mediaPlayer = new MediaPlayer();
-        try {
-            mediaPlayer.setDataSource(fileName); // Set the data source to the file path
-            mediaPlayer.prepare();
-        } catch (Exception e) {
-            e.printStackTrace();
+        setupMediaPlayer();
+        Bundle bd = getIntent().getExtras();
+
+        if(bd!=null){
+            textViewFileName.setText(bd.getString("recordName"));
+        }
+        else{
+            textViewFileName.setText("Record Name");
         }
 
-        // Rewind button functionality
-        rewindButton.setOnClickListener(view -> {
-            mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() - 5000); // Rewind 5 seconds
-        });
 
-        // Fast forward button functionality
-        fastForwardButton.setOnClickListener(view -> {
-            mediaPlayer.seekTo(mediaPlayer.getCurrentPosition() + 5000); // Fast forward 5 seconds
-        });
 
-        // Play/Pause button functionality
-        playPauseButton.setOnClickListener(view -> {
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.pause();
-                playPauseButton.setImageResource(android.R.drawable.ic_media_play); // Update button icon to 'play'
-            } else {
-                mediaPlayer.start();
-                playPauseButton.setImageResource(android.R.drawable.ic_media_pause); // Update button icon to 'pause'
-                chronometer.start(); // Start the chronometer
-            }
-        });
+        playPauseButton.setOnClickListener(view -> togglePlayPause());
+        rewindButton.setOnClickListener(view -> rewind());
+        fastForwardButton.setOnClickListener(view -> fastForward());
+    }
 
-        // Back button functionality
-        ImageButton backButton = findViewById(R.id.btnBack);
-        backButton.setOnClickListener(view -> finish()); // Close the activity
+    private void setupMediaPlayer() {
+        mediaPlayer = new MediaPlayer();
+        String filePath = getIntent().getStringExtra("recordPath");
+        try {
+            mediaPlayer.setDataSource(filePath);
+            mediaPlayer.prepare();
 
-        // Properties button functionality
-        ImageButton propertiesButton = findViewById(R.id.button_properties);
-        propertiesButton.setOnClickListener(view -> {
-            
-        });
+            mediaPlayer.setOnCompletionListener(mp -> {
+                // Handle completion of playback here
+                playPauseButton.setImageResource(android.R.drawable.ic_media_play);
+                chronometer.stop();
+                // Reset the chronometer
+                chronometer.setBase(SystemClock.elapsedRealtime());
+                pauseOffset = 0;
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle errors here
+            Toast.makeText(this, "Unable to play this audio file.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void togglePlayPause() {
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+            playPauseButton.setImageResource(android.R.drawable.ic_media_play);
+            pauseOffset = SystemClock.elapsedRealtime() - chronometer.getBase();
+            chronometer.stop();
+            waveformHandler.removeCallbacksAndMessages(null); // Stop updating the waveform
+        } else {
+            mediaPlayer.start();
+            playPauseButton.setImageResource(android.R.drawable.ic_media_pause);
+            chronometer.setBase(SystemClock.elapsedRealtime() - pauseOffset);
+            chronometer.start();
+            updateWaveform(); // Start updating the waveform
+        }
+    }
+    private void updateWaveform() {
+        // Simulate waveform data update. Here you might need real data from the MediaPlayer.
+        // Since MediaPlayer doesn't provide amplitude data directly, this is a placeholder.
+        float randomAmplitude = (float) (Math.random() * 500); // Example amplitude value
+        waveformView.addAmplitude(randomAmplitude); // Add random amplitude to waveform view
+        waveformHandler.postDelayed(this::updateWaveform, UPDATE_FREQUENCY_MS);
+    }
+
+    private void rewind() {
+        if (mediaPlayer.isPlaying() || pauseOffset != 0) {
+            int currentPosition = mediaPlayer.getCurrentPosition();
+            currentPosition = Math.max(currentPosition - SKIP_TIME_MS, 0);
+            mediaPlayer.seekTo(currentPosition);
+
+            // Adjust chronometer
+            pauseOffset = Math.max(pauseOffset - SKIP_TIME_MS, 0);
+            chronometer.setBase(SystemClock.elapsedRealtime() - pauseOffset);
+        }
+    }
+
+    private void fastForward() {
+        if (mediaPlayer.isPlaying() || pauseOffset != 0) {
+            int currentPosition = mediaPlayer.getCurrentPosition();
+            currentPosition = Math.min(currentPosition + SKIP_TIME_MS, mediaPlayer.getDuration());
+            mediaPlayer.seekTo(currentPosition);
+
+            // Adjust chronometer
+            pauseOffset += SKIP_TIME_MS;
+            chronometer.setBase(SystemClock.elapsedRealtime() - pauseOffset);
+        }
+    }
+
+    private void resetPlayback() {
+        playPauseButton.setImageResource(android.R.drawable.ic_media_play);
+        mediaPlayer.seekTo(0);
+        chronometer.stop();
+        chronometer.setBase(SystemClock.elapsedRealtime());
+        pauseOffset = 0;
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if (mediaPlayer != null) {
-            mediaPlayer.release(); // Release the media player resources
+            mediaPlayer.release();
         }
+        waveformHandler.removeCallbacksAndMessages(null);
     }
 }

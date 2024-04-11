@@ -52,15 +52,17 @@
     android:textColor="@color/white" /> <!-- Customise the color as needed -->
 
     <!-- Custom WaveformView -->
+
+    <!-- Playback controls -->
+
     <com.example.group03_voicerecorder_mobile.app.main.WaveformView
         android:id="@+id/waveform_view"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_below="@id/textView_fileName"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="126dp"
         android:background="#FF333333" />
 
-    <!-- Playback controls -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
