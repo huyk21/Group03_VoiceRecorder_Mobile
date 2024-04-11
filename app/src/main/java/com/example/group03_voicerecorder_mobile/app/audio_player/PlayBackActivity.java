@@ -28,7 +28,6 @@ public class PlayBackActivity extends AppCompatActivity {
             public void onClick(View v) {
                 getOnBackPressedDispatcher().onBackPressed();
             }
-
         });
         // Initialize UI components
         playPauseButton = findViewById(R.id.button_play_pause);

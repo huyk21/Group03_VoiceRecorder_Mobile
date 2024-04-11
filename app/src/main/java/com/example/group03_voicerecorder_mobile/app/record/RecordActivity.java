@@ -1,14 +1,18 @@
 package com.example.group03_voicerecorder_mobile.app.record;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Chronometer;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -68,7 +72,8 @@ public class RecordActivity extends AppCompatActivity {
             if (!isRecording) {
                 startRecording();
             } else {
-                stopRecording();
+//                stopRecording();
+                showRenameFileDialog();
             }
         });
 
@@ -107,7 +112,7 @@ public class RecordActivity extends AppCompatActivity {
             chronometer.setBase(SystemClock.elapsedRealtime() - timeWhenPaused);
             chronometer.start();
             waveformHandler.post(updateWaveformRunnable);
-            updateRecordingButtons(); // Update the UI when recording is resumed.
+            updateRecordingButtons();
         }
     }
 
@@ -121,9 +126,6 @@ public class RecordActivity extends AppCompatActivity {
         record_stopBtn.setImageResource(R.drawable.ic_stop);
         currentFilePath = getExternalFilesDir(null).getAbsolutePath() + "/" + GlobalConstants.DEFAULT_RECORD_NAME + " " + System.currentTimeMillis() / 1000 + GlobalConstants.FORMAT_M4A;
         mediaRecorder.setOutputFile(currentFilePath);
-
-
-
 
         try {
             mediaRecorder.prepare();
@@ -189,5 +191,51 @@ public class RecordActivity extends AppCompatActivity {
             Log.e("RecordActivity", "MediaRecorder is not null");
             mediaRecorder.release();
         }
+    }
+
+    private void showRenameFileDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_rename_file, null);
+        EditText editTextFileName = dialogView.findViewById(R.id.editTextFileName);
+        builder.setView(dialogView);
+
+        // Set up buttons
+        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String newFileName = editTextFileName.getText().toString().trim();
+                if (!newFileName.isEmpty()) {
+                    // Handle saving the file with the new name
+                    saveRecording(newFileName);
+                } else {
+                    // Show error message if the filename is empty
+                    Toast.makeText(RecordActivity.this, "Please enter a filename", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Cancel recording and dismiss the dialog
+                cancelRecording();
+                dialog.dismiss();
+            }
+        });
+
+        // Show the dialog
+        builder.create().show();
+    }
+
+    private void saveRecording(String newFileName) {
+        // Handle saving the recording with the new filename
+        // You can use the newFileName variable to save the recording with the desired filename
+        // For now, we'll just finish the activity to simulate saving
+        finish();
+    }
+
+    private void cancelRecording() {
+        // Handle cancelling the recording
+        // For now, we'll just finish the activity
+        finish();
     }
 }

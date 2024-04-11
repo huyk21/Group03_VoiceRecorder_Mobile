@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.group03_voicerecorder_mobile.R;
+import com.example.group03_voicerecorder_mobile.app.audio_player.PlayBackActivity;
 import com.example.group03_voicerecorder_mobile.data.database.DatabaseHelper;
 
 import java.util.List;
@@ -56,6 +58,7 @@ public class RecordAdapter extends BaseAdapter {
         TextView recordDate = convertView.findViewById(R.id.recordDate);
         TextView recordDuration = convertView.findViewById(R.id.recordDuration);
         ImageButton bookmarkedBtn = convertView.findViewById(R.id.bookmarkButton);
+        ImageButton playBtn = convertView.findViewById(R.id.playBtn);
 
         String fileNameNoExt = records.get(position).getFilename().substring(0, records.get(position).getFilename().lastIndexOf("."));
         recordTitle.setText(fileNameNoExt);
@@ -71,23 +74,31 @@ public class RecordAdapter extends BaseAdapter {
             showPopupMenu(v, position);
             return true;
         });
-        ImageButton bookmarkButton = convertView.findViewById(R.id.bookmarkButton);
 
         // Set initial bookmark state based on the record's bookmarked field
         int isBookmarked = records.get(position).getBookmarked();
-        setBookmarkIcon(bookmarkButton, isBookmarked);
+        setBookmarkIcon(bookmarkedBtn, isBookmarked);
 
-        bookmarkButton.setOnClickListener(v -> {
+        bookmarkedBtn.setOnClickListener(v -> {
             // Update the UI with the new bookmark state
             records.get(position).setBookmarked(records.get(position).getBookmarked() == 1 ? 0 : 1);
 
-            setBookmarkIcon(bookmarkButton, records.get(position).getBookmarked());
+            setBookmarkIcon(bookmarkedBtn, records.get(position).getBookmarked());
 
             // Update the database with the new bookmark state
             updateBookmarkState(records.get(position).getId(), records.get(position).getBookmarked());
 
         });
+        playBtn.setOnClickListener(v -> {
+            toPlaybackActivity(position);
+        });
         return convertView;
+    }
+
+    private void toPlaybackActivity(int position) {
+        Intent intent = new Intent(context, PlayBackActivity.class);
+        intent.putExtra("recordName", records.get(position).getFilename());
+        context.startActivity(intent);
     }
 
     @SuppressLint({"ResourceType", "NonConstantResourceId"})
