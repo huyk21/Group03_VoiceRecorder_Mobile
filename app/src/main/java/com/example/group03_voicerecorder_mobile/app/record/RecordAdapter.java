@@ -146,6 +146,8 @@ public class RecordAdapter extends BaseAdapter {
                 if (!newFileName.isEmpty()) {
                     // Update file name in the list
                     records.get(position).setFilename(newFileName);
+                    Utilities.changeFileName(newFileName + GlobalConstants.FORMAT_M4A, records.get(position).getFilePath(), context);
+                    records.get(position).setFilePath(context.getExternalFilesDir(null).getAbsolutePath() + "/" + newFileName + GlobalConstants.FORMAT_M4A);
                     notifyDataSetChanged();
                     // Update file name in the database
                     updateFileNameInDatabase(position, records.get(position).getId(), newFileName);
@@ -159,8 +161,7 @@ public class RecordAdapter extends BaseAdapter {
     private void updateFileNameInDatabase(int position, int recordId, String newFileName) {
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
         int rowsAffected = databaseHelper.updateFileName(recordId, newFileName);
-        String filePath = records.get(position).getFilePath();
-        Utilities.changeFileName(newFileName + GlobalConstants.FORMAT_M4A, filePath, context);
+
         if (rowsAffected > 0) {
             notifyDataSetChanged();
         } else {
