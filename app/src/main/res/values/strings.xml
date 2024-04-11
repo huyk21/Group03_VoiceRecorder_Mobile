@@ -28,6 +28,6 @@
     <string name="go_back">goBack</string>
     <string name="properties">properties</string>
     <string name="bookmarkButton">BookMark</string>
-    <string name="paused_status">Recording Paused</string>
+
     <string name="deleted_title">Recently Deleted Recordings</string>
 </resources>
