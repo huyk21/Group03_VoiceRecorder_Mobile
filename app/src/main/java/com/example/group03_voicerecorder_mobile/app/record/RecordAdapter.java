@@ -66,13 +66,10 @@ public class RecordAdapter extends BaseAdapter {
         else
             bookmarkedBtn.setImageResource(R.drawable.bookmark_border_24);
 
-        convertView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                // Show the popup menu
-                showPopupMenu(v, position);
-                return true;
-            }
+        convertView.setOnLongClickListener(v -> {
+            // Show the popup menu
+            showPopupMenu(v, position);
+            return true;
         });
         ImageButton bookmarkButton = convertView.findViewById(R.id.bookmarkButton);
 
