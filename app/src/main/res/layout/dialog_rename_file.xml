@@ -43,39 +43,4 @@
         android:paddingEnd="@dimen/spacing_zero"
         android:visibility="gone"
         tools:visibility="visible" />
-
-    <!-- Buttons -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="end"
-        android:layout_gravity="end"
-        android:layout_marginTop="@dimen/spacing_tiny">
-
-        <!-- Cancel Button -->
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnStop"
-            style="@style/Widget.BorderlessButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/spacing_small"
-            android:text="Cancel"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_normal"
-            android:paddingStart="@dimen/spacing_normal"
-            android:paddingEnd="@dimen/spacing_normal" />
-
-        <!-- Save Button -->
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnSave"
-            style="@style/Widget.RaisedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/spacing_small"
-            android:paddingStart="@dimen/spacing_normal"
-            android:paddingEnd="@dimen/spacing_normal"
-            android:text="Save"
-            android:textSize="@dimen/text_normal" />
-    </LinearLayout>
 </LinearLayout>
