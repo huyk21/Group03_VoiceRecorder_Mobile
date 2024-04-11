@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.example.group03_voicerecorder_mobile.app.GlobalConstants;
 import com.example.group03_voicerecorder_mobile.app.record.Record;
 import com.example.group03_voicerecorder_mobile.utils.Utilities;
 
@@ -167,6 +168,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_FILENAME, filename);
+        values.put(KEY_FILEPATH, context.getExternalFilesDir(null).getAbsolutePath() + "/" + filename +
+                GlobalConstants.FORMAT_M4A);
         return db.update(TABLE_RECORDINGS, values, KEY_ID + " = ?",
                 new String[]{String.valueOf(recordId)});
     }

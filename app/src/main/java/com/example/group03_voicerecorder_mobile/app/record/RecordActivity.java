@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaRecorder;
+import android.media.audiofx.Visualizer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -128,6 +129,7 @@ public class RecordActivity extends AppCompatActivity {
 
         try {
             mediaRecorder.prepare();
+
             mediaRecorder.start();
             isRecording = true;
             status.setText("Recording...");
