@@ -112,7 +112,7 @@ public class RecordAdapter extends BaseAdapter {
         });
         popupMenu.show();
     }
-
+//sd
     private void deleteRecord(int position) {
         int recordId = records.get(position).getId();
         DatabaseHelper databaseHelper = new DatabaseHelper(context);

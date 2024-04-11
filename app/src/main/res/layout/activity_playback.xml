@@ -39,17 +39,28 @@
         android:textSize="48sp"
         android:textColor="#FFFFFFFF" /> <!-- White text -->
 
-    <!-- Custom WaveformView -->
+    <!-- File Name TextView -->
+    <TextView
+        android:id="@+id/textView_fileName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/chronometer_playback"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:text="Filename"
+    android:textAppearance="?android:attr/textAppearanceMedium"
+    android:textColor="@color/white" /> <!-- Customise the color as needed -->
 
-    <!-- Playback controls -->
+    <!-- Custom WaveformView -->
     <com.example.group03_voicerecorder_mobile.app.main.WaveformView
         android:id="@+id/waveform_view"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_below="@id/chronometer_playback"
-        android:layout_marginTop="150dp"
+        android:layout_below="@id/textView_fileName"
+        android:layout_marginTop="32dp"
         android:background="#FF333333" />
 
+    <!-- Playback controls -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
