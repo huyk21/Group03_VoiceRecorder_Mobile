@@ -73,12 +73,16 @@ public class RecordActivity extends AppCompatActivity {
         });
 
         pauseBtn.setOnClickListener(v -> {
-            pauseRecording();
+            if(isRecording){
+                pauseRecording();
+            }
+            else{
+                resumeRecording();
+            }
+
         });
 
-        playBtn.setOnClickListener(v -> {
-            resumeRecording();
-        });
+
     }
     private void pauseRecording() {
         if (mediaRecorder != null) {
@@ -114,7 +118,7 @@ public class RecordActivity extends AppCompatActivity {
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         mediaRecorder.setAudioSamplingRate(44100);
         mediaRecorder.setAudioChannels(1);
-
+        record_stopBtn.setImageResource(R.drawable.ic_stop);
         currentFilePath = getExternalFilesDir(null).getAbsolutePath() + "/" + GlobalConstants.DEFAULT_RECORD_NAME + " " + System.currentTimeMillis() / 1000 + GlobalConstants.FORMAT_M4A;
         mediaRecorder.setOutputFile(currentFilePath);
 
@@ -168,14 +172,13 @@ public class RecordActivity extends AppCompatActivity {
         // Here, we'll manage the visibility and appearance of buttons based on the recording state.
         if (isRecording) {
             // Recording is ongoing
+            pauseBtn.setImageResource(R.drawable.ic_pause);
 
-            pauseBtn.setVisibility(View.VISIBLE);
-            playBtn.setVisibility(View.GONE);
         } else {
             // Recording is paused or stopped
+            pauseBtn.setImageResource(R.drawable.baseline_play_circle_24);
 
-            pauseBtn.setVisibility(View.GONE); // Hide pause button
-            playBtn.setVisibility(isRecording ? View.GONE : View.VISIBLE); // Show resume button if recording is paused
+
         }
     }
 

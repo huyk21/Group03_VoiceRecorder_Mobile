@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
     private EditText searchBar;
     private ImageButton btn_record;
     private DatabaseHelper databaseHelper;
-    private static final int REQUEST_CODE = 1;
 
 
     @Override
@@ -57,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
         // Fetch records from the database
         List<Record> recordList = databaseHelper.getAllUndeletedRecords();
 
-        // Check if the recordList is empty
         if (recordList.isEmpty()) {
             Toast.makeText(MainActivity.this, "No records found", Toast.LENGTH_SHORT).show();
         } else {
@@ -80,6 +80,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showPopupMenu(v);
+            }
+        });
+
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String query = s.toString().trim();
+                fetchAndPopulateRecords(query);
             }
         });
 
@@ -161,6 +175,27 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // Show a toast message indicating failure
             Toast.makeText(MainActivity.this, "Failed to add mock data", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void fetchAndPopulateRecords(String query) {
+        // Fetch records from the database based on the query
+        List<Record> recordList;
+        if (query.isEmpty()) {
+            recordList = databaseHelper.getAllUndeletedRecords();
+        } else {
+            recordList = databaseHelper.getRecordsByFilename(query);
+        }
+
+        // Check if the recordList is empty
+        if (recordList.isEmpty()) {
+            Toast.makeText(MainActivity.this, "No records found", Toast.LENGTH_SHORT).show();
+        } else {
+            // Populate ListView with records
+            RecordAdapter recordAdapter = new RecordAdapter(this, recordList);
+            records.setAdapter(recordAdapter);
+            records.setOnItemClickListener((parent, view, position, id) -> {
+                view.setBackgroundResource(R.drawable.list_selector_pressed);
+            });
         }
     }
 }

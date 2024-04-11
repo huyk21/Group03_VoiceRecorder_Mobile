@@ -121,7 +121,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return recordingList;
     }
+    public List<Record> getRecordsByFilename(String filename) {
+        List<Record> recordingList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT * FROM " + TABLE_RECORDINGS + " WHERE " + KEY_FILENAME + " LIKE ? AND " + KEY_DELETED + " = 0";
+        Cursor cursor = db.rawQuery(selectQuery, new String[]{"%" + filename + "%"});
 
+        if (cursor != null) {
+            try {
+                if (cursor.moveToFirst()) {
+                    do {
+                        int id = cursor.getInt(cursor.getColumnIndex(KEY_ID));
+                        String recordFilename = cursor.getString(cursor.getColumnIndex(KEY_FILENAME));
+                        long duration = cursor.getLong(cursor.getColumnIndex(KEY_DURATION));
+                        String timestamp = cursor.getString(cursor.getColumnIndex(KEY_TIMESTAMP));
+                        int bookmarked = cursor.getInt(cursor.getColumnIndex(KEY_BOOKMARKED));
+                        int deletedValue = cursor.getInt(cursor.getColumnIndex(KEY_DELETED)); // Retrieve the deleted field
+                        String pattern = "dd/MM/yyyy"; // Date format pattern
+                        Date date = Utilities.stringToDate(timestamp, pattern);
+                        if (date == null) continue;
+
+                        // Modify the constructor call to include the deleted field
+                        Record recording = new Record(id, recordFilename, duration, date, bookmarked, deletedValue);
+                        recordingList.add(recording);
+                    } while (cursor.moveToNext());
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+
+        db.close();
+
+        return recordingList;
+    }
     // Update operation
     public int updateFileName(Integer recordId, String filename) {
         SQLiteDatabase db = this.getWritableDatabase();
