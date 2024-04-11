@@ -97,7 +97,7 @@ public class RecordAdapter extends BaseAdapter {
 
     private void toPlaybackActivity(int position) {
         Intent intent = new Intent(context, PlayBackActivity.class);
-        intent.putExtra("recordName", records.get(position).getFilename());
+        intent.putExtra("recordPath", records.get(position).getFilePath());
         context.startActivity(intent);
     }
 

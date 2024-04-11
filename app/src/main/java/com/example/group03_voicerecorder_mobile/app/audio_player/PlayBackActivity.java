@@ -35,7 +35,6 @@ public class PlayBackActivity extends AppCompatActivity {
         fastForwardButton = findViewById(R.id.button_fast_forward);
         chronometer = findViewById(R.id.chronometer_playback);
         fileNameTextView = findViewById(R.id.textView_fileName);
-
         // Retrieve the filename from the intent
         String fileName = getIntent().getStringExtra("record_name");
         fileNameTextView.setText(fileName); // Set the filename in the TextView

@@ -39,7 +39,6 @@
             android:src="@drawable/baseline_delete_sweep_36"
             android:background="@drawable/btn_state"
             android:contentDescription="@string/deleteAll"/>
-
     </LinearLayout>
 
     <EditText
