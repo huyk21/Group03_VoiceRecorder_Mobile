@@ -23,6 +23,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.group03_voicerecorder_mobile.R;
+import com.example.group03_voicerecorder_mobile.app.record.DeletedActivity;
 import com.example.group03_voicerecorder_mobile.app.record.Record;
 import com.example.group03_voicerecorder_mobile.app.record.RecordActivity;
 import com.example.group03_voicerecorder_mobile.app.record.RecordAdapter;
@@ -47,11 +48,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        records = (ListView) findViewById(R.id.records);
-        btn_more = (ImageButton) findViewById(R.id.btnMore);
-        title = (TextView) findViewById(R.id.title);
-        searchBar = (EditText) findViewById(R.id.searchBar);
-        btn_record = (ImageButton) findViewById(R.id.recordButton);
+        records = findViewById(R.id.records);
+        btn_more = findViewById(R.id.btnMore);
+        title = findViewById(R.id.title);
+        searchBar = findViewById(R.id.searchBar);
+        btn_record = findViewById(R.id.recordButton);
         databaseHelper = new DatabaseHelper(this);
 
 
@@ -128,7 +129,8 @@ public class MainActivity extends AppCompatActivity {
                 case "Settings":
                     toSettingsActivity();
                     return true;
-                case "Edit":
+                case "Recycle Bin":
+                    toRecycleBinActivity();
                     return true;
                 default:
                     return false;
@@ -137,6 +139,10 @@ public class MainActivity extends AppCompatActivity {
         popupMenu.show();
     }
 
+    public void toRecycleBinActivity() {
+        Intent intent = new Intent(this, DeletedActivity.class);
+        startActivity(intent);
+    }
 
 
 
@@ -156,7 +162,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }
-
 
     private void fetchAndPopulateRecords(String query) {
         // Fetch records from the database based on the query

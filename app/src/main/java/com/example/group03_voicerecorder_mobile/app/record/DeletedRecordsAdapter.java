@@ -1,16 +1,21 @@
 package com.example.group03_voicerecorder_mobile.app.record;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatButton;
 
 import com.example.group03_voicerecorder_mobile.R;
 import com.example.group03_voicerecorder_mobile.data.database.DatabaseHelper;
+import com.example.group03_voicerecorder_mobile.utils.Utilities;
 
 import org.w3c.dom.Text;
 
@@ -50,34 +55,32 @@ public class DeletedRecordsAdapter extends BaseAdapter {
         AppCompatButton recover = convertView.findViewById(R.id.recover_btn);
         AppCompatButton delete = convertView.findViewById(R.id.delete_btn);
 
-        String fileNameNoExt = deletedRecords.get(position).getFilename().substring(0, deletedRecords.get(position).getFilename().lastIndexOf("."));
+        String fileNameNoExt = deletedRecords.get(position).getFilename();
         title.setText(fileNameNoExt);
         date.setText(deletedRecords.get(position).getTimestampString());
         duration.setText(deletedRecords.get(position).getDurationString());
 
-        recover.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                recoverRecord(position);
+        recover.setOnClickListener(v -> {
+            int status = recoverRecord(position);
+            if (status != 0) {
+                Toast.makeText(context, "The record is successfully restored", Toast.LENGTH_SHORT).show();
             }
         });
 
-        delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deletePermanently(position);
-            }
+        delete.setOnClickListener(v -> {
+            showConfirmDeleteDialog(position);
         });
 
         return convertView;
     }
 
-    public void recoverRecord(int position) {
+    public int recoverRecord(int position) {
         int recordId = deletedRecords.get(position).getId();
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
-        databaseHelper.updateDeletedState(recordId, 0);
+        int rows = databaseHelper.updateDeletedState(recordId, 0);
         deletedRecords.remove(position);
         notifyDataSetChanged();
+        return rows;
     }
 
     public void deletePermanently(int position) {
@@ -86,5 +89,25 @@ public class DeletedRecordsAdapter extends BaseAdapter {
         databaseHelper.deleteRecording(recordId);
         deletedRecords.remove(position);
         notifyDataSetChanged();
+    }
+
+    private void showConfirmDeleteDialog(int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_confirm_delete, null);
+        builder.setView(dialogView);
+
+        String filePath = deletedRecords.get(position).getFilePath();
+        System.out.println(filePath);
+        builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Utilities.deleteFile(filePath, context);
+                deletePermanently(position);
+                notifyDataSetChanged();
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }
