@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">AudIOWave</string>
     <string name="pauseButton">Pause</string>
-    <string name="bookmarkButton">BookMark</string>
     <string name="stop">Stop</string>
     <string name="status_record">Recording…</string>
     <string name="status_not_record">Tap the button to start recording</string>
@@ -19,12 +18,9 @@
     <string name="recordDate">27/Mar/24</string>
     <string name="daysSinceDelete">30 days</string>
     <string name="delete">Delete</string>
+    <string name="deleteAll">Delete All</string>
     <string name="recover">Recover</string>
     <string name="recordingInfo">Recording: 00:00:01</string>
     <string name="paused_status">Recording Paused</string>
-    <string name="fast_forward">fastForward</string>
-    <string name="play">Play</string>
-    <string name="rewind">rewind</string>
-    <string name="go_back">goBack</string>
-    <string name="properties">properties</string>
+    <string name="deleted_title">Recently Deleted Recordings</string>
 </resources>

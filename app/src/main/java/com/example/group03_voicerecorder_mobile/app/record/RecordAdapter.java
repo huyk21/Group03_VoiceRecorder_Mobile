@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.group03_voicerecorder_mobile.R;
-import com.example.group03_voicerecorder_mobile.app.audio_player.PlayBackActivity;
 import com.example.group03_voicerecorder_mobile.data.database.DatabaseHelper;
 
 import java.util.List;
@@ -54,21 +52,19 @@ public class RecordAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         convertView = inflater.inflate(R.layout.list_record_item, null);
-        ImageButton playBtn = (ImageButton) convertView.findViewById(R.id.playBtn);
-        TextView recordTitle = (TextView) convertView.findViewById(R.id.recordTitle);
-        TextView recordDate = (TextView) convertView.findViewById(R.id.recordDate);
-        TextView recordDuration = (TextView) convertView.findViewById(R.id.recordDuration);
-        ImageButton bookmarkButton = convertView.findViewById(R.id.bookmarkButton);
-
+        TextView recordTitle = convertView.findViewById(R.id.recordTitle);
+        TextView recordDate = convertView.findViewById(R.id.recordDate);
+        TextView recordDuration = convertView.findViewById(R.id.recordDuration);
+        ImageButton bookmarkedBtn = convertView.findViewById(R.id.bookmarkButton);
 
         String fileNameNoExt = records.get(position).getFilename().substring(0, records.get(position).getFilename().lastIndexOf("."));
         recordTitle.setText(fileNameNoExt);
         recordDate.setText(records.get(position).getTimestampString());
         recordDuration.setText(records.get(position).getDurationString());
         if (records.get(position).getBookmarked() == 1)
-            bookmarkButton.setImageResource(R.drawable.baseline_bookmark_48);
+            bookmarkedBtn.setImageResource(R.drawable.baseline_bookmark_48);
         else
-            bookmarkButton.setImageResource(R.drawable.bookmark_border_24);
+            bookmarkedBtn.setImageResource(R.drawable.bookmark_border_24);
 
         convertView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -78,6 +74,7 @@ public class RecordAdapter extends BaseAdapter {
                 return true;
             }
         });
+        ImageButton bookmarkButton = convertView.findViewById(R.id.bookmarkButton);
 
         // Set initial bookmark state based on the record's bookmarked field
         int isBookmarked = records.get(position).getBookmarked();
@@ -93,20 +90,8 @@ public class RecordAdapter extends BaseAdapter {
             updateBookmarkState(records.get(position).getId(), records.get(position).getBookmarked());
 
         });
-
-        playBtn.setOnClickListener(v -> {
-                toPlaybackActivity(position);
-
-        });
         return convertView;
     }
-
-        private void toPlaybackActivity(int position) {
-            Intent intent = new Intent(context, PlayBackActivity.class);
-            intent.putExtra("recordName", records.get(position).getFilename());
-            context.startActivity(intent);
-        }
-
 
     @SuppressLint({"ResourceType", "NonConstantResourceId"})
     private void showPopupMenu(View anchorView, int position) {
@@ -141,7 +126,6 @@ public class RecordAdapter extends BaseAdapter {
         View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_rename_file, null);
         EditText editTextFileName = dialogView.findViewById(R.id.editTextFileName);
         editTextFileName.setText(records.get(position).getFilename());
-
         builder.setView(dialogView);
         builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
             @Override
