@@ -111,6 +111,7 @@ public class RecordAdapter extends BaseAdapter {
         popupMenu.setOnMenuItemClickListener(item -> {
             switch (item.getTitle().toString()) {
                 case "Delete":
+                    deleteRecord(position);
                     return true;
                 case "Edit":
                     showRenameFileDialog(position);

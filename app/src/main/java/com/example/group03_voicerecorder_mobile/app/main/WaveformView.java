@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.example.group03_voicerecorder_mobile.R;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -66,7 +67,7 @@ public class WaveformView extends View {
         int centerX = getWidth() / 2;
 
         // Set the length of the central line (e.g., half of the view's height)
-        float centralLineLength = getHeight() / 2f;
+        float centralLineLength = getHeight() ;
         float centralLineTop = centerY - (centralLineLength / 2);
         float centralLineBottom = centerY + (centralLineLength / 2);
 
@@ -95,5 +96,26 @@ public class WaveformView extends View {
             }
         }
     }
+    // Method to update the displayed waveform based on playback position
+    public void setPlaybackPosition(ArrayList<Integer> amplitudeList, int playbackPositionMs, int fileDurationMs) {
+        // Calculate the index in the amplitude array that corresponds to the current playback position
+        int totalAmplitudeCount = amplitudeList.size();
+        float relativePosition = ((float) playbackPositionMs) / fileDurationMs;
+        int startIndex = Math.round(relativePosition * totalAmplitudeCount);
 
+        // Clear the current amplitudes in the view
+        amplitudes.clear();
+
+        // Load amplitudes into the waveform view from the calculated start index
+        for (int i = startIndex; i < startIndex + maxAmplitudesToDisplay && i < totalAmplitudeCount; i++) {
+            float amplitude = amplitudeList.get(i);
+            amplitudes.offer(amplitude);
+        }
+
+        invalidate(); // Redraw the waveform with the new data
+    }
+    public void resetWaveform() {
+        amplitudes.clear(); // Clear the amplitudes queue
+        invalidate(); // Redraw the waveform
+    }
 }
