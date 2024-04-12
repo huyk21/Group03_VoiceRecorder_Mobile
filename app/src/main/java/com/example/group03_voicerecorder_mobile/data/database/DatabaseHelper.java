@@ -151,6 +151,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                         // Modify the constructor call to include the deleted field
                         Record recording = new Record(id, recordFilename, duration, date, bookmarked, deletedValue, filePath);
+                        recording.setTimestamp(Utilities.stringToDate(timestamp, pattern));
                         recordingList.add(recording);
                     } while (cursor.moveToNext());
                 }

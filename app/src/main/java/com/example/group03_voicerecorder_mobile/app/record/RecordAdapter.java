@@ -98,8 +98,7 @@ public class RecordAdapter extends BaseAdapter {
 
     private void toPlaybackActivity(int position) {
         Intent intent = new Intent(context, PlayBackActivity.class);
-
-
+        intent.putExtra("recordId", records.get(position).getId());
         intent.putExtra("recordPath", records.get(position).getFilePath());
         intent.putExtra("recordName", records.get(position).getFilename());
         context.startActivity(intent);
@@ -110,7 +109,6 @@ public class RecordAdapter extends BaseAdapter {
         PopupMenu popupMenu = new PopupMenu(context, anchorView);
         popupMenu.getMenuInflater().inflate(R.layout.record_item_popup, popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(item -> {
-//            System.out.println(item.getTitle());
             switch (item.getTitle().toString()) {
                 case "Delete":
                     deleteRecord(position);

@@ -118,7 +118,6 @@ public class Record {
     public String getTimestampString() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         // Format the timestamp using the specified pattern
-        System.out.println("timestamp" + " " + this.timestamp);
         if (this.timestamp != null) {
             String formattedDate = dateFormat.format(this.timestamp);
             return formattedDate;

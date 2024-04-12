@@ -1,11 +1,5 @@
 package com.example.group03_voicerecorder_mobile.app.record;
-
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.media.MediaRecorder;
-import android.media.audiofx.Visualizer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -14,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Chronometer;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,7 +35,7 @@ import java.util.List;
 public class RecordActivity extends AppCompatActivity {
     private TextView appName, status;
     private DatabaseHelper databaseHelper;
-    private ImageButton toRecords, toMenu, playBtn, record_stopBtn, pauseBtn;
+    private ImageButton toRecords, toMenu, playBtn, record_stopBtn, pauseBtn, backBtn;
     private Chronometer chronometer;
     private boolean isRecording = false;
     private boolean isPausing = false;
@@ -71,12 +64,15 @@ public class RecordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_record);
         databaseHelper = new DatabaseHelper(this);
         waveformView = findViewById(R.id.waveformView);
-        appName = findViewById(R.id.appName);
+        appName = findViewById(R.id.toRecords);
         status = findViewById(R.id.recordStatus);
         chronometer = findViewById(R.id.chronometer);
         playBtn = findViewById(R.id.playBtn);
         record_stopBtn = findViewById(R.id.btnRecord_Stop);
         pauseBtn = findViewById(R.id.btn_pause);
+        backBtn = findViewById(R.id.btnBack);
+
+        backBtn.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
 
         // Setup button click listeners
         setupButtonClickListeners();
