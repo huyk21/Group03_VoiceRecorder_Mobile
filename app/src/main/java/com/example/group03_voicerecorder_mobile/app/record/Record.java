@@ -1,6 +1,7 @@
 package com.example.group03_voicerecorder_mobile.app.record;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -12,6 +13,7 @@ public class Record {
     private Date timestamp;
     private int bookmarked;
     private int deleted;
+    private ArrayList<Integer> amplitudes;
     public Record() {
         this.filename = "";
         this.filePath = "";
@@ -20,7 +22,14 @@ public class Record {
         this.bookmarked = 0;
         this.deleted = 0;
     }
+    // Getter and Setter
+    public ArrayList<Integer> getAmplitudes() {
+        return amplitudes;
+    }
 
+    public void setAmplitudes(ArrayList<Integer> amplitudes) {
+        this.amplitudes = amplitudes;
+    }
     public void setId(Integer id) {
         this.id = id;
     }

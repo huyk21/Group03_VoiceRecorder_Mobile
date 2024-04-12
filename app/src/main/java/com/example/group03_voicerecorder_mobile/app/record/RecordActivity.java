@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.media.MediaRecorder;
 import android.media.audiofx.Visualizer;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
@@ -26,7 +27,15 @@ import com.example.group03_voicerecorder_mobile.app.GlobalConstants;
 import com.example.group03_voicerecorder_mobile.app.main.WaveformView;
 import com.example.group03_voicerecorder_mobile.data.database.DatabaseHelper;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -36,9 +45,12 @@ public class RecordActivity extends AppCompatActivity {
     private ImageButton toRecords, toMenu, playBtn, record_stopBtn, pauseBtn;
     private Chronometer chronometer;
     private boolean isRecording = false;
+    private boolean isPausing = false;
     private long timeWhenPaused = 0;
     private MediaRecorder mediaRecorder;
     private String currentFilePath;
+    private ArrayList<Integer> amplitudeList = new ArrayList<>();
+
     private Handler waveformHandler = new Handler();
     private WaveformView waveformView;
     private Runnable updateWaveformRunnable = new Runnable() {
@@ -46,6 +58,8 @@ public class RecordActivity extends AppCompatActivity {
         public void run() {
             if (isRecording && mediaRecorder != null) {
                 int maxAmplitude = mediaRecorder.getMaxAmplitude();
+
+                amplitudeList.add(maxAmplitude); // Store amplitude in the list
                 waveformView.addAmplitude(maxAmplitude); // Scale this value if necessary
                 waveformHandler.postDelayed(this, 100); // Update the waveform every 100 milliseconds
             }
@@ -70,7 +84,7 @@ public class RecordActivity extends AppCompatActivity {
 
     private void setupButtonClickListeners() {
         record_stopBtn.setOnClickListener(v -> {
-            if (!isRecording) {
+            if (!isRecording && !isPausing) {
                 startRecording();
             } else {
                 stopRecording();
@@ -93,6 +107,7 @@ public class RecordActivity extends AppCompatActivity {
         if (mediaRecorder != null) {
             mediaRecorder.pause();
             isRecording = false;
+            isPausing = true;
             status.setText("Recording Paused");
             chronometer.stop();
             // Calculate the time elapsed before pausing to adjust the chronometer base when resuming
@@ -168,11 +183,41 @@ public class RecordActivity extends AppCompatActivity {
             waveformHandler.removeCallbacks(updateWaveformRunnable);
 
             if (newRowId != -1) {
-                Toast.makeText(this, "Recording saved to database.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Recording saved to database." + newRowId, Toast.LENGTH_SHORT).show();
+                saveAmplitudesToJson(newRowId, amplitudeList);
                 finish();
             } else {
                 Toast.makeText(this, "Failed to save recording.", Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    private void saveAmplitudesToJson(long recordId, ArrayList<Integer> amplitudes) {
+        try {
+            // Create a JSON object to hold the data
+            JSONObject json = new JSONObject();
+            json.put("recordId", recordId);
+
+            // Convert amplitudes ArrayList to JSONArray
+            JSONArray jsonAmplitudes = new JSONArray(amplitudes);
+            json.put("amplitudes", jsonAmplitudes);
+
+            // Generate the filename based on record ID
+            String fileName = "amplitudes_" + recordId + ".json";
+
+            // Determine where to save the file
+            File file = new File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
+
+            // Write JSON string to the file
+            try (FileWriter fileWriter = new FileWriter(file)) {
+                fileWriter.write(json.toString());
+            }
+
+            // Log or Toast message that saving was successful
+          Toast.makeText(this, "Amplitudes saved to " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(this, "Failed to save amplitudes: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            // Handle exceptions here
         }
     }
 
