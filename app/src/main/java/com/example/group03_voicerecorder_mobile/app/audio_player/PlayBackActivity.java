@@ -97,11 +97,11 @@ public class PlayBackActivity extends AppCompatActivity {
         }
     }
     private void updateWaveform() {
-        // Simulate waveform data update. Here you might need real data from the MediaPlayer.
-        // Since MediaPlayer doesn't provide amplitude data directly, this is a placeholder.
-        float randomAmplitude = (float) (Math.random() * 500); // Example amplitude value
-        waveformView.addAmplitude(randomAmplitude); // Add random amplitude to waveform view
-        waveformHandler.postDelayed(this::updateWaveform, UPDATE_FREQUENCY_MS);
+        if (mediaPlayer.isPlaying()) {  // Only continue updating if the media is still playing
+            float randomAmplitude = (float) (Math.random() * 500); // Simulated amplitude
+            waveformView.addAmplitude(randomAmplitude);
+            waveformHandler.postDelayed(this::updateWaveform, UPDATE_FREQUENCY_MS);
+        }
     }
 
     private void rewind() {

@@ -213,8 +213,8 @@ public class RecordActivity extends AppCompatActivity {
                 fileWriter.write(json.toString());
             }
 
-            // Log or Toast message that saving was successful
-          Toast.makeText(this, "Amplitudes saved to " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+
+
         } catch (Exception e) {
             Toast.makeText(this, "Failed to save amplitudes: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             // Handle exceptions here
