@@ -3,6 +3,8 @@ package com.example.group03_voicerecorder_mobile.app.record;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +21,7 @@ import com.example.group03_voicerecorder_mobile.utils.Utilities;
 
 import org.w3c.dom.Text;
 
+import java.io.File;
 import java.util.List;
 
 public class DeletedRecordsAdapter extends BaseAdapter {
@@ -88,6 +91,21 @@ public class DeletedRecordsAdapter extends BaseAdapter {
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
         databaseHelper.deleteRecording(recordId);
         deletedRecords.remove(position);
+        // Generate the filename based on record ID
+        String fileName = "amplitudes_" + recordId + ".json";
+
+        // Determine where to save the file
+        File file = new File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
+
+        // Check if the file exists before attempting to delete
+        if(file.exists()) {
+            boolean isDeleted = file.delete();
+            if(isDeleted) {
+                Log.d("Delete File", "Amplitude file deleted successfully.");
+            } else {
+                Log.e("Delete File", "Failed to delete amplitude file.");
+            }
+        }
         notifyDataSetChanged();
     }
 
