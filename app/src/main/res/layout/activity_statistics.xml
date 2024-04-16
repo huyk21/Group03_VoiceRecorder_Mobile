@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/text_primary_dark">
+
+    <!-- TextView to display total number of records -->
+    <TextView
+        android:id="@+id/totalRecords"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total Records: "
+        android:textSize="18sp"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:textColor="@color/white"/>
+
+    <!-- TextView to display the sum of duration of all records -->
+    <TextView
+        android:id="@+id/totalDuration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total Duration: "
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:layout_below="@id/totalRecords"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp" />
+
+</RelativeLayout>

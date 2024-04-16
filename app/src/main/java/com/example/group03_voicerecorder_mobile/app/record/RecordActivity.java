@@ -51,7 +51,6 @@ public class RecordActivity extends AppCompatActivity {
         public void run() {
             if (isRecording && mediaRecorder != null) {
                 int maxAmplitude = mediaRecorder.getMaxAmplitude();
-
                 amplitudeList.add(maxAmplitude); // Store amplitude in the list
                 waveformView.addAmplitude(maxAmplitude); // Scale this value if necessary
                 waveformHandler.postDelayed(this, 100); // Update the waveform every 100 milliseconds

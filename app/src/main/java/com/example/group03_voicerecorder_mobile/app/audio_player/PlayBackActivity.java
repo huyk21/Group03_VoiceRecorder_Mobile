@@ -63,8 +63,6 @@ public class PlayBackActivity extends AppCompatActivity {
             textViewFileName.setText("Record Name");
         }
 
-
-
         playPauseButton.setOnClickListener(view -> togglePlayPause());
         rewindButton.setOnClickListener(view -> rewind());
         fastForwardButton.setOnClickListener(view -> fastForward());

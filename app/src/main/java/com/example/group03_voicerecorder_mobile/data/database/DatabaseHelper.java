@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
@@ -197,4 +198,42 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.update(TABLE_RECORDINGS, values, KEY_ID + " = ?",
                 new String[]{String.valueOf(recordId)});
     }
+
+    public int countRecords() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        int count = 0;
+        try {
+            String countQuery = "SELECT COUNT(*) FROM " + TABLE_RECORDINGS;
+
+            // Execute the query
+            Cursor cursor = db.rawQuery(countQuery, null);
+
+            // Move cursor to the first row
+            if (cursor.moveToFirst()) {
+                // Get the count from the first column of the first row
+                count = cursor.getInt(0);
+            }
+
+            cursor.close();
+        } catch (SQLiteException e) {
+            e.printStackTrace();
+        } finally {
+            db.close();
+        }
+        return count;
+    }
+    public int totalDuration() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        int sum = 0;
+        String query = "SELECT SUM(" + KEY_DURATION + ") AS total_duration FROM " + TABLE_RECORDINGS;
+
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            sum = cursor.getInt(cursor.getColumnIndex("total_duration"));
+            cursor.close();
+        }
+        db.close();
+        return sum;
+    }
+
 }

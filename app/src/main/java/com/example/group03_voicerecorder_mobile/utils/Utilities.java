@@ -3,6 +3,8 @@ package com.example.group03_voicerecorder_mobile.utils;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.example.group03_voicerecorder_mobile.app.GlobalConstants;
+
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -36,7 +38,7 @@ public class Utilities {
     public static void changeFileName(String newName, String filePath, Context context) {
         File oldFile = new File(filePath);
         String dir = oldFile.getParent();
-
+        System.out.println("changeFileName" + filePath);
         String newPath = dir + File.separator + newName;
 
         File newFile = new File(newPath);
@@ -71,6 +73,6 @@ public class Utilities {
             // File doesn't exist
             Toast.makeText(context, "File not found", Toast.LENGTH_SHORT).show();
         }
-
     }
+
 }
