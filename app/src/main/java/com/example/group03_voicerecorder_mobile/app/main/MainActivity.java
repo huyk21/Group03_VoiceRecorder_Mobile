@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Fetch records from the database
         List<Record> recordList = databaseHelper.getAllUndeletedRecords();
-
         if (recordList.isEmpty()) {
             Toast.makeText(MainActivity.this, "No records found", Toast.LENGTH_SHORT).show();
         } else {
