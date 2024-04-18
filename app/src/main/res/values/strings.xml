@@ -31,4 +31,7 @@
 
     <string name="deleted_title">Recently Deleted Recordings</string>
     <string name="deleteAll">delete all</string>
+    <string name="toRecordingStatistics">Recording Statistics</string>
+    <string name="toScheduledRecording">Scheduled Recording</string>
+    <string name="backButton">Back Button</string>
 </resources>
