@@ -1,25 +1,18 @@
 package com.example.group03_voicerecorder_mobile.app.main;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupMenu;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.group03_voicerecorder_mobile.R;
@@ -29,9 +22,8 @@ import com.example.group03_voicerecorder_mobile.app.record.RecordActivity;
 import com.example.group03_voicerecorder_mobile.app.record.RecordAdapter;
 import com.example.group03_voicerecorder_mobile.app.settings.SettingsActivity;
 import com.example.group03_voicerecorder_mobile.data.database.DatabaseHelper;
+import com.example.group03_voicerecorder_mobile.utils.PreferenceHelper;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -67,6 +59,10 @@ public class MainActivity extends AppCompatActivity {
             records.setOnItemClickListener((parent, view, position, id) -> {
                 view.setBackgroundResource(R.drawable.list_selector_pressed);
             });
+        }
+
+        if (PreferenceHelper.getAutoRecord(this)) {
+            startRecording();
         }
 
         btn_record.setOnClickListener(new View.OnClickListener() {
@@ -182,5 +178,10 @@ public class MainActivity extends AppCompatActivity {
                 view.setBackgroundResource(R.drawable.list_selector_pressed);
             });
         }
+    }
+
+    private void startRecording() {
+        Intent intent = new Intent(this, RecordActivity.class);
+        startService(intent);
     }
 }

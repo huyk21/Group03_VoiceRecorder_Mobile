@@ -12,6 +12,7 @@ public class GlobalConstants {
 
     public static final String APPLICATION_NAME = "AudIOWave";
     public static final String STORAGE_DIR = "records";
+    public static final String SHARED_PREFERENCES = "user_settings";
     public static final String SEPARATOR = ", ";
     public static final String EXTENSION_SEPARATOR = ".";
     public static final String DEFAULT_RECORD_NAME = "Record -";

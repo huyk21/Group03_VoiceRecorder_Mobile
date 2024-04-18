@@ -1,4 +1,5 @@
 package com.example.group03_voicerecorder_mobile.app.record;
+import android.app.Service;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
@@ -43,7 +44,6 @@ public class RecordActivity extends AppCompatActivity {
     private MediaRecorder mediaRecorder;
     private String currentFilePath;
     private ArrayList<Integer> amplitudeList = new ArrayList<>();
-
     private Handler waveformHandler = new Handler();
     private WaveformView waveformView;
     private Runnable updateWaveformRunnable = new Runnable() {
@@ -93,10 +93,7 @@ public class RecordActivity extends AppCompatActivity {
             else{
                 resumeRecording();
             }
-
         });
-
-
     }
     private void pauseRecording() {
         if (mediaRecorder != null) {

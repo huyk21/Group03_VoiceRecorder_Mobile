@@ -31,6 +31,7 @@ public class PlayBackActivity extends AppCompatActivity {
     private ImageButton playPauseButton;
     private ImageButton rewindButton;
     private ImageButton fastForwardButton;
+    private ImageButton btnBack;
     private Chronometer chronometer;
     private TextView textViewFileName;
     private long pauseOffset;
@@ -52,6 +53,7 @@ public class PlayBackActivity extends AppCompatActivity {
         rewindButton = findViewById(R.id.button_rewind);
         fastForwardButton = findViewById(R.id.button_fast_forward);
         chronometer = findViewById(R.id.chronometer_playback);
+        btnBack = findViewById(R.id.btnBack);
 
         setupMediaPlayer();
         Bundle bd = getIntent().getExtras();
@@ -66,6 +68,9 @@ public class PlayBackActivity extends AppCompatActivity {
         playPauseButton.setOnClickListener(view -> togglePlayPause());
         rewindButton.setOnClickListener(view -> rewind());
         fastForwardButton.setOnClickListener(view -> fastForward());
+        btnBack.setOnClickListener(v -> {
+            finish();
+        });
     }
 
     private void setupMediaPlayer() {
@@ -85,6 +90,7 @@ public class PlayBackActivity extends AppCompatActivity {
                 // Reset the chronometer
                 chronometer.setBase(SystemClock.elapsedRealtime());
                 pauseOffset = 0;
+                waveformView.resetWaveform();
             });
         } catch (IOException e) {
             e.printStackTrace();
