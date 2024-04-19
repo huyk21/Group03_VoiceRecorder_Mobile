@@ -5,4 +5,8 @@
     <item
         android:id="@+id/deleteRecord"
         android:title="Delete" />
+    <item
+        android:id="@+id/convertFormat"
+        android:title="Convert Format"
+        />
 </menu>

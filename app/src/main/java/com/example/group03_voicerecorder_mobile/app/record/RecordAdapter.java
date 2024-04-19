@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.example.group03_voicerecorder_mobile.R;
 import com.example.group03_voicerecorder_mobile.app.GlobalConstants;
 import com.example.group03_voicerecorder_mobile.app.audio_player.PlayBackActivity;
+import com.example.group03_voicerecorder_mobile.app.settings.UploadActivity;
 import com.example.group03_voicerecorder_mobile.data.database.DatabaseHelper;
 import com.example.group03_voicerecorder_mobile.utils.Utilities;
 
@@ -104,6 +105,14 @@ public class RecordAdapter extends BaseAdapter {
         context.startActivity(intent);
     }
 
+    private void toUploadActivity(int position) {
+        Intent intent = new Intent(context, UploadActivity.class);
+        intent.putExtra("recordId", records.get(position).getId());
+        intent.putExtra("recordPath", records.get(position).getFilePath());
+        intent.putExtra("recordName", records.get(position).getFilename());
+        context.startActivity(intent);
+    }
+
     @SuppressLint({"ResourceType", "NonConstantResourceId"})
     private void showPopupMenu(View anchorView, int position) {
         PopupMenu popupMenu = new PopupMenu(context, anchorView);
@@ -115,6 +124,9 @@ public class RecordAdapter extends BaseAdapter {
                     return true;
                 case "Edit":
                     showRenameFileDialog(position);
+                    return true;
+                case "Convert Format":
+                    toUploadActivity(position);
                     return true;
                 default:
                     return false;

@@ -34,4 +34,10 @@
     <string name="toRecordingStatistics">Recording Statistics</string>
     <string name="toScheduledRecording">Scheduled Recording</string>
     <string name="backButton">Back Button</string>
+
+    <string-array name="output_formats">
+        <item>MP3</item>
+        <item>WAV</item>
+        <item>OGG</item>
+    </string-array>
 </resources>
