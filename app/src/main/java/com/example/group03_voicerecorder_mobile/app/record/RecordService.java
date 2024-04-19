@@ -1,15 +1,24 @@
 package com.example.group03_voicerecorder_mobile.app.record;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
+import android.widget.Chronometer;
 import android.widget.Toast;
 
+import androidx.core.app.NotificationCompat;
+
+import com.example.group03_voicerecorder_mobile.R;
 import com.example.group03_voicerecorder_mobile.app.GlobalConstants;
 import com.example.group03_voicerecorder_mobile.data.database.DatabaseHelper;
 
@@ -28,19 +37,49 @@ public class RecordService extends Service {
     private Handler handler = new Handler();
     private ArrayList<Integer> amplitudeList = new ArrayList<>();
     private DatabaseHelper databaseHelper;
+    private static final int NOTIFICATION_ID = 1;
+    private static final String CHANNEL_ID = "RecordServiceChannel";
+
+    private void startForegroundService() {
+        Intent notificationIntent = new Intent(this, RecordActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+                notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("Recording")
+                .setContentText("Tap to return to the recording.")
+                .setSmallIcon(R.drawable.ic_record)
+                .setContentIntent(pendingIntent)
+                .build();
+
+        startForeground(NOTIFICATION_ID, notification);
+    }
+
+    private void createNotificationChannel() {
+        CharSequence name = getString(R.string.channel_name);
+        String description = getString(R.string.channel_description);
+        int importance = NotificationManager.IMPORTANCE_DEFAULT;
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+        channel.setDescription(description);
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(channel);
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
         databaseHelper = new DatabaseHelper(this);
+        createNotificationChannel();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if ("ACTION_START_RECORDING".equals(intent.getAction())) {
+            startForegroundService();
             startRecording();
         } else if ("ACTION_STOP_RECORDING".equals(intent.getAction())) {
             stopRecording();
+            stopForeground(true);
         } else if ("ACTION_PAUSE_RECORDING".equals(intent.getAction())) {
             pauseRecording();
         } else if ("ACTION_RESUME_RECORDING".equals(intent.getAction())) {
@@ -58,6 +97,7 @@ public class RecordService extends Service {
         mediaRecorder.setAudioChannels(1);
         currentFilePath = getExternalFilesDir(null).getAbsolutePath() + "/" + GlobalConstants.DEFAULT_RECORD_NAME + " " + System.currentTimeMillis() / 1000 + GlobalConstants.FORMAT_M4A;
         mediaRecorder.setOutputFile(currentFilePath);
+        timeWhenPaused = SystemClock.elapsedRealtime();
 
         try {
             mediaRecorder.prepare();
@@ -70,7 +110,6 @@ public class RecordService extends Service {
             e.printStackTrace();
         }
     }
-
     private void stopRecording() {
         if (mediaRecorder != null) {
             mediaRecorder.stop();
@@ -78,7 +117,21 @@ public class RecordService extends Service {
             mediaRecorder = null;
             isRecording = false;
             long elapsedMillis = SystemClock.elapsedRealtime() - timeWhenPaused;
-            saveAmplitudesToJson(new File(currentFilePath).getName(), amplitudeList);
+            String fileName = currentFilePath.substring(currentFilePath.lastIndexOf('/') + 1,
+                    currentFilePath.lastIndexOf('.'));
+            Record record = new Record();
+            record.setFilePath(currentFilePath);
+            record.setDurationMillis(elapsedMillis);
+            record.setFilename(fileName);
+
+            long newRowId = databaseHelper.addRecording(record);
+            saveAmplitudesToJson(newRowId, amplitudeList);
+
+            if (newRowId != -1) {
+                Toast.makeText(this, "Recording saved to database." + newRowId, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Failed to save recording.", Toast.LENGTH_SHORT).show();
+            }
             Log.i("RecordService", "Recording stopped");
         }
     }
@@ -113,22 +166,32 @@ public class RecordService extends Service {
         }
     };
 
-    private void saveAmplitudesToJson(String fileName, ArrayList<Integer> amplitudes) {
+    private void saveAmplitudesToJson(long recordId, ArrayList<Integer> amplitudes) {
         try {
+            // Create a JSON object to hold the data
             JSONObject json = new JSONObject();
-            json.put("amplitudes", new JSONArray(amplitudes));
+            json.put("recordId", recordId);
 
-            File file = new File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "amplitudes_" + fileName + ".json");
+            // Convert amplitudes ArrayList to JSONArray
+            JSONArray jsonAmplitudes = new JSONArray(amplitudes);
+            json.put("amplitudes", jsonAmplitudes);
+
+            // Generate the filename based on record ID
+            String fileName = "amplitudes_" + recordId + ".json";
+
+            // Determine where to save the file
+            File file = new File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
+
+            // Write JSON string to the file
             try (FileWriter fileWriter = new FileWriter(file)) {
                 fileWriter.write(json.toString());
-                Log.i("RecordService", "Amplitudes saved to " + file.getAbsolutePath());
             }
+
         } catch (Exception e) {
             Toast.makeText(this, "Failed to save amplitudes: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            Log.e("RecordService", "Error saving amplitudes", e);
+            // Handle exceptions here
         }
     }
-
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -136,9 +199,11 @@ public class RecordService extends Service {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         if (mediaRecorder != null) {
+            mediaRecorder.stop();
             mediaRecorder.release();
+            mediaRecorder = null;
         }
+        super.onDestroy();
     }
 }

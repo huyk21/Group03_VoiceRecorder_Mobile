@@ -1,5 +1,6 @@
 package com.example.group03_voicerecorder_mobile.app.record;
 import android.app.Service;
+import android.content.Intent;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
@@ -70,6 +71,7 @@ public class RecordActivity extends AppCompatActivity {
         record_stopBtn = findViewById(R.id.btnRecord_Stop);
         pauseBtn = findViewById(R.id.btn_pause);
         backBtn = findViewById(R.id.btnBack);
+        currentFilePath = getExternalFilesDir(null).getAbsolutePath() + "/" + GlobalConstants.DEFAULT_RECORD_NAME + " " + System.currentTimeMillis() / 1000 + GlobalConstants.FORMAT_M4A;
 
         backBtn.setOnClickListener(view -> getOnBackPressedDispatcher().onBackPressed());
 
@@ -80,21 +82,72 @@ public class RecordActivity extends AppCompatActivity {
     private void setupButtonClickListeners() {
         record_stopBtn.setOnClickListener(v -> {
             if (!isRecording && !isPausing) {
-                startRecording();
+                //startRecording();
+                startRecordService();
             } else {
-                stopRecording();
+                //stopRecording();
+                stopRecordService();
             }
         });
 
         pauseBtn.setOnClickListener(v -> {
             if(isRecording){
-                pauseRecording();
+                //pauseRecording();
+                pauseRecordService();
             }
             else{
-                resumeRecording();
+                //resumeRecording();
+                resumeRecordService();
             }
         });
     }
+
+    private void startRecordService() {
+        startService(new Intent(this, RecordService.class).setAction("ACTION_START_RECORDING"));
+        record_stopBtn.setImageResource(R.drawable.ic_stop);
+        status.setText("Recording...");
+        isRecording = true;
+        chronometer.setBase(SystemClock.elapsedRealtime() - timeWhenPaused);
+        chronometer.start();
+        waveformHandler.post(updateWaveformRunnable);
+        updateRecordingButtons();
+    }
+
+    private void stopRecordService() {
+        startService(new Intent(this, RecordService.class).setAction("ACTION_STOP_RECORDING"));
+        record_stopBtn.setImageResource(R.drawable.ic_record);
+        status.setText("Recording stopped.");
+        isRecording = false;
+        chronometer.stop();
+        updateRecordingButtons();
+        waveformHandler.removeCallbacks(updateWaveformRunnable);
+    }
+
+    private void pauseRecordService() {
+        startService(new Intent(this, RecordService.class).setAction("ACTION_PAUSE_RECORDING"));
+        pauseBtn.setImageResource(R.drawable.baseline_play_circle_24);
+        status.setText("Recording paused.");
+        isPausing = true;
+        isRecording = false;
+        status.setText("Recording Paused");
+        chronometer.stop();
+        // Calculate the time elapsed before pausing to adjust the chronometer base when resuming
+        waveformHandler.removeCallbacks(updateWaveformRunnable);
+        updateRecordingButtons(); // Update the UI when recording is paused.
+    }
+
+    private void resumeRecordService() {
+        startService(new Intent(this, RecordService.class).setAction("ACTION_RESUME_RECORDING"));
+        pauseBtn.setImageResource(R.drawable.ic_pause);
+        status.setText("Recording...");
+        isPausing = false;
+        isRecording = true;
+        chronometer.setBase(SystemClock.elapsedRealtime() - timeWhenPaused);
+        chronometer.start();
+        waveformHandler.post(updateWaveformRunnable);
+        updateRecordingButtons();
+    }
+
     private void pauseRecording() {
         if (mediaRecorder != null) {
             mediaRecorder.pause();
@@ -222,8 +275,6 @@ public class RecordActivity extends AppCompatActivity {
         } else {
             // Recording is paused or stopped
             pauseBtn.setImageResource(R.drawable.baseline_play_circle_24);
-
-
         }
     }
 

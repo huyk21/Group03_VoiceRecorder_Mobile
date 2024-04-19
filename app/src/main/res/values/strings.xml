@@ -34,6 +34,8 @@
     <string name="toRecordingStatistics">Recording Statistics</string>
     <string name="toScheduledRecording">Scheduled Recording</string>
     <string name="backButton">Back Button</string>
+    <string name="channel_name">Background record channel</string>
+    <string name="channel_description">This is being recorded, tap here to return</string>
 
     <string-array name="output_formats">
         <item>MP3</item>

@@ -59,9 +59,9 @@
         <activity android:name=".app.settings.UploadActivity"
             android:screenOrientation="portrait"/>
 
-
-        <service android:name=".audio.recorder.RecordService"/>
+        <service android:name=".app.record.RecordService"
+            android:foregroundServiceType="microphone"/>
 
     </application>
-
 </manifest>
+

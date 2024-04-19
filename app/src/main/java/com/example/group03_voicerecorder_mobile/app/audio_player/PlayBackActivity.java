@@ -54,6 +54,7 @@ public class PlayBackActivity extends AppCompatActivity {
         fastForwardButton = findViewById(R.id.button_fast_forward);
         chronometer = findViewById(R.id.chronometer_playback);
         btnBack = findViewById(R.id.btnBack);
+        System.out.println("oncreate playback");
 
         setupMediaPlayer();
         Bundle bd = getIntent().getExtras();
@@ -140,6 +141,9 @@ public class PlayBackActivity extends AppCompatActivity {
                 // Handle error
                 Toast.makeText(this, "Error loading amplitude data.", Toast.LENGTH_SHORT).show();
             }
+        } else {
+            Toast.makeText(this, "Error loading amplitude data.", Toast.LENGTH_SHORT).show();
+
         }
     }
 
