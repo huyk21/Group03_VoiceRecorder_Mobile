@@ -23,6 +23,7 @@
     <uses-feature android:name="android.hardware.location.gps" android:required="false"/>
 
     <application
+        android:requestLegacyExternalStorage="true"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
