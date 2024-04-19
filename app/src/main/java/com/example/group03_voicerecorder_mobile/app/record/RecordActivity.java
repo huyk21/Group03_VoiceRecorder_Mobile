@@ -1,9 +1,11 @@
 package com.example.group03_voicerecorder_mobile.app.record;
+import android.Manifest;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
@@ -19,6 +21,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.group03_voicerecorder_mobile.R;
 import com.example.group03_voicerecorder_mobile.app.GlobalConstants;
@@ -52,6 +56,7 @@ public class RecordActivity extends AppCompatActivity {
     private WaveformView waveformView;
     private BroadcastReceiver broadcastReceiver;
     public static final String RECORDING_STATUS_UPDATE = "recording_status_update";
+    private static final int PERMISSION_REQUEST_CODE = 101;
 
 
     private Runnable updateWaveformRunnable = new Runnable() {
@@ -65,10 +70,58 @@ public class RecordActivity extends AppCompatActivity {
             }
         }
     };
+
+    public void checkPermission() {
+        String[] permissions = {
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+        };
+
+        // Check if each permission is granted, if not, request them
+        boolean permissionsNeeded = false;
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                permissionsNeeded = true;
+                break;
+            }
+        }
+
+        if (permissionsNeeded) {
+            ActivityCompat.requestPermissions(this, permissions, PERMISSION_REQUEST_CODE);
+        } else {
+            Toast.makeText(this, "All permissions are already granted", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0) {
+                boolean allPermissionsGranted = true;
+                for (int result : grantResults) {
+                    if (result != PackageManager.PERMISSION_GRANTED) {
+                        allPermissionsGranted = false;
+                        break;
+                    }
+                }
+
+                if (allPermissionsGranted) {
+                    Toast.makeText(this, "All permissions granted", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Not all permissions were granted", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(this, "Permissions request denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
+        checkPermission();
         databaseHelper = new DatabaseHelper(this);
         waveformView = findViewById(R.id.waveformView);
         appName = findViewById(R.id.toRecords);
