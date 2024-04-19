@@ -39,6 +39,8 @@ public class RecordService extends Service {
     private DatabaseHelper databaseHelper;
     private static final int NOTIFICATION_ID = 1;
     private static final String CHANNEL_ID = "RecordServiceChannel";
+    public static final String RECORDING_STATUS_UPDATE = "recording_status_update";
+
 
     private void startForegroundService() {
         Intent notificationIntent = new Intent(this, RecordActivity.class);
@@ -160,6 +162,9 @@ public class RecordService extends Service {
         public void run() {
             if (isRecording && mediaRecorder != null) {
                 int amplitude = mediaRecorder.getMaxAmplitude();
+                Intent broadcastIntent = new Intent(RECORDING_STATUS_UPDATE);
+                broadcastIntent.putExtra("recording_status", amplitude);
+                getApplicationContext().sendBroadcast(broadcastIntent);
                 amplitudeList.add(amplitude);
                 handler.postDelayed(this, 100);
             }

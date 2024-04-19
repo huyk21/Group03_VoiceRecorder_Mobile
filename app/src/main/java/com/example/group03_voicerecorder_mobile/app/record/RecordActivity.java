@@ -1,6 +1,9 @@
 package com.example.group03_voicerecorder_mobile.app.record;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
@@ -47,6 +50,10 @@ public class RecordActivity extends AppCompatActivity {
     private ArrayList<Integer> amplitudeList = new ArrayList<>();
     private Handler waveformHandler = new Handler();
     private WaveformView waveformView;
+    private BroadcastReceiver broadcastReceiver;
+    public static final String RECORDING_STATUS_UPDATE = "recording_status_update";
+
+
     private Runnable updateWaveformRunnable = new Runnable() {
         @Override
         public void run() {
@@ -77,6 +84,8 @@ public class RecordActivity extends AppCompatActivity {
 
         // Setup button click listeners
         setupButtonClickListeners();
+        broadcastReceiver = new MyBroadcastReceiver();
+        registerReceiver(broadcastReceiver, new IntentFilter(RECORDING_STATUS_UPDATE));
     }
 
     private void setupButtonClickListeners() {
@@ -203,69 +212,6 @@ public class RecordActivity extends AppCompatActivity {
         }
     }
 
-    private void stopRecording() {
-        if (mediaRecorder != null) {
-            mediaRecorder.stop();
-            mediaRecorder.release();
-            mediaRecorder = null;
-            isRecording = false;
-            status.setText("Recording stopped.");
-            chronometer.stop();
-            long elapsedMillis = SystemClock.elapsedRealtime() - chronometer.getBase();
-            timeWhenPaused = 0;
-
-            updateRecordingButtons();
-
-            String fileName = currentFilePath.substring(currentFilePath.lastIndexOf('/') + 1,
-                    currentFilePath.lastIndexOf('.'));
-            Record record = new Record();
-            record.setFilePath(currentFilePath);
-            record.setFilename(fileName);
-            record.setDurationMillis(elapsedMillis);
-            record.setFilename(fileName);
-
-            long newRowId = databaseHelper.addRecording(record);
-            waveformHandler.removeCallbacks(updateWaveformRunnable);
-
-            if (newRowId != -1) {
-                Toast.makeText(this, "Recording saved to database." + newRowId, Toast.LENGTH_SHORT).show();
-                saveAmplitudesToJson(newRowId, amplitudeList);
-                finish();
-            } else {
-                Toast.makeText(this, "Failed to save recording.", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    private void saveAmplitudesToJson(long recordId, ArrayList<Integer> amplitudes) {
-        try {
-            // Create a JSON object to hold the data
-            JSONObject json = new JSONObject();
-            json.put("recordId", recordId);
-
-            // Convert amplitudes ArrayList to JSONArray
-            JSONArray jsonAmplitudes = new JSONArray(amplitudes);
-            json.put("amplitudes", jsonAmplitudes);
-
-            // Generate the filename based on record ID
-            String fileName = "amplitudes_" + recordId + ".json";
-
-            // Determine where to save the file
-            File file = new File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
-
-            // Write JSON string to the file
-            try (FileWriter fileWriter = new FileWriter(file)) {
-                fileWriter.write(json.toString());
-            }
-
-
-
-        } catch (Exception e) {
-            Toast.makeText(this, "Failed to save amplitudes: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            // Handle exceptions here
-        }
-    }
-
     private void updateRecordingButtons() {
         // Here, we'll manage the visibility and appearance of buttons based on the recording state.
         if (isRecording) {
@@ -281,9 +227,15 @@ public class RecordActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mediaRecorder != null) {
-            Log.e("RecordActivity", "MediaRecorder is not null");
-            mediaRecorder.release();
+        unregisterReceiver(broadcastReceiver);
+    }
+
+    private class MyBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int maxAmplitude = intent.getIntExtra("recording_status", 0);
+            // update ui
+            waveformView.addAmplitude(maxAmplitude);
         }
     }
 }
