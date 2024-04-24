@@ -9,4 +9,8 @@
         android:id="@+id/convertFormat"
         android:title="Convert Format"
         />
+    <item
+        android:id="@+id/audioSearch"
+        android:title="Search in file"
+        />
 </menu>

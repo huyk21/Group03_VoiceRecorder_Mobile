@@ -59,6 +59,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".app.settings.UploadActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".app.search_audio.SearchAudioActivity"
+            android:screenOrientation="portrait"/>
 
         <service android:name=".app.record.RecordService"
             android:foregroundServiceType="microphone"/>
