@@ -96,7 +96,7 @@ def speech_to_text(request):
     if request.method == 'POST' and 'audio' in request.FILES:
         uploaded_file = request.FILES['audio']
         file_extension = os.path.splitext(uploaded_file.name)[1].lower()
-
+    
         # Check file extension (simpler approach)
         if file_extension != ".flac":
             tmp_filepath = os.path.join(settings.MEDIA_ROOT, 'audios', uploaded_file.name)
@@ -108,7 +108,7 @@ def speech_to_text(request):
             command = ['ffmpeg', '-i', tmp_filepath, '-y', '-vn', '-ar', '16000', '-ac', '1', converted_filepath]
             result = run(command, stdout=PIPE, stderr=PIPE, text=True)
             if result.returncode != 0:
-                os.remove(tmp_filepath)  # Clean up original file
+                os.remove(tmp_filepath)
                 return JsonResponse({'status': 'error', 'message': 'Failed to convert audio to FLAC: ' + result.stderr})
 
             tmp_filepath = converted_filepath
@@ -120,6 +120,7 @@ def speech_to_text(request):
                 audio_data = recognizer.record(source)
                 text = recognizer.recognize_google(audio_data)
             os.remove(tmp_filepath)  # Clean up temporary file
+            print(text)
             return JsonResponse({'status': 'success', 'text': text})
         except sr.UnknownValueError:
             os.remove(tmp_filepath)

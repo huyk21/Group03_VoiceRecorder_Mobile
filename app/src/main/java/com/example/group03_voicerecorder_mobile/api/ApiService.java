@@ -21,6 +21,12 @@ public interface ApiService {
             @Part("output_format") String outputFormat
     );
 
+    @Multipart
+    @POST("process_file/speech_to_text/")
+    Call<JsonObject> speechToText(
+            @Part MultipartBody.Part file);
+
+
     @Streaming
     @GET
     Call<ResponseBody> downloadFile(@Url String fileUrl);
