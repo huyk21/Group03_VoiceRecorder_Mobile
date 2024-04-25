@@ -43,6 +43,7 @@
     <color name="md_deep_purple_700">#512da8</color>
     <color name="md_deep_purple_700x">#3E2283</color>
     <!--blue-->
+    <color name="md_turquoise">#08b0d0</color>
     <color name="md_blue_500">#5677fc</color>
     <color name="md_blue_700">#455ede</color>
     <color name="md_blue_700x">#3448AE</color>
@@ -57,6 +58,7 @@
     <color name="md_yellow_A700">#ffd600</color>
     <color name="md_yellow_800F">#f59a05</color>
     <color name="md_yellow_900F">#ec7105</color>
+    <color name="md_gold">#FFD700</color>
     <!--amber-->
     <color name="md_amber_800">#FF8F00</color>
     <color name="md_amber_900">#FF6F00</color>
