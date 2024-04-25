@@ -42,9 +42,9 @@ import java.util.Date;
 import java.util.List;
 
 public class RecordActivity extends AppCompatActivity {
-    private TextView appName, status;
+    private TextView status;
     private DatabaseHelper databaseHelper;
-    private ImageButton toRecords, toMenu, playBtn, record_stopBtn, pauseBtn, backBtn;
+    private ImageButton playBtn, record_stopBtn, pauseBtn, backBtn;
     private Chronometer chronometer;
     private boolean isRecording = false;
     private boolean isPausing = false;
@@ -74,7 +74,8 @@ public class RecordActivity extends AppCompatActivity {
     public void checkPermission() {
         String[] permissions = {
                 Manifest.permission.RECORD_AUDIO,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+
         };
 
         // Check if each permission is granted, if not, request them
@@ -88,8 +89,6 @@ public class RecordActivity extends AppCompatActivity {
 
         if (permissionsNeeded) {
             ActivityCompat.requestPermissions(this, permissions, PERMISSION_REQUEST_CODE);
-        } else {
-            Toast.makeText(this, "All permissions are already granted", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -124,7 +123,6 @@ public class RecordActivity extends AppCompatActivity {
         checkPermission();
         databaseHelper = new DatabaseHelper(this);
         waveformView = findViewById(R.id.waveformView);
-        appName = findViewById(R.id.toRecords);
         status = findViewById(R.id.recordStatus);
         chronometer = findViewById(R.id.chronometer);
         playBtn = findViewById(R.id.playBtn);
@@ -183,16 +181,18 @@ public class RecordActivity extends AppCompatActivity {
         chronometer.stop();
         updateRecordingButtons();
         waveformHandler.removeCallbacks(updateWaveformRunnable);
+        finish();
     }
 
     private void pauseRecordService() {
         startService(new Intent(this, RecordService.class).setAction("ACTION_PAUSE_RECORDING"));
-        pauseBtn.setImageResource(R.drawable.baseline_play_circle_24);
+        pauseBtn.setImageResource(R.drawable.ic_play);
         status.setText("Recording paused.");
         isPausing = true;
         isRecording = false;
         status.setText("Recording Paused");
         chronometer.stop();
+        timeWhenPaused = SystemClock.elapsedRealtime() - chronometer.getBase();
         // Calculate the time elapsed before pausing to adjust the chronometer base when resuming
         waveformHandler.removeCallbacks(updateWaveformRunnable);
         updateRecordingButtons(); // Update the UI when recording is paused.
@@ -273,7 +273,7 @@ public class RecordActivity extends AppCompatActivity {
 
         } else {
             // Recording is paused or stopped
-            pauseBtn.setImageResource(R.drawable.baseline_play_circle_24);
+            pauseBtn.setImageResource(R.drawable.ic_play);
         }
     }
 

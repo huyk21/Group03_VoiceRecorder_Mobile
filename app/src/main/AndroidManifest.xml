@@ -45,7 +45,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity android:name=".app.welcome.WelcomeActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".app.record.RecordActivity"
             android:screenOrientation="portrait"/>
