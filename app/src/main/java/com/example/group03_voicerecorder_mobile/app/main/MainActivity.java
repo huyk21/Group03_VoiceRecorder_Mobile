@@ -2,6 +2,7 @@ package com.example.group03_voicerecorder_mobile.app.main;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,11 +17,13 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.group03_voicerecorder_mobile.R;
+import com.example.group03_voicerecorder_mobile.app.GlobalConstants;
 import com.example.group03_voicerecorder_mobile.app.record.DeletedActivity;
 import com.example.group03_voicerecorder_mobile.app.record.Record;
 import com.example.group03_voicerecorder_mobile.app.record.RecordActivity;
 import com.example.group03_voicerecorder_mobile.app.record.RecordAdapter;
 import com.example.group03_voicerecorder_mobile.app.settings.SettingsActivity;
+import com.example.group03_voicerecorder_mobile.app.welcome.WelcomeActivity;
 import com.example.group03_voicerecorder_mobile.data.database.DatabaseHelper;
 import com.example.group03_voicerecorder_mobile.utils.PreferenceHelper;
 
@@ -47,6 +50,10 @@ public class MainActivity extends AppCompatActivity {
         btn_record = findViewById(R.id.recordButton);
         databaseHelper = new DatabaseHelper(this);
 
+        if (isFirstTime()) {
+            startActivity(new Intent(this, WelcomeActivity.class));
+            finish();
+        }
 
         // Fetch records from the database
         List<Record> recordList = databaseHelper.getAllUndeletedRecords();
@@ -93,6 +100,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private boolean isFirstTime() {
+        SharedPreferences preferences = getSharedPreferences(GlobalConstants.SHARED_PREFERENCES, MODE_PRIVATE);
+        boolean isFirstRun = preferences.getBoolean("isFirstRun", true);
+        if (isFirstRun) {
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("isFirstRun", false);
+            editor.apply();
+        }
+        return isFirstRun;
     }
 
     @Override
