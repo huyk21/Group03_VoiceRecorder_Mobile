@@ -4,10 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.group03_voicerecorder_mobile.R;
 import com.example.group03_voicerecorder_mobile.api.ApiService;
@@ -68,11 +70,13 @@ public class SearchAudioActivity extends AppCompatActivity {
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
                     JsonObject jsonResponse = response.body();
-                    String textResult = "";
-                    System.out.println(jsonResponse.get("text"));
-                    convertedText = jsonResponse.get("text").toString();
-//                    String textResult = jsonResponse.get("text").getAsString();
-                    textViewResults.setText(jsonResponse.get("text").toString());
+                    System.out.println(jsonResponse);
+                    if (jsonResponse.get("status").toString().equals("error")) {
+                        Log.e("errorResponse", jsonResponse.get("message").toString());
+                    } else {
+                        convertedText = jsonResponse.get("text").toString();
+                        textViewResults.setText(jsonResponse.get("text").toString());
+                    }
                 } else {
                     textViewResults.setText("Error: " + response.message());
                 }

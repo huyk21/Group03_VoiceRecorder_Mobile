@@ -203,7 +203,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         int count = 0;
         try {
-            String countQuery = "SELECT COUNT(*) FROM " + TABLE_RECORDINGS;
+            String countQuery = "SELECT COUNT(*) FROM " + TABLE_RECORDINGS + " WHERE " + KEY_DELETED + " = 0";
 
             // Execute the query
             Cursor cursor = db.rawQuery(countQuery, null);
@@ -222,15 +222,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return count;
     }
+
+
     public int totalDuration() {
         SQLiteDatabase db = this.getReadableDatabase();
         int sum = 0;
-        String query = "SELECT SUM(" + KEY_DURATION + ") AS total_duration FROM " + TABLE_RECORDINGS;
+        String query = "SELECT SUM(" + KEY_DURATION + ") AS total_duration FROM " + TABLE_RECORDINGS + " WHERE " + KEY_DELETED + " = 0";
 
         Cursor cursor = db.rawQuery(query, null);
-        if (cursor != null && cursor.moveToFirst()) {
-            sum = cursor.getInt(cursor.getColumnIndex("total_duration"));
-            cursor.close();
+        if (cursor != null) {
+            try {
+                if (cursor.moveToFirst()) {
+                    sum = cursor.getInt(cursor.getColumnIndex("total_duration"));
+                }
+            } finally {
+                cursor.close();
+            }
         }
         db.close();
         return sum;

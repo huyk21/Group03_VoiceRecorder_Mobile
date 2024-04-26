@@ -4,6 +4,10 @@ public class StringAlgorithms {
     public static final int d = 256;
 
     public static void search(String txt, String pat, int q) {
+        if (txt == null || pat == null) {
+            System.out.println("txt is null or pat is null");
+            return;
+        }
         int n = txt.length();
         int m = pat.length();
 
