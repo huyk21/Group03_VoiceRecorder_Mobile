@@ -75,7 +75,6 @@ public class RecordActivity extends AppCompatActivity {
         String[] permissions = {
                 Manifest.permission.RECORD_AUDIO,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
-
         };
 
         // Check if each permission is granted, if not, request them
@@ -142,21 +141,17 @@ public class RecordActivity extends AppCompatActivity {
     private void setupButtonClickListeners() {
         record_stopBtn.setOnClickListener(v -> {
             if (!isRecording && !isPausing) {
-                //startRecording();
                 startRecordService();
             } else {
-                //stopRecording();
                 stopRecordService();
             }
         });
 
         pauseBtn.setOnClickListener(v -> {
             if(isRecording){
-                //pauseRecording();
                 pauseRecordService();
             }
             else{
-                //resumeRecording();
                 resumeRecordService();
             }
         });
@@ -208,61 +203,6 @@ public class RecordActivity extends AppCompatActivity {
         chronometer.start();
         waveformHandler.post(updateWaveformRunnable);
         updateRecordingButtons();
-    }
-
-    private void pauseRecording() {
-        if (mediaRecorder != null) {
-            mediaRecorder.pause();
-            isRecording = false;
-            isPausing = true;
-            status.setText("Recording Paused");
-            chronometer.stop();
-            // Calculate the time elapsed before pausing to adjust the chronometer base when resuming
-            timeWhenPaused = SystemClock.elapsedRealtime() - chronometer.getBase();
-            waveformHandler.removeCallbacks(updateWaveformRunnable);
-            updateRecordingButtons(); // Update the UI when recording is paused.
-        }
-    }
-
-    private void resumeRecording() {
-        if (mediaRecorder != null) {
-            mediaRecorder.resume();
-            isRecording = true;
-            status.setText("Recording...");
-            // Set the chronometer base to the current time minus the amount of time that had already elapsed before pausing
-            // This effectively continues the chronometer from where it left off
-            chronometer.setBase(SystemClock.elapsedRealtime() - timeWhenPaused);
-            chronometer.start();
-            waveformHandler.post(updateWaveformRunnable);
-            updateRecordingButtons();
-        }
-    }
-
-    private void startRecording() {
-        mediaRecorder = new MediaRecorder();
-        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-        mediaRecorder.setAudioSamplingRate(44100);
-        mediaRecorder.setAudioChannels(1);
-        record_stopBtn.setImageResource(R.drawable.ic_stop);
-        currentFilePath = getExternalFilesDir(null).getAbsolutePath() + "/" + GlobalConstants.DEFAULT_RECORD_NAME + " " + System.currentTimeMillis() / 1000 + GlobalConstants.FORMAT_M4A;
-        mediaRecorder.setOutputFile(currentFilePath);
-
-        try {
-            mediaRecorder.prepare();
-
-            mediaRecorder.start();
-            isRecording = true;
-            status.setText("Recording...");
-            chronometer.setBase(SystemClock.elapsedRealtime() - timeWhenPaused);
-            chronometer.start();
-            waveformHandler.post(updateWaveformRunnable);
-            updateRecordingButtons();
-        } catch (IOException e) {
-            Toast.makeText(this, "Recording failed to start", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
     }
 
     private void updateRecordingButtons() {

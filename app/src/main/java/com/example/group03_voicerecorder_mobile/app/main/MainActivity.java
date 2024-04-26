@@ -1,8 +1,10 @@
 package com.example.group03_voicerecorder_mobile.app.main;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,10 +16,13 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.example.group03_voicerecorder_mobile.R;
 import com.example.group03_voicerecorder_mobile.app.GlobalConstants;
+import com.example.group03_voicerecorder_mobile.app.record.AudioListener;
 import com.example.group03_voicerecorder_mobile.app.record.DeletedActivity;
 import com.example.group03_voicerecorder_mobile.app.record.Record;
 import com.example.group03_voicerecorder_mobile.app.record.RecordActivity;
@@ -36,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText searchBar;
     private ImageButton btn_record;
     private DatabaseHelper databaseHelper;
+    private AudioListener audioListener;
 
 
     @Override
@@ -55,11 +61,11 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
+        if (PreferenceHelper.loadSettingsState(this, "isAutoRecord")) { initAutoRecord(); }
+
         // Fetch records from the database
         List<Record> recordList = databaseHelper.getAllUndeletedRecords();
-        if (recordList.isEmpty()) {
-            Toast.makeText(MainActivity.this, "No records found", Toast.LENGTH_SHORT).show();
-        } else {
+        if (!recordList.isEmpty()) {
             // Populate ListView with records
             RecordAdapter recordAdapter = new RecordAdapter(this, recordList);
             records.setAdapter(recordAdapter);
@@ -68,23 +74,9 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        if (PreferenceHelper.getAutoRecord(this)) {
-            startRecording();
-        }
+        btn_record.setOnClickListener(this::toRecordActivity);
 
-        btn_record.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toRecordActivity(v);
-            }
-        });
-
-        btn_more.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showPopupMenu(v);
-            }
-        });
+        btn_more.setOnClickListener(this::showPopupMenu);
 
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
@@ -100,6 +92,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void initAutoRecord() {
+        audioListener = new AudioListener(this);
+
+        if (checkAudioPermissions()) {
+            audioListener.startListening();
+        }
+    }
+
+    private boolean checkAudioPermissions() {
+        if (this.checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, 1000);
+            return false;
+        }
+        return true;
     }
 
     private boolean isFirstTime() {
@@ -121,9 +129,7 @@ public class MainActivity extends AppCompatActivity {
         List<Record> recordList = databaseHelper.getAllUndeletedRecords();
 
         // Check if the recordList is empty
-        if (recordList.isEmpty()) {
-            Toast.makeText(MainActivity.this, "No records found", Toast.LENGTH_SHORT).show();
-        } else {
+        if (!recordList.isEmpty()) {
             // Populate ListView with records
             RecordAdapter recordAdapter = new RecordAdapter(this, recordList);
             records.setAdapter(recordAdapter);
@@ -155,15 +161,6 @@ public class MainActivity extends AppCompatActivity {
     public void toRecycleBinActivity() {
         Intent intent = new Intent(this, DeletedActivity.class);
         startActivity(intent);
-    }
-
-
-
-    private void updateFragment(String filter) {
-        Bundle bundle = new Bundle();
-        bundle.putString("filter", filter);
-//        AllRecords newFragment = new AllRecords();
-//        newFragment.setArguments(bundle);
     }
 
     public void toRecordActivity(View recordView) {
@@ -198,8 +195,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void startRecording() {
-        Intent intent = new Intent(this, RecordActivity.class);
-        startService(intent);
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (audioListener != null) {
+            audioListener.stopListening();
+        }
     }
 }
