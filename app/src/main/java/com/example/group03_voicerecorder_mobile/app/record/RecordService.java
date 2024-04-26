@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Environment;
@@ -21,6 +22,7 @@ import androidx.core.app.NotificationCompat;
 import com.example.group03_voicerecorder_mobile.R;
 import com.example.group03_voicerecorder_mobile.app.GlobalConstants;
 import com.example.group03_voicerecorder_mobile.data.database.DatabaseHelper;
+import com.example.group03_voicerecorder_mobile.utils.PreferenceHelper;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -44,6 +46,7 @@ public class RecordService extends Service {
 
     private void startForegroundService() {
         Intent notificationIntent = new Intent(this, RecordActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
                 notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 
@@ -110,6 +113,9 @@ public class RecordService extends Service {
         mediaRecorder.setOutputFile(currentFilePath);
         timeWhenPaused = SystemClock.elapsedRealtime();
 
+        long startTime = SystemClock.elapsedRealtime();
+        PreferenceHelper.saveElapsedTime(this, "ElapsedTime", startTime);
+
         try {
             mediaRecorder.prepare();
             mediaRecorder.start();
@@ -127,6 +133,7 @@ public class RecordService extends Service {
             mediaRecorder.release();
             mediaRecorder = null;
             isRecording = false;
+            PreferenceHelper.deleteElapsedTime(this, "ElapsedTime");
             long elapsedMillis = SystemClock.elapsedRealtime() - timeWhenPaused;
             String fileName = currentFilePath.substring(currentFilePath.lastIndexOf('/') + 1,
                     currentFilePath.lastIndexOf('.'));

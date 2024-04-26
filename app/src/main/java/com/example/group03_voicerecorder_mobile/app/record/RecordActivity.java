@@ -28,6 +28,7 @@ import com.example.group03_voicerecorder_mobile.R;
 import com.example.group03_voicerecorder_mobile.app.GlobalConstants;
 import com.example.group03_voicerecorder_mobile.app.main.WaveformView;
 import com.example.group03_voicerecorder_mobile.data.database.DatabaseHelper;
+import com.example.group03_voicerecorder_mobile.utils.PreferenceHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -115,6 +116,20 @@ public class RecordActivity extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent != null) {
+            record_stopBtn.setImageResource(R.drawable.ic_stop);
+            status.setText("Recording...");
+            long elapsedTime = PreferenceHelper.getElapsedTime(this, "ElapsedTime");
+            chronometer.setBase(elapsedTime);
+            chronometer.start();
+            waveformHandler.post(updateWaveformRunnable);
+        }
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -101,8 +101,10 @@ public class SettingsActivity extends AppCompatActivity {
     private void restartApp() {
         Intent i = getBaseContext().getPackageManager()
                 .getLaunchIntentForPackage(getBaseContext().getPackageName());
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
+        if (i != null) {
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+        }
     }
 
     @Override
@@ -111,16 +113,10 @@ public class SettingsActivity extends AppCompatActivity {
             new AlertDialog.Builder(this)
                     .setTitle("Restart Required")
                     .setMessage("Changes detected! Please restart the app for the changes to take effect")
-                    .setPositiveButton("Restart Now", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            restartApp();
-                        }
-                    })
-                    .setNegativeButton("Later", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            finish();
-                        }
+                    .setPositiveButton("Restart Now", (dialog, which) -> restartApp())
+                    .setNegativeButton("Later", (dialog, which) -> {
+                        dialog.dismiss();
+                        finish();
                     })
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show();
