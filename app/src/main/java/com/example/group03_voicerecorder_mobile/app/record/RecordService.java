@@ -47,11 +47,20 @@ public class RecordService extends Service {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
                 notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 
+        Intent stopIntent = new Intent(this, RecordService.class);
+        stopIntent.setAction("ACTION_STOP_RECORDING");
+        PendingIntent stopPendingIntent = PendingIntent.getService(this, 0, stopIntent, PendingIntent.FLAG_IMMUTABLE);
+
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Recording")
+                .setContentTitle("Recording...")
                 .setContentText("Tap to return to the recording.")
                 .setSmallIcon(R.drawable.ic_record)
                 .setContentIntent(pendingIntent)
+                .addAction(R.drawable.ic_stop_red, "Stop", stopPendingIntent)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_SERVICE)
+                .setOnlyAlertOnce(true)
+                .setOngoing(true)
                 .build();
 
         startForeground(NOTIFICATION_ID, notification);
@@ -60,7 +69,7 @@ public class RecordService extends Service {
     private void createNotificationChannel() {
         CharSequence name = getString(R.string.channel_name);
         String description = getString(R.string.channel_description);
-        int importance = NotificationManager.IMPORTANCE_DEFAULT;
+        int importance = NotificationManager.IMPORTANCE_HIGH;
         NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
         channel.setDescription(description);
         NotificationManager notificationManager = getSystemService(NotificationManager.class);
@@ -130,7 +139,7 @@ public class RecordService extends Service {
             saveAmplitudesToJson(newRowId, amplitudeList);
 
             if (newRowId != -1) {
-                Toast.makeText(this, "Recording saved to database." + newRowId, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Recording saved", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "Failed to save recording.", Toast.LENGTH_SHORT).show();
             }
