@@ -19,8 +19,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.group03_voicerecorder_mobile.R;
 import com.example.group03_voicerecorder_mobile.api.ApiService;
 import com.example.group03_voicerecorder_mobile.api.RetrofitClient;
+
 import com.example.group03_voicerecorder_mobile.app.GlobalConstants;
 import com.example.group03_voicerecorder_mobile.utils.PreferenceHelper;
+
+import com.example.group03_voicerecorder_mobile.utils.Utilities;
 import com.google.gson.JsonObject;
 
 import java.io.File;
@@ -46,6 +49,8 @@ public class UploadActivity extends AppCompatActivity implements AdapterView.OnI
     private Spinner spinnerOutputFormat;
     private Button btnUpload;
     private String[] formats = {"MP3", "WAV", "OGG"};
+
+    private String fileName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +105,7 @@ public class UploadActivity extends AppCompatActivity implements AdapterView.OnI
         spinnerOutputFormat.setOnItemSelectedListener(this);
 
         String filePath = getIntent().getStringExtra("recordPath");
+        fileName = getIntent().getStringExtra("recordName");
         if (filePath != null) {
             tvFilePath.setText(filePath);
         }
@@ -155,25 +161,9 @@ public class UploadActivity extends AppCompatActivity implements AdapterView.OnI
                         @Override
                         public void run() {
                             try {
-                                // The rest of your file saving code here
-                                File convertedDirectory = new File(getExternalFilesDir(null), "converted");
-                                if (!convertedDirectory.exists()) {
-                                    convertedDirectory.mkdirs();
-                                }
-                                String filename = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
-                                File downloadedFile = new File(convertedDirectory, filename);
-
-                                try (InputStream inputStream = response.body().byteStream();
-                                     FileOutputStream outputStream = new FileOutputStream(downloadedFile)) {
-                                    byte[] buffer = new byte[4096];
-                                    int bytesRead;
-                                    while ((bytesRead = inputStream.read(buffer)) != -1) {
-                                        outputStream.write(buffer, 0, bytesRead);
-                                    }
-                                    runOnUiThread(() -> Toast.makeText(UploadActivity.this,
-                                            "File downloaded successfully to: " + downloadedFile.getPath(),
-                                            Toast.LENGTH_LONG).show());
-                                }
+                                fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
+                                InputStream inputStream = response.body().byteStream();
+                                Utilities.overwriteAudioFile(getApplicationContext(), fileName, inputStream);
                             } catch (IOException e) {
                                 Log.e(TAG, "Error saving downloaded file: " + e.getMessage());
                             }

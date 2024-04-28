@@ -1,5 +1,5 @@
 import ffmpeg
-import mimetypes
+from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 from django.http import FileResponse, HttpResponse
 from django.conf import settings
@@ -42,34 +42,36 @@ def upload_audio(request):
 def convert_audio(request):
     if request.method == 'POST':
         audio_file = request.FILES.get('audio')
-        output_format = request.data.get('format', 'mp3')  # Default to 'mp3' if no format is provided
-        print(audio_file, output_format)
+        output_format = request.data.get('format', 'mp3')
+        file_name = audio_file.name.split('.')[0]
+
         if not audio_file:
             return Response({'error': 'No audio file provided'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Validate the desired output format
         if output_format not in ['mp3', 'wav', 'ogg']:
             return Response({'error': 'Invalid output format'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        audio_instance = AudioFile(audio=audio_file)
-        audio_instance.save()
 
-        input_path = audio_instance.audio.path
-        output_path = os.path.join(settings.MEDIA_ROOT, 'audios', 'yourfile.' + output_format)
-
+        input_path = os.path.join(settings.MEDIA_ROOT, 'converted', audio_file.name)
+        output_path = os.path.join(settings.MEDIA_ROOT, 'converted',  file_name + '.' + output_format)
+        with open(input_path, 'wb+') as f:
+                for chunk in audio_file.chunks():
+                    f.write(chunk)
+        print(input_path, output_path)
         # Convert audio
+        try:
+            ffmpeg.input(input_path).output(output_path).run()
+        except ffmpeg.Error as e:
+            raise ValidationError({'error': f'FFmpeg conversion failed: {e}'})
         ffmpeg.input(input_path).output(output_path).run()
-        print(f'output_path {output_path}')
-        # Save converted file
-        with open(output_path, 'rb') as f:
-            audio_instance.converted_audio.save(output_path.split('\\')[-1], File(f))
-
+        os.remove(input_path)
+        download_url = f"/converted/{file_name + '.' + output_format}"
         return Response({
             'message': 'Audio converted successfully',
-            'download_url': audio_instance.converted_audio.url
+            'download_url': download_url
         })
 
-    return Response({'error': 'Invalid request'}, status=status.HTTP_400_BAD_REQUEST)
+    return Response({'error': 'Invalid request'})
 
 def download_file(request, filepath):
     # Construct the full absolute path
@@ -96,29 +98,27 @@ def speech_to_text(request):
     if request.method == 'POST' and 'audio' in request.FILES:
         uploaded_file = request.FILES['audio']
         file_extension = os.path.splitext(uploaded_file.name)[1].lower()
-    
-        # Check file extension (simpler approach)
-        if file_extension != ".flac":
-            tmp_filepath = os.path.join(settings.MEDIA_ROOT, 'audios', uploaded_file.name)
-            with open(tmp_filepath, 'wb+') as f:
+        tmp_filepath = os.path.join(settings.MEDIA_ROOT, 'audios', uploaded_file.name)
+        with open(tmp_filepath, 'wb+') as f:
                 for chunk in uploaded_file.chunks():
                     f.write(chunk)
-
+        # Check file extension (simpler approach)
+        if file_extension not in [".flac", ".wav"]:            
+            # converted to .flac
             converted_filepath = os.path.splitext(tmp_filepath)[0] + '.flac'
             command = ['ffmpeg', '-i', tmp_filepath, '-y', '-vn', '-ar', '16000', '-ac', '1', converted_filepath]
             result = run(command, stdout=PIPE, stderr=PIPE, text=True)
+         
+            os.remove(tmp_filepath)
             if result.returncode != 0:
-                os.remove(tmp_filepath)
                 return JsonResponse({'status': 'error', 'message': 'Failed to convert audio to FLAC: ' + result.stderr})
-
             tmp_filepath = converted_filepath
-
         # Speech recognition (using the temporary FLAC file)
         recognizer = sr.Recognizer()
         try:
             with sr.AudioFile(tmp_filepath) as source:
                 audio_data = recognizer.record(source)
-                text = recognizer.recognize_google(audio_data)
+                text = recognizer.recognize_google(audio_data, language='vi-VN')
             os.remove(tmp_filepath)  # Clean up temporary file
             print(text)
             return JsonResponse({'status': 'success', 'text': text})
