@@ -1,6 +1,5 @@
 package com.example.group03_voicerecorder_mobile.app.record;
 import android.Manifest;
-import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,12 +7,8 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -30,17 +25,7 @@ import com.example.group03_voicerecorder_mobile.app.main.WaveformView;
 import com.example.group03_voicerecorder_mobile.data.database.DatabaseHelper;
 import com.example.group03_voicerecorder_mobile.utils.PreferenceHelper;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 public class RecordActivity extends AppCompatActivity {
     private TextView status;

@@ -239,6 +239,64 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="Theme"
+                    android:textColor="@color/white"
+
+                    android:textSize="18sp"
+
+                    android:paddingStart="16dp"
+                    android:layout_marginBottom="0dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="16dp"
+                    android:text="Changes the theme of the application...."
+
+                    android:textColor="#b3ffffff"
+
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/themeType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dark"
+                android:textColor="#b3ffffff"
+                android:textSize="12sp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="10dp"/>
+                <Spinner
+                    android:id="@+id/themes_dropdown"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="0dp"
+                    android:thumbTint="@color/white"
+                    android:trackTint="@color/material_dynamic_neutral_variant100"
+                    android:backgroundTint="@color/white"
+                    android:scaleX="1.25"
+                    android:scaleY="1.25" />
+
+        </LinearLayout>
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginEnd="80dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="Audio Formation"
                     android:textColor="@color/white"
 
@@ -267,19 +325,20 @@
                 android:textSize="12sp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="10dp"/>
-                <Spinner
-                    android:id="@+id/dropdown_menu"
-                    android:layout_width="wrap_content"
-                    android:layout_height="48dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="0dp"
-                    android:thumbTint="@color/white"
-                    android:trackTint="@color/material_dynamic_neutral_variant100"
-                    android:backgroundTint="@color/white"
-                    android:scaleX="1.25"
-                    android:scaleY="1.25" />
+            <Spinner
+                android:id="@+id/dropdown_menu"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="0dp"
+                android:thumbTint="@color/white"
+                android:trackTint="@color/material_dynamic_neutral_variant100"
+                android:backgroundTint="@color/white"
+                android:scaleX="1.25"
+                android:scaleY="1.25" />
 
         </LinearLayout>
+
         <LinearLayout
 
             android:layout_width="match_parent"
