@@ -3,6 +3,7 @@ package com.example.group03_voicerecorder_mobile.app.settings;
 import static com.example.group03_voicerecorder_mobile.utils.PreferenceHelper.loadSettingsState;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,8 +24,9 @@ import com.example.group03_voicerecorder_mobile.app.GlobalConstants;
 import com.example.group03_voicerecorder_mobile.app.statistics.StatisticsActivity;
 import com.example.group03_voicerecorder_mobile.utils.PreferenceHelper;
 
-public class SettingsActivity extends AppCompatActivity {
+import java.util.Arrays;
 
+public class SettingsActivity extends AppCompatActivity {
     private ImageButton btnBack;
     private ImageButton btnToStatistics;
     private SwitchCompat swAutoRecord;
@@ -32,12 +34,52 @@ public class SettingsActivity extends AppCompatActivity {
     private SwitchCompat swSilenceRemoval;
     private SwitchCompat swTranscript;
     private Spinner fileFormat;
+    private Spinner themeList;
     private TextView selectedFormat;
+    private TextView selectedTheme;
     private ImageButton btnToScheduledRecording;
     private boolean settingsChanged = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        String theme = PreferenceHelper.getSelectedTheme(this, "selectedTheme");
+        switch (theme) {
+            case GlobalConstants.THEME_BLUE:
+            {
+                setTheme(R.style.AppTheme_Blue);
+                break;
+            }
+            case GlobalConstants.THEME_TEAL:
+            {
+                setTheme(R.style.AppTheme_Teal);
+                break;
+            }
+            case GlobalConstants.THEME_RED:
+            {
+                setTheme(R.style.AppTheme_Red);
+                break;
+            }
+            case GlobalConstants.THEME_PINK:
+            {
+                setTheme(R.style.AppTheme_Pink);
+                break;
+            }
+            case GlobalConstants.THEME_PURPLE:
+            {
+                setTheme(R.style.AppTheme_Purple);
+                break;
+            }
+            case GlobalConstants.THEME_ORANGE:
+            {
+                setTheme(R.style.AppTheme_DeepOrange);
+                break;
+            }
+            default: {
+                setTheme(R.style.AppTheme_Default);
+                break;
+            }
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
@@ -48,10 +90,13 @@ public class SettingsActivity extends AppCompatActivity {
         swSilenceRemoval = findViewById(R.id.swSilenceRemoval);
         swTranscript = findViewById(R.id.swTranscript);
         fileFormat = findViewById(R.id.dropdown_menu);
+        themeList = findViewById(R.id.themes_dropdown);
         selectedFormat = findViewById(R.id.formatType);
+        selectedTheme = findViewById(R.id.themeType);
         btnToScheduledRecording = findViewById(R.id.scheduledRecording);
 
         createExtensionList();
+        createThemeList();
         loadSettings();
         setUpListeners();
     }
@@ -62,16 +107,40 @@ public class SettingsActivity extends AppCompatActivity {
         fileFormat.setAdapter(adapter);
     }
 
+    private void createThemeList() {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, GlobalConstants.THEMES);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        themeList.setAdapter(adapter);
+    }
+
     private void loadSettings() {
         boolean isAutoRecord = PreferenceHelper.loadSettingsState(this, "isAutoRecord");
         boolean isNoiseReduction = PreferenceHelper.loadSettingsState(this, "isNoiseReduction");
         boolean isSilenceRemoval = PreferenceHelper.loadSettingsState(this, "isSilenceRemoval");
         boolean isTranscript = PreferenceHelper.loadSettingsState(this, "isTranscript");
+        String theme = PreferenceHelper.getSelectedTheme(this, "selectedTheme");
+        String format = PreferenceHelper.getSelectedFormat(this, "selectedFormat");
+
+        int themePosition = Arrays.asList(GlobalConstants.THEMES).indexOf(theme);
+        if (themePosition != -1) {
+            themeList.setSelection(themePosition);
+        }
+
+        // Set the spinner selection for the format
+        int formatPosition = Arrays.asList(GlobalConstants.FORMATS_SUPPORTED).indexOf(format);
+        if (formatPosition != -1) {
+            fileFormat.setSelection(formatPosition);
+        }
+
+        System.out.println(theme);
+        System.out.println(format);
 
         swAutoRecord.setChecked(isAutoRecord);
         swNoiseReduction.setChecked(isNoiseReduction);
         swSilenceRemoval.setChecked(isSilenceRemoval);
         swTranscript.setChecked(isTranscript);
+        selectedTheme.setText(theme);
+        selectedFormat.setText(format);
     }
 
     private void toStatisticsActivity() {
@@ -114,13 +183,27 @@ public class SettingsActivity extends AppCompatActivity {
                 String selectedExtension = GlobalConstants.FORMATS_SUPPORTED[position];
                 selectedFormat.setAllCaps(true);
                 selectedFormat.setText(selectedExtension);
-                PreferenceHelper.saveSelectedFormat(getBaseContext(), "selectedFormat", selectedExtension);
+                PreferenceHelper.saveSelectedFormat(SettingsActivity.this, "selectedFormat", selectedExtension);
+                System.out.println(selectedExtension);
+                settingsChanged = true;
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
 
+        themeList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selected = GlobalConstants.THEMES[position];
+                selectedTheme.setText(selected);
+                PreferenceHelper.saveSelectedTheme(SettingsActivity.this, "selectedTheme", selected);
+                System.out.println(selected);
+                settingsChanged = true;
             }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
     }
 

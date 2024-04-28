@@ -48,4 +48,15 @@ public class PreferenceHelper {
         SharedPreferences preferences = context.getSharedPreferences(GlobalConstants.SHARED_PREFERENCES, Context.MODE_PRIVATE);
         return preferences.getString(key, GlobalConstants.FORMAT_M4A);
     }
+    public static void saveSelectedTheme(Context context, String key, String value) {
+        SharedPreferences preferences = context.getSharedPreferences(GlobalConstants.SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(key, value);
+        editor.apply();
+    }
+
+    public static String getSelectedTheme(Context context, String key) {
+        SharedPreferences preferences = context.getSharedPreferences(GlobalConstants.SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        return preferences.getString(key, GlobalConstants.THEME_DEFAULT);
+    }
 }

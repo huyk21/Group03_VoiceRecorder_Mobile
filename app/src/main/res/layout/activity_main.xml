@@ -3,7 +3,6 @@
     android:id="@+id/mainContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/md_grey_800xxx"
     android:orientation="vertical"
     tools:context=".app.main.MainActivity">
 

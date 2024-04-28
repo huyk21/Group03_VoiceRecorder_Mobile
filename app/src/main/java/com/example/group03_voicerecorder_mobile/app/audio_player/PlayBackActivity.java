@@ -14,7 +14,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.group03_voicerecorder_mobile.R;
+import com.example.group03_voicerecorder_mobile.app.GlobalConstants;
 import com.example.group03_voicerecorder_mobile.app.main.WaveformView;
+import com.example.group03_voicerecorder_mobile.utils.PreferenceHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,6 +47,44 @@ public class PlayBackActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        String selectedTheme = PreferenceHelper.getSelectedTheme(this, "selectedTheme");
+        switch (selectedTheme) {
+            case GlobalConstants.THEME_BLUE:
+            {
+                setTheme(R.style.AppTheme_Blue);
+                break;
+            }
+            case GlobalConstants.THEME_TEAL:
+            {
+                setTheme(R.style.AppTheme_Teal);
+                break;
+            }
+            case GlobalConstants.THEME_RED:
+            {
+                setTheme(R.style.AppTheme_Red);
+                break;
+            }
+            case GlobalConstants.THEME_PINK:
+            {
+                setTheme(R.style.AppTheme_Pink);
+                break;
+            }
+            case GlobalConstants.THEME_PURPLE:
+            {
+                setTheme(R.style.AppTheme_Purple);
+                break;
+            }
+            case GlobalConstants.THEME_ORANGE:
+            {
+                setTheme(R.style.AppTheme_DeepOrange);
+                break;
+            }
+            default: {
+                setTheme(R.style.AppTheme_Default);
+                break;
+            }
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playback);
         textViewFileName = findViewById(R.id.textView_fileName);
@@ -54,7 +94,6 @@ public class PlayBackActivity extends AppCompatActivity {
         fastForwardButton = findViewById(R.id.button_fast_forward);
         chronometer = findViewById(R.id.chronometer_playback);
         btnBack = findViewById(R.id.btnBack);
-        System.out.println("oncreate playback");
 
         setupMediaPlayer();
         Bundle bd = getIntent().getExtras();
