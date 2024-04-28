@@ -1,11 +1,16 @@
 package com.example.group03_voicerecorder_mobile.utils;
 
 import android.content.Context;
+import android.os.Environment;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.group03_voicerecorder_mobile.app.GlobalConstants;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -73,6 +78,23 @@ public class Utilities {
             // File doesn't exist
             Toast.makeText(context, "File not found", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public static void overwriteAudioFile(Context context, String fileName, InputStream inputStream) throws IOException {
+        File file = new File(context.getExternalFilesDir(null).getAbsolutePath() + "/" + fileName);
+
+        Log.d("overWriteFile", "Overwrite " + fileName);
+        FileOutputStream outputStream = new FileOutputStream(file, false);
+
+        // Use a buffer for efficient copying
+        byte[] buffer = new byte[1024]; // Adjust buffer size as needed
+        int bytesRead;
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            outputStream.write(buffer, 0, bytesRead);
+        }
+
+        inputStream.close();
+        outputStream.close();
     }
 
 }
