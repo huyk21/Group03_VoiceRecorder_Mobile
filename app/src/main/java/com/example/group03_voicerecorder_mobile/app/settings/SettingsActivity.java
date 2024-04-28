@@ -9,9 +9,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
@@ -30,6 +32,7 @@ public class SettingsActivity extends AppCompatActivity {
     private SwitchCompat swSilenceRemoval;
     private SwitchCompat swTranscript;
     private Spinner fileFormat;
+    private TextView selectedFormat;
     private ImageButton btnToScheduledRecording;
     private boolean settingsChanged = false;
 
@@ -45,10 +48,18 @@ public class SettingsActivity extends AppCompatActivity {
         swSilenceRemoval = findViewById(R.id.swSilenceRemoval);
         swTranscript = findViewById(R.id.swTranscript);
         fileFormat = findViewById(R.id.dropdown_menu);
+        selectedFormat = findViewById(R.id.formatType);
         btnToScheduledRecording = findViewById(R.id.scheduledRecording);
 
+        createExtensionList();
         loadSettings();
         setUpListeners();
+    }
+
+    private void createExtensionList() {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, GlobalConstants.FORMATS_SUPPORTED);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        fileFormat.setAdapter(adapter);
     }
 
     private void loadSettings() {
@@ -95,6 +106,21 @@ public class SettingsActivity extends AppCompatActivity {
 
         btnToScheduledRecording.setOnClickListener(v -> {
 
+        });
+
+        fileFormat.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedExtension = GlobalConstants.FORMATS_SUPPORTED[position];
+                selectedFormat.setAllCaps(true);
+                selectedFormat.setText(selectedExtension);
+                PreferenceHelper.saveSelectedFormat(getBaseContext(), "selectedFormat", selectedExtension);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
         });
     }
 
