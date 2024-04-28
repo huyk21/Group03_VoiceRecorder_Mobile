@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:viewBindingIgnore="true"
-    android:background="@color/md_grey_800xxx"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:viewBindingIgnore="true">
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
+
         <LinearLayout
             android:id="@+id/toolbar"
             android:layout_width="wrap_content"
@@ -25,22 +25,23 @@
                 android:contentDescription="@string/backButton"
                 android:padding="16dp"
                 android:src="@drawable/ic_arrow_back" />
-            
+
 
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/viewText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-          <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:text="@string/toSettings"
-              android:textColor="#80F5F5F5"
-              android:textSize="25sp"
-              android:padding="16dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="@string/toSettings"
+                android:textColor="#80F5F5F5"
+                android:textSize="25sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -52,19 +53,19 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginEnd="80dp">
+                android:layout_marginEnd="80dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Auto Recording"
-                    android:textColor="@color/white"
-
-                    android:textSize="18sp"
-
+                    android:layout_marginBottom="0dp"
                     android:paddingStart="16dp"
-                    android:layout_marginBottom="0dp"/>
+
+                    android:text="Auto Recording"
+
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -76,19 +77,20 @@
 
                     android:textSize="14sp" />
             </LinearLayout>
+
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/swAutoRecord"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:thumbTint="@color/white"
-                android:trackTint="@color/material_dynamic_neutral_variant100"
                 android:scaleX="1.25"
                 android:scaleY="1.25"
-            />
+                android:thumbTint="@color/white"
+                android:trackTint="@color/material_dynamic_neutral_variant100" />
 
 
         </LinearLayout>
+
         <LinearLayout
 
             android:layout_width="match_parent"
@@ -99,17 +101,17 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginEnd="80dp">
+                android:layout_marginEnd="80dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="0dp"
+                    android:paddingStart="16dp"
                     android:text="Noise Reduction"
                     android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:paddingStart="16dp"
-                    android:layout_marginBottom="0dp"/>
+                    android:textSize="18sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -126,11 +128,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:thumbTint="@color/white"
-                android:trackTint="@color/material_dynamic_neutral_variant100"
                 android:scaleX="1.25"
                 android:scaleY="1.25"
-                />
+                android:thumbTint="@color/white"
+                android:trackTint="@color/material_dynamic_neutral_variant100" />
 
 
         </LinearLayout>
@@ -180,6 +181,7 @@
 
 
         </LinearLayout>
+
         <LinearLayout
 
             android:layout_width="match_parent"
@@ -206,7 +208,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingStart="16dp"
-                    android:text="Auto add transcript when recordings...   "
+                    android:text="Auto add transcript when recordings       "
                     android:textColor="#b3ffffff"
                     android:textSize="14sp" />
 
@@ -233,25 +235,25 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginEnd="80dp">
+                android:layout_marginEnd="80dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="0dp"
+                    android:paddingStart="16dp"
+
                     android:text="Theme"
+
                     android:textColor="@color/white"
-
-                    android:textSize="18sp"
-
-                    android:paddingStart="16dp"
-                    android:layout_marginBottom="0dp"/>
+                    android:textSize="18sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingStart="16dp"
-                    android:text="Changes the theme of the application...."
+                    android:text="Changes the theme of the application "
 
                     android:textColor="#b3ffffff"
 
@@ -262,22 +264,23 @@
                 android:id="@+id/themeType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Dark"
-                android:textColor="#b3ffffff"
-                android:textSize="12sp"
                 android:layout_gravity="center_vertical"
-                android:layout_marginEnd="10dp"/>
-                <Spinner
-                    android:id="@+id/themes_dropdown"
-                    android:layout_width="wrap_content"
-                    android:layout_height="48dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="0dp"
-                    android:thumbTint="@color/white"
-                    android:trackTint="@color/material_dynamic_neutral_variant100"
-                    android:backgroundTint="@color/white"
-                    android:scaleX="1.25"
-                    android:scaleY="1.25" />
+                android:layout_marginEnd="10dp"
+                android:text="Default"
+                android:textColor="#b3ffffff"
+                android:textSize="12sp" />
+
+            <Spinner
+                android:id="@+id/themes_dropdown"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="0dp"
+                android:backgroundTint="@color/white"
+                android:scaleX="1.25"
+                android:scaleY="1.25"
+                android:thumbTint="@color/white"
+                android:trackTint="@color/material_dynamic_neutral_variant100" />
 
         </LinearLayout>
 
@@ -291,19 +294,19 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginEnd="80dp">
+                android:layout_marginEnd="80dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Audio Formation"
-                    android:textColor="@color/white"
-
-                    android:textSize="18sp"
-
+                    android:layout_marginBottom="0dp"
                     android:paddingStart="16dp"
-                    android:layout_marginBottom="0dp"/>
+
+                    android:text="Audio Formation"
+
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -320,22 +323,23 @@
                 android:id="@+id/formatType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="WAV"
-                android:textColor="#b3ffffff"
-                android:textSize="12sp"
                 android:layout_gravity="center_vertical"
-                android:layout_marginEnd="10dp"/>
+                android:layout_marginEnd="10dp"
+                android:text="M4A"
+                android:textColor="#b3ffffff"
+                android:textSize="12sp" />
+
             <Spinner
                 android:id="@+id/dropdown_menu"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="0dp"
-                android:thumbTint="@color/white"
-                android:trackTint="@color/material_dynamic_neutral_variant100"
                 android:backgroundTint="@color/white"
                 android:scaleX="1.25"
-                android:scaleY="1.25" />
+                android:scaleY="1.25"
+                android:thumbTint="@color/white"
+                android:trackTint="@color/material_dynamic_neutral_variant100" />
 
         </LinearLayout>
 
@@ -349,40 +353,41 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginEnd="80dp">
+                android:layout_marginEnd="80dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="200dp"
                     android:layout_height="wrap_content"
-                    android:text="Recording Statistics"
-                    android:textColor="@color/white"
-
-                    android:textSize="18sp"
-
+                    android:layout_marginBottom="0dp"
                     android:paddingStart="16dp"
-                    android:layout_marginBottom="0dp"/>
+
+                    android:text="Recording Statistics"
+
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingStart="16dp"
-                    android:text="Show statistics of records, click for more..."
+                    android:text="Show statistics of records, click for more   "
 
                     android:textColor="#b3ffffff"
 
                     android:textSize="14sp" />
             </LinearLayout>
-          <ImageButton
-              android:id="@+id/btnToStatistics"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_gravity="center_horizontal"
-              android:background="@color/md_black_1000"
-              android:contentDescription="@string/toRecordingStatistics"
-              android:padding="20dp"
-              android:layout_marginEnd="0dp"
-              android:src="@drawable/baseline_keyboard_arrow_right_24"/>
+
+            <ImageButton
+                android:id="@+id/btnToStatistics"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginEnd="0dp"
+                android:background="@color/md_black_1000"
+                android:contentDescription="@string/toRecordingStatistics"
+                android:padding="20dp"
+                android:src="@drawable/baseline_keyboard_arrow_right_24" />
         </LinearLayout>
 
         <LinearLayout
@@ -394,19 +399,19 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginEnd="80dp">
+                android:layout_marginEnd="80dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="200dp"
                     android:layout_height="wrap_content"
-                    android:text="Scheduled Recording"
-                    android:textColor="@color/white"
-
-                    android:textSize="18sp"
-
+                    android:layout_marginBottom="0dp"
                     android:paddingStart="16dp"
-                    android:layout_marginBottom="0dp"/>
+
+                    android:text="Scheduled Recording"
+
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -424,12 +429,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginEnd="0dp"
                 android:background="@color/md_black_1000"
                 android:contentDescription="@string/toScheduledRecording"
                 android:padding="20dp"
-                android:layout_marginEnd="0dp"
-                android:src="@drawable/baseline_keyboard_arrow_right_24"/>
+                android:src="@drawable/baseline_keyboard_arrow_right_24" />
         </LinearLayout>
     </LinearLayout>
 
-</ScrollView>
+</LinearLayout>
