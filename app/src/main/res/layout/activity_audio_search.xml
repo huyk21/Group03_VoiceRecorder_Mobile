@@ -8,7 +8,7 @@
     <EditText
         android:id="@+id/editTextSearch"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:hint="Enter word or sentence to search"
         android:inputType="text"
         android:imeOptions="actionDone"
@@ -22,7 +22,7 @@
         android:text="Search"
         android:layout_below="@id/editTextSearch"
         android:layout_marginTop="16dp"
-        android:textColor="@android:color/white"/>
+        android:textColor="@color/md_black_1000"/>
 
     <TextView
         android:id="@+id/textViewResult"

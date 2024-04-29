@@ -5,6 +5,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.group03_voicerecorder_mobile.R;
 import com.example.group03_voicerecorder_mobile.app.GlobalConstants;
 
 import java.io.File;
@@ -95,6 +96,46 @@ public class Utilities {
 
         inputStream.close();
         outputStream.close();
+    }
+
+    public static void setCustomTheme(Context context) {
+        String selectedTheme = PreferenceHelper.getSelectedTheme(context, "selectedTheme");
+        switch (selectedTheme) {
+            case GlobalConstants.THEME_BLUE:
+            {
+                context.setTheme(R.style.AppTheme_Blue);
+                break;
+            }
+            case GlobalConstants.THEME_TEAL:
+            {
+                context.setTheme(R.style.AppTheme_Teal);
+                break;
+            }
+            case GlobalConstants.THEME_RED:
+            {
+                context.setTheme(R.style.AppTheme_Red);
+                break;
+            }
+            case GlobalConstants.THEME_PINK:
+            {
+                context.setTheme(R.style.AppTheme_Pink);
+                break;
+            }
+            case GlobalConstants.THEME_PURPLE:
+            {
+                context.setTheme(R.style.AppTheme_Purple);
+                break;
+            }
+            case GlobalConstants.THEME_ORANGE:
+            {
+                context.setTheme(R.style.AppTheme_DeepOrange);
+                break;
+            }
+            default: {
+                context.setTheme(R.style.AppTheme_Default);
+                break;
+            }
+        }
     }
 
 }

@@ -17,6 +17,7 @@ import com.example.group03_voicerecorder_mobile.api.RetrofitClient;
 import com.example.group03_voicerecorder_mobile.app.GlobalConstants;
 import com.example.group03_voicerecorder_mobile.utils.PreferenceHelper;
 import com.example.group03_voicerecorder_mobile.utils.StringAlgorithms;
+import com.example.group03_voicerecorder_mobile.utils.Utilities;
 import com.google.gson.JsonObject;
 
 import java.io.File;
@@ -38,43 +39,7 @@ public class SearchAudioActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        String selectedTheme = PreferenceHelper.getSelectedTheme(this, "selectedTheme");
-        switch (selectedTheme) {
-            case GlobalConstants.THEME_BLUE:
-            {
-                setTheme(R.style.AppTheme_Blue);
-                break;
-            }
-            case GlobalConstants.THEME_TEAL:
-            {
-                setTheme(R.style.AppTheme_Teal);
-                break;
-            }
-            case GlobalConstants.THEME_RED:
-            {
-                setTheme(R.style.AppTheme_Red);
-                break;
-            }
-            case GlobalConstants.THEME_PINK:
-            {
-                setTheme(R.style.AppTheme_Pink);
-                break;
-            }
-            case GlobalConstants.THEME_PURPLE:
-            {
-                setTheme(R.style.AppTheme_Purple);
-                break;
-            }
-            case GlobalConstants.THEME_ORANGE:
-            {
-                setTheme(R.style.AppTheme_DeepOrange);
-                break;
-            }
-            default: {
-                setTheme(R.style.AppTheme_Default);
-                break;
-            }
-        }
+        Utilities.setCustomTheme(this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_audio_search);

@@ -54,43 +54,7 @@ public class UploadActivity extends AppCompatActivity implements AdapterView.OnI
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        String selectedTheme = PreferenceHelper.getSelectedTheme(this, "selectedTheme");
-        switch (selectedTheme) {
-            case GlobalConstants.THEME_BLUE:
-            {
-                setTheme(R.style.AppTheme_Blue);
-                break;
-            }
-            case GlobalConstants.THEME_TEAL:
-            {
-                setTheme(R.style.AppTheme_Teal);
-                break;
-            }
-            case GlobalConstants.THEME_RED:
-            {
-                setTheme(R.style.AppTheme_Red);
-                break;
-            }
-            case GlobalConstants.THEME_PINK:
-            {
-                setTheme(R.style.AppTheme_Pink);
-                break;
-            }
-            case GlobalConstants.THEME_PURPLE:
-            {
-                setTheme(R.style.AppTheme_Purple);
-                break;
-            }
-            case GlobalConstants.THEME_ORANGE:
-            {
-                setTheme(R.style.AppTheme_DeepOrange);
-                break;
-            }
-            default: {
-                setTheme(R.style.AppTheme_Default);
-                break;
-            }
-        }
+        Utilities.setCustomTheme(this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
