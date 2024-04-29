@@ -23,6 +23,7 @@ import com.example.group03_voicerecorder_mobile.R;
 import com.example.group03_voicerecorder_mobile.app.GlobalConstants;
 import com.example.group03_voicerecorder_mobile.app.statistics.StatisticsActivity;
 import com.example.group03_voicerecorder_mobile.utils.PreferenceHelper;
+import com.example.group03_voicerecorder_mobile.utils.Utilities;
 
 import java.util.Arrays;
 
@@ -39,47 +40,12 @@ public class SettingsActivity extends AppCompatActivity {
     private TextView selectedTheme;
     private ImageButton btnToScheduledRecording;
     private boolean settingsChanged = false;
+    private boolean isUserTriggeredTheme = true;
+    private boolean isUserTriggeredFormat = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        String theme = PreferenceHelper.getSelectedTheme(this, "selectedTheme");
-        switch (theme) {
-            case GlobalConstants.THEME_BLUE:
-            {
-                setTheme(R.style.AppTheme_Blue);
-                break;
-            }
-            case GlobalConstants.THEME_TEAL:
-            {
-                setTheme(R.style.AppTheme_Teal);
-                break;
-            }
-            case GlobalConstants.THEME_RED:
-            {
-                setTheme(R.style.AppTheme_Red);
-                break;
-            }
-            case GlobalConstants.THEME_PINK:
-            {
-                setTheme(R.style.AppTheme_Pink);
-                break;
-            }
-            case GlobalConstants.THEME_PURPLE:
-            {
-                setTheme(R.style.AppTheme_Purple);
-                break;
-            }
-            case GlobalConstants.THEME_ORANGE:
-            {
-                setTheme(R.style.AppTheme_DeepOrange);
-                break;
-            }
-            default: {
-                setTheme(R.style.AppTheme_Default);
-                break;
-            }
-        }
-
+        Utilities.setCustomTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
@@ -123,17 +89,15 @@ public class SettingsActivity extends AppCompatActivity {
 
         int themePosition = Arrays.asList(GlobalConstants.THEMES).indexOf(theme);
         if (themePosition != -1) {
+            isUserTriggeredTheme = false;
             themeList.setSelection(themePosition);
         }
 
-        // Set the spinner selection for the format
         int formatPosition = Arrays.asList(GlobalConstants.FORMATS_SUPPORTED).indexOf(format);
         if (formatPosition != -1) {
+            isUserTriggeredFormat = false;
             fileFormat.setSelection(formatPosition);
         }
-
-        System.out.println(theme);
-        System.out.println(format);
 
         swAutoRecord.setChecked(isAutoRecord);
         swNoiseReduction.setChecked(isNoiseReduction);
@@ -180,12 +144,14 @@ public class SettingsActivity extends AppCompatActivity {
         fileFormat.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedExtension = GlobalConstants.FORMATS_SUPPORTED[position];
-                selectedFormat.setAllCaps(true);
-                selectedFormat.setText(selectedExtension);
-                PreferenceHelper.saveSelectedFormat(SettingsActivity.this, "selectedFormat", selectedExtension);
-                System.out.println(selectedExtension);
-                settingsChanged = true;
+                if (isUserTriggeredFormat) {
+                    String selectedExtension = GlobalConstants.FORMATS_SUPPORTED[position];
+                    selectedFormat.setAllCaps(true);
+                    selectedFormat.setText(selectedExtension);
+                    PreferenceHelper.saveSelectedFormat(SettingsActivity.this, "selectedFormat", selectedExtension);
+                    settingsChanged = true;
+                }
+                isUserTriggeredFormat = true;
             }
 
             @Override
@@ -195,11 +161,14 @@ public class SettingsActivity extends AppCompatActivity {
         themeList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selected = GlobalConstants.THEMES[position];
-                selectedTheme.setText(selected);
-                PreferenceHelper.saveSelectedTheme(SettingsActivity.this, "selectedTheme", selected);
-                System.out.println(selected);
-                settingsChanged = true;
+                if (isUserTriggeredTheme)
+                {
+                    String selected = GlobalConstants.THEMES[position];
+                    selectedTheme.setText(selected);
+                    PreferenceHelper.saveSelectedTheme(SettingsActivity.this, "selectedTheme", selected);
+                    settingsChanged = true;
+                }
+                isUserTriggeredTheme = true;
             }
 
             @Override
