@@ -21,6 +21,7 @@ import androidx.appcompat.widget.SwitchCompat;
 
 import com.example.group03_voicerecorder_mobile.R;
 import com.example.group03_voicerecorder_mobile.app.GlobalConstants;
+import com.example.group03_voicerecorder_mobile.app.iocheck.SoundTestActivity;
 import com.example.group03_voicerecorder_mobile.app.statistics.StatisticsActivity;
 import com.example.group03_voicerecorder_mobile.utils.PreferenceHelper;
 import com.example.group03_voicerecorder_mobile.utils.Utilities;
@@ -39,6 +40,7 @@ public class SettingsActivity extends AppCompatActivity {
     private TextView selectedFormat;
     private TextView selectedTheme;
     private ImageButton btnToScheduledRecording;
+    private ImageButton btnToSoundTest;
     private boolean settingsChanged = false;
     private boolean isUserTriggeredTheme = true;
     private boolean isUserTriggeredFormat = true;
@@ -60,6 +62,7 @@ public class SettingsActivity extends AppCompatActivity {
         selectedFormat = findViewById(R.id.formatType);
         selectedTheme = findViewById(R.id.themeType);
         btnToScheduledRecording = findViewById(R.id.scheduledRecording);
+        btnToSoundTest = findViewById(R.id.btnToSoundTest);
 
         createExtensionList();
         createThemeList();
@@ -112,10 +115,17 @@ public class SettingsActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void toSoundTestActivity() {
+        Intent intent = new Intent(this, SoundTestActivity.class);
+        startActivity(intent);
+    }
+
     private void setUpListeners() {
         btnBack.setOnClickListener(v -> onBackPressed());
 
         btnToStatistics.setOnClickListener(v -> toStatisticsActivity());
+
+        btnToSoundTest.setOnClickListener(v -> toSoundTestActivity());
 
         swAutoRecord.setOnCheckedChangeListener((buttonView, isChecked) -> {
             PreferenceHelper.saveSettingsState(this, "isAutoRecord", isChecked);

@@ -66,6 +66,8 @@
         <activity android:name=".app.statistics.StatisticsActivity"
             android:screenOrientation="portrait"
             />
+        <activity android:name=".app.iocheck.SoundTestActivity"
+            android:screenOrientation="portrait"/>
 
         <service android:name=".app.record.RecordService"
             android:foregroundServiceType="microphone"/>
