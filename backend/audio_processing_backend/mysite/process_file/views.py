@@ -8,6 +8,7 @@ from django.http import JsonResponse
 import speech_recognition as sr
 from .forms import AudioFileForm
 from .models import AudioFile
+from rest_framework import status
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -54,16 +55,16 @@ def convert_audio(request):
 
         input_path = os.path.join(settings.MEDIA_ROOT, 'converted', audio_file.name)
         output_path = os.path.join(settings.MEDIA_ROOT, 'converted',  file_name + '.' + output_format)
+        if os.path.exists(output_path):
+            os.remove(output_path)
         with open(input_path, 'wb+') as f:
-                for chunk in audio_file.chunks():
-                    f.write(chunk)
-        print(input_path, output_path)
+            for chunk in audio_file.chunks():
+                f.write(chunk)
         # Convert audio
         try:
             ffmpeg.input(input_path).output(output_path).run()
         except ffmpeg.Error as e:
             raise ValidationError({'error': f'FFmpeg conversion failed: {e}'})
-        ffmpeg.input(input_path).output(output_path).run()
         os.remove(input_path)
         download_url = f"/converted/{file_name + '.' + output_format}"
         return Response({
@@ -79,30 +80,30 @@ def download_file(request, filepath):
     
     # Normalize the file path to prevent directory traversal
     file_path = os.path.normpath(file_path)
-    
-    # Ensure the path stays within the media directory
-    if not file_path.startswith(settings.MEDIA_ROOT):
-        return HttpResponse("Unauthorized", status=401)
-
+    response = None 
     # Check if file exists
     if os.path.exists(file_path):
         with open(file_path, 'rb') as file:
             response = HttpResponse(file.read(), content_type="application/octet-stream")
             response['Content-Disposition'] = f'attachment; filename="{os.path.basename(file_path)}"'
+        os.remove(file_path)
+        if response:
             return response
+        else:
+            return HttpResponse("File not found.", status=404)
     else:
         return HttpResponse("File not found.", status=404)
-    
+
 @csrf_exempt
 def speech_to_text(request):
     if request.method == 'POST' and 'audio' in request.FILES:
         uploaded_file = request.FILES['audio']
         file_extension = os.path.splitext(uploaded_file.name)[1].lower()
         tmp_filepath = os.path.join(settings.MEDIA_ROOT, 'audios', uploaded_file.name)
-        with open(tmp_filepath, 'wb+') as f:
+        with open(tmp_filepath, 'wb') as f:
                 for chunk in uploaded_file.chunks():
                     f.write(chunk)
-        # Check file extension (simpler approach)
+
         if file_extension not in [".flac", ".wav"]:            
             # converted to .flac
             converted_filepath = os.path.splitext(tmp_filepath)[0] + '.flac'
@@ -131,5 +132,47 @@ def speech_to_text(request):
         except Exception as e:  # Catch generic exceptions for unexpected errors
             os.remove(tmp_filepath)
             return JsonResponse({'status': 'error', 'message': 'An unexpected error occurred: {0}'.format(e)})
-
     return JsonResponse({'status': 'error', 'message': 'Invalid request or no files uploaded'})
+
+@csrf_exempt
+@api_view(['POST'])
+def remove_silence(request):
+    if request.method == 'POST':
+        audio_file = request.FILES.get('audio')
+
+        if not audio_file:
+            return Response({'error': 'No audio file provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+        file_name = audio_file.name.split('.')[0]
+        input_path = os.path.join(settings.MEDIA_ROOT, 'audios', audio_file.name)
+        output_path = os.path.join(settings.MEDIA_ROOT, 'processed', file_name + '_nosilence.mp3')
+        
+        # Write the uploaded file to the input path
+        with open(input_path, 'wb+') as f:
+            for chunk in audio_file.chunks():
+                f.write(chunk)
+
+        # Construct the ffmpeg command to remove silence
+        try:
+            (
+                ffmpeg
+                .input(input_path)
+                .output(output_path, **{
+                        'af': 'silenceremove=start_periods=1:start_duration=0:start_threshold=-50dB'
+                    })
+                .run(capture_stdout=True, capture_stderr=True)
+            )
+        except ffmpeg.Error as e:
+            os.remove(input_path)  # Clean up input file
+            return Response({'error': 'FFmpeg error: ' + e.stderr.decode('utf8')}, status=status.HTTP_400_BAD_REQUEST)
+
+        os.remove(input_path)  # Clean up input file
+
+        # Respond with a success message and a URL to access the processed file
+        download_url = f"/processed/{file_name}_nosilence.mp3"
+        return Response({
+            'message': 'Silence removed successfully',
+            'download_url': download_url
+        })
+
+    return Response({'error': 'Invalid request method'}, status=status.HTTP_400_BAD_REQUEST)
