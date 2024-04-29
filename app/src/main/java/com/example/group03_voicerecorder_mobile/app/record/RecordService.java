@@ -88,6 +88,9 @@ public class RecordService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent == null) {
+            return START_NOT_STICKY; // or START_REDELIVER_INTENT if you need the Intent redelivered
+        }
         if ("ACTION_START_RECORDING".equals(intent.getAction())) {
             startForegroundService();
             startRecording();

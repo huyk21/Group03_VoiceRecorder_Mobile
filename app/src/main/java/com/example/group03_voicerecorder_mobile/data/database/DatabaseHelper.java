@@ -21,6 +21,8 @@ import java.util.Locale;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private Context context;
+    private SQLiteDatabase db;
+
 
     // Database Version
     private static final int DATABASE_VERSION = 5;
@@ -65,6 +67,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECORDINGS);
         onCreate(db);
+    }
+
+    private SQLiteDatabase getDatabase() {
+        if (db == null || !db.isOpen()) {
+            db = this.getWritableDatabase();
+        }
+        return db;
     }
 
     // Create operation
@@ -176,6 +185,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[]{String.valueOf(recordId)});
     }
 
+    public int updateFilePath(Integer recordId, String filePath) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_FILEPATH, filePath);
+        return db.update(TABLE_RECORDINGS, values, KEY_ID + " = ?",
+                new String[]{String.valueOf(recordId)});
+    }
+
+
+
     // Delete operation
     public void deleteRecording(long id) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -241,6 +260,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         db.close();
         return sum;
+    }
+
+    @Override
+    public synchronized void close() {
+        if (db != null && db.isOpen()) {
+            db.close();
+            db = null;
+        }
+        super.close();
     }
 
 }

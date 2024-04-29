@@ -21,6 +21,7 @@ import com.example.group03_voicerecorder_mobile.api.ApiService;
 import com.example.group03_voicerecorder_mobile.api.RetrofitClient;
 
 import com.example.group03_voicerecorder_mobile.app.GlobalConstants;
+import com.example.group03_voicerecorder_mobile.data.database.DatabaseHelper;
 import com.example.group03_voicerecorder_mobile.utils.PreferenceHelper;
 
 import com.example.group03_voicerecorder_mobile.utils.Utilities;
@@ -45,12 +46,16 @@ import retrofit2.Response;
 
 public class UploadActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     private static final String TAG = "UploadActivity";
+    private DatabaseHelper databaseHelper;
     private TextView tvFilePath;
     private Spinner spinnerOutputFormat;
     private Button btnUpload;
     private String[] formats = {"MP3", "WAV", "OGG"};
 
     private String fileName;
+    private String filePath;
+    private Integer recordId;
+    private String selectedFormat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,19 +68,24 @@ public class UploadActivity extends AppCompatActivity implements AdapterView.OnI
         btnUpload = findViewById(R.id.btnUploadFile);
         spinnerOutputFormat = findViewById(R.id.spinnerOutputFormat);
 
+        databaseHelper = new DatabaseHelper(this);
+
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, formats);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerOutputFormat.setAdapter(adapter);
         spinnerOutputFormat.setOnItemSelectedListener(this);
 
-        String filePath = getIntent().getStringExtra("recordPath");
+        filePath = getIntent().getStringExtra("recordPath");
         fileName = getIntent().getStringExtra("recordName");
+        recordId = getIntent().getIntExtra("recordId", -1);
+        System.out.println(fileName + " " + filePath);
         if (filePath != null) {
             tvFilePath.setText(filePath);
         }
 
         btnUpload.setOnClickListener(v -> {
             if (filePath != null && !filePath.isEmpty()) {
+                btnUpload.setEnabled(false);
                 uploadFile(filePath);
             } else {
                 Toast.makeText(UploadActivity.this, "File path is not valid.", Toast.LENGTH_SHORT).show();
@@ -85,13 +95,22 @@ public class UploadActivity extends AppCompatActivity implements AdapterView.OnI
 
     private void uploadFile(String path) {
         File file = new File(path);
-        RequestBody requestFile = RequestBody.create(MediaType.parse("audio/*"), file);
+
+        // MediaType for the file part
+        MediaType mediaType = MediaType.parse("audio/*");
+        RequestBody requestFile = RequestBody.Companion.create(file, mediaType);
         MultipartBody.Part body = MultipartBody.Part.createFormData("audio", file.getName(), requestFile);
-        String selectedFormat = spinnerOutputFormat.getSelectedItem().toString();
-        RequestBody format = RequestBody.create(MediaType.parse("text/plain"), selectedFormat);
+
+        selectedFormat = spinnerOutputFormat.getSelectedItem().toString();
+
+        MediaType textType = MediaType.parse("text/plain");
+
+        RequestBody formatBody = RequestBody.Companion.create(selectedFormat, textType);
+
 
         ApiService service = RetrofitClient.getClient().create(ApiService.class);
-        Call<JsonObject> call = service.uploadAudioFile(body, selectedFormat);
+
+        Call<JsonObject> call = service.uploadAudioFile(body, formatBody);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -115,21 +134,31 @@ public class UploadActivity extends AppCompatActivity implements AdapterView.OnI
     private void downloadFile(String fileUrl) {
         ApiService service = RetrofitClient.getClient().create(ApiService.class);
         // Ensure the URL path is correctly concatenated
-        Call<ResponseBody> call = service.downloadFile("http://10.0.2.2:8000/process_file/download" + fileUrl);
+        String url = "http://10.0.2.2:8000/process_file/download" + (fileUrl.startsWith("/") ? fileUrl : "/" + fileUrl);
+        Call<ResponseBody> call = service.downloadFile(url);
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
-                                InputStream inputStream = response.body().byteStream();
-                                Utilities.overwriteAudioFile(getApplicationContext(), fileName, inputStream);
-                            } catch (IOException e) {
-                                Log.e(TAG, "Error saving downloaded file: " + e.getMessage());
+                    new Thread(() -> {
+
+                        try (InputStream inputStream = response.body().byteStream()) {
+                            fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
+                            // overwrite file
+                            Utilities.overwriteAudioFile(getApplicationContext(), fileName, inputStream);
+                            // delete old file
+                            Utilities.deleteFile(filePath, getApplicationContext());
+                            // rename filepath in database
+                            String newFilePath = getExternalFilesDir(null).getPath() + "/" + fileName;
+                            System.out.println("newFilePath " + newFilePath);
+                            databaseHelper.updateFilePath(recordId, newFilePath);
+                            Log.i(TAG, "Downloaded converted successfully");
+                        } catch (IOException e) {
+                            Log.e(TAG, "Error saving downloaded file: " + e.getMessage());
+                        } finally {
+                            if (databaseHelper != null) {
+                                databaseHelper.close();
                             }
                         }
                     }).start();
@@ -143,8 +172,8 @@ public class UploadActivity extends AppCompatActivity implements AdapterView.OnI
                 Log.e(TAG, "Error downloading file: " + t.getMessage());
             }
         });
-
     }
+
 
 
     @Override

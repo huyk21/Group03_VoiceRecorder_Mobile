@@ -43,12 +43,13 @@ def upload_audio(request):
 def convert_audio(request):
     if request.method == 'POST':
         audio_file = request.FILES.get('audio')
-        output_format = request.data.get('format', 'mp3')
+        output_format = request.data.get('format', 'mp3').lower()
         file_name = audio_file.name.split('.')[0]
+        print("outputformat:", output_format)
 
         if not audio_file:
             return Response({'error': 'No audio file provided'}, status=status.HTTP_400_BAD_REQUEST)
-
+    
         # Validate the desired output format
         if output_format not in ['mp3', 'wav', 'ogg']:
             return Response({'error': 'Invalid output format'}, status=status.HTTP_400_BAD_REQUEST)
@@ -158,7 +159,7 @@ def remove_silence(request):
                 ffmpeg
                 .input(input_path)
                 .output(output_path, **{
-                        'af': 'silenceremove=start_periods=1:start_duration=0:start_threshold=-50dB'
+                            'af': 'silenceremove=start_periods=1:start_duration=0:start_threshold=-50dB'
                     })
                 .run(capture_stdout=True, capture_stderr=True)
             )

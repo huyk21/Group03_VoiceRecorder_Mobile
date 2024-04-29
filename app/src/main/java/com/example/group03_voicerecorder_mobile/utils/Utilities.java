@@ -63,21 +63,24 @@ public class Utilities {
         }
     }
 
-    public static void deleteFile(String filePath, Context context) {
+    public static int deleteFile(String filePath, Context context) {
         File fileToDelete = new File(filePath);
 
         if (fileToDelete.exists()) {
             boolean deleted = fileToDelete.delete();
             if (deleted) {
                 // File deleted successfully
-                Toast.makeText(context, "File deleted", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, "File deleted", Toast.LENGTH_SHORT).show();
+                return 1;
             } else {
                 // Deletion failed
-                Toast.makeText(context, "Failed to delete file", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, "Failed to delete file", Toast.LENGTH_SHORT).show();
+                return -1;
             }
         } else {
             // File doesn't exist
-            Toast.makeText(context, "File not found", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context, "File not found", Toast.LENGTH_SHORT).show();
+            return -2;
         }
     }
 
