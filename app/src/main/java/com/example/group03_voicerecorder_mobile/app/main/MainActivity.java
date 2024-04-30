@@ -94,7 +94,6 @@ public class MainActivity extends AppCompatActivity {
                 fetchAndPopulateRecords(query);
             }
         });
-
     }
 
     private void initAutoRecord() {
