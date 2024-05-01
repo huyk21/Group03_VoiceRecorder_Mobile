@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.content.FileProvider;
+
 import com.example.group03_voicerecorder_mobile.R;
 import com.example.group03_voicerecorder_mobile.app.GlobalConstants;
 import com.example.group03_voicerecorder_mobile.app.audio_player.PlayBackActivity;
@@ -23,6 +26,7 @@ import com.example.group03_voicerecorder_mobile.app.settings.UploadActivity;
 import com.example.group03_voicerecorder_mobile.data.database.DatabaseHelper;
 import com.example.group03_voicerecorder_mobile.utils.Utilities;
 
+import java.io.File;
 import java.util.List;
 
 public class RecordAdapter extends BaseAdapter {
@@ -141,6 +145,9 @@ public class RecordAdapter extends BaseAdapter {
                 case "Search in file":
                     toSearchAudioActivity(position);
                     return true;
+                case "Share":
+                    shareRecord(position);
+                    return true;
                 default:
                     return false;
             }
@@ -148,6 +155,30 @@ public class RecordAdapter extends BaseAdapter {
         popupMenu.show();
     }
 //sd
+private void shareRecord(int position) {
+    Record record = records.get(position);
+    File file = new File(record.getFilePath());
+
+    if (!file.exists()) {
+        Toast.makeText(context, "File does not exist", Toast.LENGTH_SHORT).show();
+        return;
+    }
+
+    try {
+        Uri fileUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", file);
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("audio/*"); // MIME type for audio
+        shareIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        context.startActivity(Intent.createChooser(shareIntent, "Share Audio File"));
+    } catch (IllegalArgumentException e) {
+        Toast.makeText(context, "File not found", Toast.LENGTH_SHORT).show();
+    }
+}
+
+
+
+
     private void deleteRecord(int position) {
         int recordId = records.get(position).getId();
         DatabaseHelper databaseHelper = new DatabaseHelper(context);

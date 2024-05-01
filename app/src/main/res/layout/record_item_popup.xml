@@ -13,4 +13,8 @@
         android:id="@+id/audioSearch"
         android:title="Search in file"
         />
+    <item
+        android:id="@+id/audioShare"
+        android:title="Share"
+        />
 </menu>
