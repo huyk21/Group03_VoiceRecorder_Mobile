@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -45,10 +47,10 @@ public class SettingsActivity extends AppCompatActivity {
     private TextView selectedTheme;
     private EditText editTextDateTime;
     private ImageButton btnToSoundTest;
-    private boolean settingsChanged = false;
-    private boolean isUserTriggeredTheme = true;
-    private boolean isUserTriggeredFormat = true;
-
+    private static boolean settingsChanged = false;
+    private static boolean isUserTriggeredTheme = true;
+    private static boolean isUserTriggeredFormat = true;
+    private static boolean isDeleteSchedule = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Utilities.setCustomTheme(this);
@@ -68,6 +70,7 @@ public class SettingsActivity extends AppCompatActivity {
         swPhoneActive = findViewById(R.id.swPhoneActive);
         btnToSoundTest = findViewById(R.id.btnToSoundTest);
         editTextDateTime = findViewById(R.id.editTextDateTime);
+
         setUpDateTimePicker();
         createExtensionList();
         createThemeList();
@@ -75,6 +78,15 @@ public class SettingsActivity extends AppCompatActivity {
         setUpListeners();
     }
 
+    private void deleteScheduledTime() {
+
+
+        // Optionally, update the EditText to reflect that the time has been cleared
+        EditText editTextDateTime = findViewById(R.id.editTextDateTime);
+        editTextDateTime.setText("");  // Clear the text field
+
+
+    }
     private void setUpDateTimePicker() {
         editTextDateTime.setOnClickListener(v -> {
             final Calendar calendar = Calendar.getInstance();
@@ -117,15 +129,33 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
         private void loadSettings() {
+            ImageButton btnDeleteSchedule = findViewById(R.id.btnDeleteSchedule);
+            btnDeleteSchedule.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    deleteScheduledTime();
+
+                    isDeleteSchedule = true;
+
+
+                }
+
+
+            });
             boolean isAutoRecord = PreferenceHelper.loadSettingsState(this, "isAutoRecord");
             boolean isNoiseReduction = PreferenceHelper.loadSettingsState(this, "isNoiseReduction");
             boolean isSilenceRemoval = PreferenceHelper.loadSettingsState(this, "isSilenceRemoval");
             boolean isTranscript = PreferenceHelper.loadSettingsState(this, "isTranscript");
             boolean isPhoneActive = PreferenceHelper.loadSettingsState(this, "isPhoneActive");
-            String dateTime = PreferenceHelper.getSelectedFormat(this, "selectedDateTime");
+            String dateTime = PreferenceHelper.getSelectedDate(this, "selectedDateTime");
+            if(isDeleteSchedule){
+                PreferenceHelper.removeSetting(this, "selectedDateTime");
+                dateTime="";
+                isDeleteSchedule = false;
+            }
             String theme = PreferenceHelper.getSelectedTheme(this, "selectedTheme");
             String format = PreferenceHelper.getSelectedFormat(this, "selectedFormat");
-            Toast.makeText(this, dateTime, Toast.LENGTH_SHORT).show();
+
             int themePosition = Arrays.asList(GlobalConstants.THEMES).indexOf(theme);
             if (themePosition != -1) {
                 isUserTriggeredTheme = false;
