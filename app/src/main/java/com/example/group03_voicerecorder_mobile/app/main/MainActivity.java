@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         List<Record> recordList = databaseHelper.getAllUndeletedRecords();
         RecordAdapter recordAdapter = new RecordAdapter(this, recordList);
         records.setAdapter(recordAdapter);
-        Toast.makeText(this, "Loaded " + recordAdapter.getCount() + " records", Toast.LENGTH_SHORT).show();
+
         setupSelectAllDeleteButton(recordAdapter);
         records.setOnItemClickListener((parent, view, position, id) -> {
             view.setBackgroundResource(R.drawable.list_selector_pressed);
