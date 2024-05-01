@@ -6,13 +6,20 @@ import android.content.SharedPreferences;
 import com.example.group03_voicerecorder_mobile.app.GlobalConstants;
 
 public class PreferenceHelper {
+
+
     public static void saveSettingsState(Context context, String key, boolean value) {
         SharedPreferences preferences = context.getSharedPreferences(GlobalConstants.SHARED_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean(key, value);
         editor.apply();
     }
-
+    public static void removeSetting(Context context, String key) {
+        SharedPreferences prefs = context.getSharedPreferences(GlobalConstants.SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.remove(key);
+        editor.apply();
+    }
     public static boolean loadSettingsState(Context context, String key) {
         SharedPreferences preferences = context.getSharedPreferences(GlobalConstants.SHARED_PREFERENCES, Context.MODE_PRIVATE);
         return preferences.getBoolean(key, false);
