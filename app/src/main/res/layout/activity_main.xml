@@ -25,6 +25,15 @@
             android:layout_marginBottom="10dp"
             android:layout_weight="1" />
 
+        <Button
+            android:id="@+id/btnSelectAllOrDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/rounded_border"
+            android:text="Select All"
+            android:textColor="@color/white" />
+
         <ImageButton
             android:id="@+id/btnMore"
             android:layout_width="wrap_content"
