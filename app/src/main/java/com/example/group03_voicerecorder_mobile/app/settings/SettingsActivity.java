@@ -111,7 +111,7 @@ public class SettingsActivity extends AppCompatActivity {
                 timePickerDialog.show();
             }, year, month, day);
             datePickerDialog.show();
-            settingsChanged = true;
+
         });
 
     }
