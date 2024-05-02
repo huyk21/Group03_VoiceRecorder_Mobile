@@ -44,6 +44,7 @@ public class RecordService extends Service {
     public static final String RECORDING_STATUS_UPDATE = "recording_status_update";
 
 
+
     private void startForegroundService() {
         Intent notificationIntent = new Intent(this, RecordActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -114,6 +115,7 @@ public class RecordService extends Service {
 
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+
         mediaRecorder.setOutputFormat(formatCode); // Set format based on user preference
         mediaRecorder.setAudioEncoder(encoderCode); // Set encoder based on user preference
         mediaRecorder.setAudioSamplingRate(44100);
@@ -133,8 +135,6 @@ public class RecordService extends Service {
             mediaRecorder.start();
             isRecording = true;
             handler.post(updateAmplitudeTask);
-
-           Toast.makeText(this, selectedFormatKey, Toast.LENGTH_SHORT ).show();
         } catch (Exception e) {
             Toast.makeText(this, "Recording failed to start: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
@@ -147,6 +147,7 @@ public class RecordService extends Service {
             mediaRecorder.release();
             mediaRecorder = null;
             isRecording = false;
+
             PreferenceHelper.deleteElapsedTime(this, "ElapsedTime");
             long elapsedMillis = SystemClock.elapsedRealtime() - timeWhenPaused;
             String fileName = currentFilePath.substring(currentFilePath.lastIndexOf('/') + 1,
@@ -227,6 +228,7 @@ public class RecordService extends Service {
             // Handle exceptions here
         }
     }
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
