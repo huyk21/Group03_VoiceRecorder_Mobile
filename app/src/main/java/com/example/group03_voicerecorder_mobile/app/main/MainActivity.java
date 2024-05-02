@@ -17,7 +17,6 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -29,13 +28,13 @@ import com.example.group03_voicerecorder_mobile.app.record.DeletedActivity;
 import com.example.group03_voicerecorder_mobile.app.record.Record;
 import com.example.group03_voicerecorder_mobile.app.record.RecordActivity;
 import com.example.group03_voicerecorder_mobile.app.record.RecordAdapter;
+import com.example.group03_voicerecorder_mobile.app.record.ScheduleService;
 import com.example.group03_voicerecorder_mobile.app.settings.SettingsActivity;
 import com.example.group03_voicerecorder_mobile.app.welcome.WelcomeActivity;
 import com.example.group03_voicerecorder_mobile.data.database.DatabaseHelper;
 import com.example.group03_voicerecorder_mobile.utils.PreferenceHelper;
 import com.example.group03_voicerecorder_mobile.utils.Utilities;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -68,7 +67,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (PreferenceHelper.loadSettingsState(this, "isAutoRecord")) { initAutoRecord(); }
-
+        if (!PreferenceHelper.getSelectedDate(this, "selectedDateTime").equals("")) {
+            Intent intent = new Intent(this, ScheduleService.class);
+            startService(intent);
+        }
         // Fetch records from the database
         List<Record> recordList = databaseHelper.getAllUndeletedRecords();
         RecordAdapter recordAdapter = new RecordAdapter(this, recordList);
