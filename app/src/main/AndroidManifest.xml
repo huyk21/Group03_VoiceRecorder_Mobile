@@ -102,6 +102,8 @@
         <activity
             android:name=".app.iocheck.SoundTestActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".app.details.DetailsActivities"
+            android:screenOrientation="portrait"/>
 
         <service
             android:name=".app.record.RecordService"
