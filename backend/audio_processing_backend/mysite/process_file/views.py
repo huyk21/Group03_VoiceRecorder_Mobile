@@ -1,13 +1,14 @@
 import ffmpeg
+import librosa
+from scipy.io import wavfile
+import noisereduce as nr
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
-from django.http import FileResponse, HttpResponse
+from django.http import HttpResponse
 from django.conf import settings
-from django.core.files import File
 from django.http import JsonResponse
 import speech_recognition as sr
 from .forms import AudioFileForm
-from .models import AudioFile
 from rest_framework import status
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
@@ -115,7 +116,6 @@ def speech_to_text(request):
             if result.returncode != 0:
                 return JsonResponse({'status': 'error', 'message': 'Failed to convert audio to FLAC: ' + result.stderr})
             tmp_filepath = converted_filepath
-        # Speech recognition (using the temporary FLAC file)
         recognizer = sr.Recognizer()
         try:
             with sr.AudioFile(tmp_filepath) as source:
@@ -144,14 +144,14 @@ def remove_silence(request):
         if not audio_file:
             return Response({'error': 'No audio file provided'}, status=status.HTTP_400_BAD_REQUEST)
 
-        file_name = audio_file.name.split('.')[0]
         input_path = os.path.join(settings.MEDIA_ROOT, 'audios', audio_file.name)
-        output_path = os.path.join(settings.MEDIA_ROOT, 'processed', file_name + '_nosilence.mp3')
+        output_path = os.path.join(settings.MEDIA_ROOT, 'processed', audio_file.name)
         
         # Write the uploaded file to the input path
         with open(input_path, 'wb+') as f:
             for chunk in audio_file.chunks():
                 f.write(chunk)
+        return Response({'error': 'No audio file provided'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Construct the ffmpeg command to remove silence
         try:
@@ -159,7 +159,7 @@ def remove_silence(request):
                 ffmpeg
                 .input(input_path)
                 .output(output_path, **{
-                            'af': 'silenceremove=start_periods=1:start_duration=0:start_threshold=-50dB'
+                            'af': 'silenceremove=start_periods=1:stop_periods=-1:start_threshold=-30dB'
                     })
                 .run(capture_stdout=True, capture_stderr=True)
             )
@@ -170,9 +170,72 @@ def remove_silence(request):
         os.remove(input_path)  # Clean up input file
 
         # Respond with a success message and a URL to access the processed file
-        download_url = f"/processed/{file_name}_nosilence.mp3"
+        download_url = f"/processed/{audio_file.name}"
         return Response({
             'message': 'Silence removed successfully',
+            'download_url': download_url
+        })
+
+    return Response({'error': 'Invalid request method'}, status=status.HTTP_400_BAD_REQUEST)
+
+@csrf_exempt
+@api_view(['POST'])
+def upload_file(request):
+    if request.method == 'POST':
+        audio_file = request.FILES.get('audio')
+
+        if not audio_file:
+            return Response({'error': 'No audio file provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+        file_name = audio_file.name.split('.')[0]
+        input_path = os.path.join(settings.MEDIA_ROOT, 'audios', audio_file.name)
+        
+        # Write the uploaded file to the input path
+        with open(input_path, 'wb+') as f:
+            for chunk in audio_file.chunks():
+                f.write(chunk)
+
+        # Respond with a success message and a URL to access the processed file
+        download_url = f"/audios/{file_name}"
+        return Response({
+            'message': 'Silence removed successfully',
+            'download_url': download_url
+        })
+
+    return Response({'error': 'Invalid request method'}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def reduce_noise(request):
+    if request.method == 'POST':
+        audio_file = request.FILES.get('audio')
+        if not audio_file:
+            return Response({'error': 'No audio file provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Save the original audio to disk temporarily
+        file_name = audio_file.name
+        input_path = os.path.join(settings.MEDIA_ROOT, 'audios', file_name)
+        output_path = os.path.join(settings.MEDIA_ROOT, 'processed', file_name)
+
+        with open(input_path, 'wb+') as f:
+            for chunk in audio_file.chunks():
+                f.write(chunk)
+
+        # Load audio file
+        data, rate = librosa.load(input_path, sr=None)
+
+        # Perform noise reduction
+        reduced_noise_audio = nr.reduce_noise(y=data, sr=rate)
+
+        # Write the processed data back to a file
+        wavfile.write(output_path, rate, reduced_noise_audio)
+
+        # Clean up: remove the original file after processing
+        os.remove(input_path)
+
+        # Create a response
+        download_url = f"/processed/{file_name}"
+        return Response({
+            'message': 'Noise reduced successfully',
             'download_url': download_url
         })
 

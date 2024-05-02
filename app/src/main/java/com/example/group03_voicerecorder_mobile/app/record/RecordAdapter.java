@@ -26,6 +26,7 @@ import com.example.group03_voicerecorder_mobile.app.audio_player.PlayBackActivit
 import com.example.group03_voicerecorder_mobile.app.search_audio.SearchAudioActivity;
 import com.example.group03_voicerecorder_mobile.app.settings.UploadActivity;
 import com.example.group03_voicerecorder_mobile.data.database.DatabaseHelper;
+import com.example.group03_voicerecorder_mobile.utils.AudioAPI;
 import com.example.group03_voicerecorder_mobile.utils.Utilities;
 
 import java.io.File;
@@ -202,6 +203,12 @@ public class RecordAdapter extends BaseAdapter {
                     return true;
                 case "Share":
                     shareRecord(position);
+                    return true;
+                case "Remove silence":
+                    AudioAPI.removeSilence(context, records.get(position).getFilePath());
+                    return true;
+                case "Reduce noise":
+                    AudioAPI.reduceNoise(context, records.get(position).getFilePath());
                     return true;
                 default:
                     return false;

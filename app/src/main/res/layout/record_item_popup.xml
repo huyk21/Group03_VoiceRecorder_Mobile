@@ -17,4 +17,12 @@
         android:id="@+id/audioShare"
         android:title="Share"
         />
+    <item
+        android:id="@+id/removeSilence"
+        android:title="Remove silence"
+        />
+    <item
+        android:id="@+id/reduceNoise"
+        android:title="Reduce noise"
+        />
 </menu>

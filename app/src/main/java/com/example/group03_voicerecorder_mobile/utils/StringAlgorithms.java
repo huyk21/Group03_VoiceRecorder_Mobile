@@ -1,13 +1,17 @@
 package com.example.group03_voicerecorder_mobile.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class StringAlgorithms {
     public static final int d = 256;
 
-    public static void search(String txt, String pat, int q) {
+    public static String search(String txt, String pat, int q) {
         if (txt == null || pat == null) {
             System.out.println("txt is null or pat is null");
-            return;
+            return "Cannot found your word or sentence";
         }
+        List<Integer> indicesFound = new ArrayList<>();
         int n = txt.length();
         int m = pat.length();
 
@@ -39,6 +43,7 @@ public class StringAlgorithms {
                 }
                 if (found) {
                     System.out.println("Pattern found at index " + i);
+                    indicesFound.add(i);
                 }
             }
 
@@ -50,5 +55,17 @@ public class StringAlgorithms {
                 }
             }
         }
+        StringBuilder sb = new StringBuilder();
+        if (indicesFound.size() > 0) {
+            sb.append("Found at index: ");
+            for (int i = 0; i < indicesFound.size(); i++) {
+                sb.append(indicesFound.get(i));
+                if (i < indicesFound.size() - 1) sb.append(",");
+            }
+        }
+        else {
+            sb.append("Cannot found your word or sentence");
+        }
+        return sb.toString();
     }
 }

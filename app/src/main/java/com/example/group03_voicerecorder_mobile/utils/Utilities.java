@@ -90,7 +90,6 @@ public class Utilities {
         Log.d("overWriteFile", "Overwrite " + fileName);
         FileOutputStream outputStream = new FileOutputStream(file, false);
 
-        // Use a buffer for efficient copying
         byte[] buffer = new byte[1024]; // Adjust buffer size as needed
         int bytesRead;
         while ((bytesRead = inputStream.read(buffer)) != -1) {

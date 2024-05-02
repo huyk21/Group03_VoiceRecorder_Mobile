@@ -43,8 +43,6 @@ public class RecordService extends Service {
     private static final String CHANNEL_ID = "RecordServiceChannel";
     public static final String RECORDING_STATUS_UPDATE = "recording_status_update";
 
-
-
     private void startForegroundService() {
         Intent notificationIntent = new Intent(this, RecordActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -89,9 +87,6 @@ public class RecordService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent == null) {
-            return START_NOT_STICKY; // or START_REDELIVER_INTENT if you need the Intent redelivered
-        }
         if ("ACTION_START_RECORDING".equals(intent.getAction())) {
             startForegroundService();
             startRecording();

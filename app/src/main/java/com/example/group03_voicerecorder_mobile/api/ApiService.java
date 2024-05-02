@@ -27,6 +27,15 @@ public interface ApiService {
     Call<JsonObject> speechToText(
             @Part MultipartBody.Part file);
 
+    @Multipart
+    @POST("process_file/remove_silence/")
+    Call<JsonObject> removeSilence(
+            @Part MultipartBody.Part file);
+
+    @Multipart
+    @POST("process_file/reduce_noise/")
+    Call<JsonObject> reduceNoise(
+            @Part MultipartBody.Part file);
 
     @Streaming
     @GET

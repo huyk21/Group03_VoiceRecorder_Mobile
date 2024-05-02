@@ -96,6 +96,7 @@ public class SearchAudioActivity extends AppCompatActivity {
     }
 
     private void performSearch(String pattern, String text) {
-        StringAlgorithms.search(text, pattern, 101);
+        String resultSearch = StringAlgorithms.search(text, pattern, 101);
+        textViewResults.setText(resultSearch);
     }
 }
