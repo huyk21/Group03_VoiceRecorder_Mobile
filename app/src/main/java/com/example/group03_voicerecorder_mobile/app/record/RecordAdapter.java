@@ -23,6 +23,7 @@ import androidx.core.content.FileProvider;
 import com.example.group03_voicerecorder_mobile.R;
 import com.example.group03_voicerecorder_mobile.app.GlobalConstants;
 import com.example.group03_voicerecorder_mobile.app.audio_player.PlayBackActivity;
+import com.example.group03_voicerecorder_mobile.app.details.DetailsActivities;
 import com.example.group03_voicerecorder_mobile.app.search_audio.SearchAudioActivity;
 import com.example.group03_voicerecorder_mobile.app.settings.UploadActivity;
 import com.example.group03_voicerecorder_mobile.data.database.DatabaseHelper;
@@ -44,6 +45,7 @@ public class RecordAdapter extends BaseAdapter {
         this.records = records;
         inflater = LayoutInflater.from(ctx);
     }
+
     public void setRecordList(List<Record> updatedRecords) {
         this.records = updatedRecords;
         notifyDataSetChanged();
@@ -111,6 +113,7 @@ public class RecordAdapter extends BaseAdapter {
         });
         return convertView;
     }
+
     public boolean containsNull() {
         for (Record record : records) {
             if (record == null) {
@@ -119,12 +122,14 @@ public class RecordAdapter extends BaseAdapter {
         }
         return false;  // Returns false if no null records are found
     }
+
     public void selectAllRecords() {
         for (Record record : records) {
             record.setSelected(true);
         }
 
     }
+
     public List<Record> getSelectedRecord() {
         List<Record> selectedRecords = new ArrayList<>();
         for (Record record : records) {
@@ -134,6 +139,7 @@ public class RecordAdapter extends BaseAdapter {
         }
         return selectedRecords;
     }
+
     public void deleteSelectedRecords() {
 
         for (int i = records.size() - 1; i >= 0; i--) {  // Start from the end of the list
@@ -158,6 +164,7 @@ public class RecordAdapter extends BaseAdapter {
         }
         return true; // All records are selected
     }
+
     private void toPlaybackActivity(int position) {
         Intent intent = new Intent(context, PlayBackActivity.class);
         intent.putExtra("recordId", records.get(position).getId());
@@ -210,34 +217,46 @@ public class RecordAdapter extends BaseAdapter {
                 case "Reduce noise":
                     AudioAPI.reduceNoise(context, records.get(position).getFilePath());
                     return true;
+                case "Info":
+                    accessRecordInfo(position);
+                    return true;
                 default:
                     return false;
             }
         });
         popupMenu.show();
     }
-//sd
-private void shareRecord(int position) {
-    Record record = records.get(position);
-    File file = new File(record.getFilePath());
 
-    if (!file.exists()) {
-        Toast.makeText(context, "File does not exist", Toast.LENGTH_SHORT).show();
-        return;
+    private void accessRecordInfo(int position) {
+        Record record = records.get(position);
+        String name = record.getFilename();
+
+        Intent intent = new Intent(context, DetailsActivities.class);
+        intent.putExtra("recordName", name);
+        context.startActivity(intent);
     }
 
-    try {
-        Uri fileUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", file);
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.setType("audio/*"); // MIME type for audio
-        shareIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
-        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        context.startActivity(Intent.createChooser(shareIntent, "Share Audio File"));
-    } catch (IllegalArgumentException e) {
-        Toast.makeText(context, "File not found", Toast.LENGTH_SHORT).show();
-    }
-}
+    //sd
+    private void shareRecord(int position) {
+        Record record = records.get(position);
+        File file = new File(record.getFilePath());
 
+        if (!file.exists()) {
+            Toast.makeText(context, "File does not exist", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        try {
+            Uri fileUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", file);
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("audio/*"); // MIME type for audio
+            shareIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            context.startActivity(Intent.createChooser(shareIntent, "Share Audio File"));
+        } catch (IllegalArgumentException e) {
+            Toast.makeText(context, "File not found", Toast.LENGTH_SHORT).show();
+        }
+    }
 
 
     private void deleteRecordWithoutNotify(int position) {
@@ -247,6 +266,7 @@ private void shareRecord(int position) {
         records.remove(position);
 
     }
+
     private void deleteRecord(int position) {
         int recordId = records.get(position).getId();
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
@@ -280,6 +300,7 @@ private void shareRecord(int position) {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
     private void updateFileNameInDatabase(int position, int recordId, String newFileName) {
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
         int rowsAffected = databaseHelper.updateFileName(recordId, newFileName);

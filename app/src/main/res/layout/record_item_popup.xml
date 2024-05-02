@@ -25,4 +25,8 @@
         android:id="@+id/reduceNoise"
         android:title="Reduce noise"
         />
+    <item
+        android:id="@+id/info"
+        android:title="Info"
+        />
 </menu>
