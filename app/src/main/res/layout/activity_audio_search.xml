@@ -11,6 +11,7 @@
         android:layout_height="50dp"
         android:hint="Enter word or sentence to search"
         android:inputType="text"
+        android:textColorHint="@color/md_black_1000"
         android:imeOptions="actionDone"
         android:layout_marginBottom="16dp"
         android:background="@color/white"/>

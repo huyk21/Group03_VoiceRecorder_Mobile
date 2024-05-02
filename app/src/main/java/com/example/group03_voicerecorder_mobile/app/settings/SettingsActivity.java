@@ -47,10 +47,12 @@ public class SettingsActivity extends AppCompatActivity {
     private TextView selectedTheme;
     private EditText editTextDateTime;
     private ImageButton btnToSoundTest;
-    private static boolean settingsChanged = false;
-    private static boolean isUserTriggeredTheme = true;
-    private static boolean isUserTriggeredFormat = true;
+    private ImageButton btnDeleteSchedule;
+    private boolean settingsChanged = false;
+    private boolean isUserTriggeredTheme = true;
+    private boolean isUserTriggeredFormat = true;
     private static boolean isDeleteSchedule = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Utilities.setCustomTheme(this);
@@ -70,6 +72,7 @@ public class SettingsActivity extends AppCompatActivity {
         swPhoneActive = findViewById(R.id.swPhoneActive);
         btnToSoundTest = findViewById(R.id.btnToSoundTest);
         editTextDateTime = findViewById(R.id.editTextDateTime);
+        btnDeleteSchedule = findViewById(R.id.btnDeleteSchedule);
 
         setUpDateTimePicker();
         createExtensionList();
@@ -79,14 +82,11 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void deleteScheduledTime() {
-
-
         // Optionally, update the EditText to reflect that the time has been cleared
         EditText editTextDateTime = findViewById(R.id.editTextDateTime);
         editTextDateTime.setText("");  // Clear the text field
-
-
     }
+
     private void setUpDateTimePicker() {
         editTextDateTime.setOnClickListener(v -> {
             final Calendar calendar = Calendar.getInstance();
@@ -128,59 +128,46 @@ public class SettingsActivity extends AppCompatActivity {
         themeList.setAdapter(adapter);
     }
 
-        private void loadSettings() {
-            ImageButton btnDeleteSchedule = findViewById(R.id.btnDeleteSchedule);
-            btnDeleteSchedule.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    deleteScheduledTime();
-
-                    isDeleteSchedule = true;
-
-
-                }
-
-
-            });
-            boolean isAutoRecord = PreferenceHelper.loadSettingsState(this, "isAutoRecord");
-            boolean isNoiseReduction = PreferenceHelper.loadSettingsState(this, "isNoiseReduction");
-            boolean isSilenceRemoval = PreferenceHelper.loadSettingsState(this, "isSilenceRemoval");
-            boolean isTranscript = PreferenceHelper.loadSettingsState(this, "isTranscript");
-            boolean isPhoneActive = PreferenceHelper.loadSettingsState(this, "isPhoneActive");
-            String dateTime = PreferenceHelper.getSelectedDate(this, "selectedDateTime");
-            if(isDeleteSchedule){
-                PreferenceHelper.removeSetting(this, "selectedDateTime");
-                dateTime="";
-                isDeleteSchedule = false;
-            }
-            String theme = PreferenceHelper.getSelectedTheme(this, "selectedTheme");
-            String format = PreferenceHelper.getSelectedFormat(this, "selectedFormat");
-
-            int themePosition = Arrays.asList(GlobalConstants.THEMES).indexOf(theme);
-            if (themePosition != -1) {
-                isUserTriggeredTheme = false;
-                themeList.setSelection(themePosition);
-            }
-
-            int formatPosition = Arrays.asList(GlobalConstants.FORMATS_SUPPORTED).indexOf(format);
-            if (formatPosition != -1) {
-                isUserTriggeredFormat = false;
-                fileFormat.setSelection(formatPosition);
-            }
-
-            swAutoRecord.setChecked(isAutoRecord);
-            swNoiseReduction.setChecked(isNoiseReduction);
-            swSilenceRemoval.setChecked(isSilenceRemoval);
-            swTranscript.setChecked(isTranscript);
-            swPhoneActive.setChecked(isPhoneActive);
-            selectedTheme.setText(theme);
-            selectedFormat.setText(format);
-            if (!dateTime.isEmpty()) {
-                editTextDateTime.setText(dateTime);
-            } else {
-                editTextDateTime.setText("");  // Clear or set to a default hint if necessary
-            }
+    private void loadSettings() {
+        boolean isAutoRecord = PreferenceHelper.loadSettingsState(this, "isAutoRecord");
+        boolean isNoiseReduction = PreferenceHelper.loadSettingsState(this, "isNoiseReduction");
+        boolean isSilenceRemoval = PreferenceHelper.loadSettingsState(this, "isSilenceRemoval");
+        boolean isTranscript = PreferenceHelper.loadSettingsState(this, "isTranscript");
+        boolean isPhoneActive = PreferenceHelper.loadSettingsState(this, "isPhoneActive");
+        String dateTime = PreferenceHelper.getSelectedDate(this, "selectedDateTime");
+        if (isDeleteSchedule) {
+            PreferenceHelper.removeSetting(this, "selectedDateTime");
+            dateTime = "";
+            isDeleteSchedule = false;
         }
+        String theme = PreferenceHelper.getSelectedTheme(this, "selectedTheme");
+        String format = PreferenceHelper.getSelectedFormat(this, "selectedFormat");
+
+        int themePosition = Arrays.asList(GlobalConstants.THEMES).indexOf(theme);
+        if (themePosition != -1) {
+            isUserTriggeredTheme = false;
+            themeList.setSelection(themePosition);
+        }
+
+        int formatPosition = Arrays.asList(GlobalConstants.FORMATS_SUPPORTED).indexOf(format);
+        if (formatPosition != -1) {
+            isUserTriggeredFormat = false;
+            fileFormat.setSelection(formatPosition);
+        }
+
+        swAutoRecord.setChecked(isAutoRecord);
+        swNoiseReduction.setChecked(isNoiseReduction);
+        swSilenceRemoval.setChecked(isSilenceRemoval);
+        swTranscript.setChecked(isTranscript);
+        swPhoneActive.setChecked(isPhoneActive);
+        selectedTheme.setText(theme);
+        selectedFormat.setText(format);
+        if (!dateTime.isEmpty()) {
+            editTextDateTime.setText(dateTime);
+        } else {
+            editTextDateTime.setText("");  // Clear or set to a default hint if necessary
+        }
+    }
 
     private void toStatisticsActivity() {
         Intent intent = new Intent(this, StatisticsActivity.class);
@@ -238,14 +225,14 @@ public class SettingsActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
         themeList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (isUserTriggeredTheme)
-                {
+                if (isUserTriggeredTheme) {
                     String selected = GlobalConstants.THEMES[position];
                     selectedTheme.setText(selected);
                     PreferenceHelper.saveSelectedTheme(SettingsActivity.this, "selectedTheme", selected);
@@ -255,10 +242,15 @@ public class SettingsActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        btnDeleteSchedule.setOnClickListener(v -> {
+            deleteScheduledTime();
+            isDeleteSchedule = true;
         });
     }
-
 
 
     private void restartApp() {
