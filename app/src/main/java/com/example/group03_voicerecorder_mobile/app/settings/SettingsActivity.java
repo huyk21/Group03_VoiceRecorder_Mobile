@@ -106,6 +106,7 @@ public class SettingsActivity extends AppCompatActivity {
                     String formattedDateTime = dateFormat.format(calendar.getTime());
 
                     editTextDateTime.setText(formattedDateTime);
+                    settingsChanged = true;
                     PreferenceHelper.saveSelectedFormat(this, "selectedDateTime", formattedDateTime);
                 }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
                 timePickerDialog.show();
@@ -249,6 +250,7 @@ public class SettingsActivity extends AppCompatActivity {
         btnDeleteSchedule.setOnClickListener(v -> {
             deleteScheduledTime();
             isDeleteSchedule = true;
+
         });
     }
 
