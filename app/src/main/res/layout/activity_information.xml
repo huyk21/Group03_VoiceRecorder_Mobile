@@ -12,52 +12,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Information"
-            android:textSize="30dp"
-            android:textColor="@color/white"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Name"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Name-1"
-            android:textColor="@color/white"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Format"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="mp4"
-            android:textColor="@color/white"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Birate"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="100kps"
-            android:textColor="@color/white"/>
+            android:textSize="30sp"
+            android:textColor="@color/white"
+            android:layout_marginBottom="30dp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -68,12 +25,39 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Channel count"/>
+            android:text="Name"
+            android:textColor="@color/md_black_1000"
+            android:textSize="18sp"/>
+        <TextView
+            android:id="@+id/info_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Mono"
-            android:textColor="@color/white"/>
+            android:text="Format"
+            android:textColor="@color/md_black_1000"
+            android:textSize="18sp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=".m4a"
+            android:textColor="@color/white"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:textSize="16sp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -83,27 +67,17 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sample Rate"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="441GHZ"
-            android:textColor="@color/white"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Duration"/>
+            android:text="Duration"
+            android:textColor="@color/md_black_1000"
+            android:textSize="18sp"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="06:00"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:textSize="16sp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -113,27 +87,17 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Size"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="0.05mb"
-            android:textColor="@color/white"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="File location"/>
+            android:text="File location"
+            android:textColor="@color/md_black_1000"
+            android:textSize="18sp"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="/storage"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:textSize="16sp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -143,11 +107,16 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Created:"/>
+            android:text="Created"
+            android:textColor="@color/md_black_1000"
+            android:textSize="18sp"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="3/20/24 3:06PM"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:textSize="16sp"/>
     </LinearLayout>
 </LinearLayout>
