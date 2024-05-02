@@ -20,7 +20,7 @@ public class AudioListener {
     private static final int AUDIO_SOURCE = MediaRecorder.AudioSource.MIC;
     private static final int CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO;
     private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
-    private static final int AMPLITUDE_THRESHOLD = 100; //threshold for auto-record trigger
+    private static final int AMPLITUDE_THRESHOLD = 150; //threshold for auto-record trigger
     private final int bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT);
 
     public AudioListener(Context context) {
