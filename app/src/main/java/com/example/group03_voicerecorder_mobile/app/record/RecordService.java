@@ -106,16 +106,25 @@ public class RecordService extends Service {
     }
 
     private void startRecording() {
+        // Retrieve the selected format key from shared preferences
+        String selectedFormatKey = PreferenceHelper.getSelectedFormat(this, "selectedFormat");
+        Integer formatCode = GlobalConstants.FORMAT_MAP.getOrDefault(selectedFormatKey, MediaRecorder.OutputFormat.MPEG_4);
+        Integer encoderCode = GlobalConstants.ENCODER_MAP.getOrDefault(selectedFormatKey, MediaRecorder.AudioEncoder.AAC);
+        String fileExtension = selectedFormatKey.toLowerCase(); // Assumes format key matches file extension directly
+
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+        mediaRecorder.setOutputFormat(formatCode); // Set format based on user preference
+        mediaRecorder.setAudioEncoder(encoderCode); // Set encoder based on user preference
         mediaRecorder.setAudioSamplingRate(44100);
         mediaRecorder.setAudioChannels(1);
-        currentFilePath = getExternalFilesDir(null).getAbsolutePath() + "/" + GlobalConstants.DEFAULT_RECORD_NAME + " " + System.currentTimeMillis() / 1000 + GlobalConstants.FORMAT_M4A;
+
+        // Construct file path with the current timestamp and the user-selected file extension
+        currentFilePath = getExternalFilesDir(null).getAbsolutePath() + "/" + GlobalConstants.DEFAULT_RECORD_NAME + " " + System.currentTimeMillis() / 1000 + "." + fileExtension;
         mediaRecorder.setOutputFile(currentFilePath);
         timeWhenPaused = SystemClock.elapsedRealtime();
 
+        // Save the start time for recording to preferences (if needed)
         long startTime = SystemClock.elapsedRealtime();
         PreferenceHelper.saveElapsedTime(this, "ElapsedTime", startTime);
 
@@ -124,12 +133,14 @@ public class RecordService extends Service {
             mediaRecorder.start();
             isRecording = true;
             handler.post(updateAmplitudeTask);
-            Log.i("RecordService", "Recording started");
+
+           Toast.makeText(this, selectedFormatKey, Toast.LENGTH_SHORT ).show();
         } catch (Exception e) {
-            Toast.makeText(this, "Recording failed to start", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Recording failed to start: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }
+
     private void stopRecording() {
         if (mediaRecorder != null) {
             mediaRecorder.stop();

@@ -1,10 +1,13 @@
 package com.example.group03_voicerecorder_mobile.app.record;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +18,8 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.content.FileProvider;
+
 import com.example.group03_voicerecorder_mobile.R;
 import com.example.group03_voicerecorder_mobile.app.GlobalConstants;
 import com.example.group03_voicerecorder_mobile.app.audio_player.PlayBackActivity;
@@ -23,6 +28,9 @@ import com.example.group03_voicerecorder_mobile.app.settings.UploadActivity;
 import com.example.group03_voicerecorder_mobile.data.database.DatabaseHelper;
 import com.example.group03_voicerecorder_mobile.utils.Utilities;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class RecordAdapter extends BaseAdapter {
@@ -47,7 +55,8 @@ public class RecordAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return null;
+        Record record = records.get(position);
+        return record;
     }
 
     @Override
@@ -57,6 +66,7 @@ public class RecordAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
         convertView = inflater.inflate(R.layout.list_record_item, null);
         TextView recordTitle = convertView.findViewById(R.id.recordTitle);
         TextView recordDate = convertView.findViewById(R.id.recordDate);
@@ -78,6 +88,9 @@ public class RecordAdapter extends BaseAdapter {
             return true;
         });
 
+        Record record = records.get(position);
+        convertView.setBackgroundColor(record.isSelected() ? Color.LTGRAY : Color.TRANSPARENT);
+
         // Set initial bookmark state based on the record's bookmarked field
         int isBookmarked = records.get(position).getBookmarked();
         setBookmarkIcon(bookmarkedBtn, isBookmarked);
@@ -97,7 +110,53 @@ public class RecordAdapter extends BaseAdapter {
         });
         return convertView;
     }
+    public boolean containsNull() {
+        for (Record record : records) {
+            if (record == null) {
+                return true;  // Returns true if any record is null
+            }
+        }
+        return false;  // Returns false if no null records are found
+    }
+    public void selectAllRecords() {
+        for (Record record : records) {
+            record.setSelected(true);
+        }
 
+    }
+    public List<Record> getSelectedRecord() {
+        List<Record> selectedRecords = new ArrayList<>();
+        for (Record record : records) {
+            if (record.isSelected()) {
+                selectedRecords.add(record);
+            }
+        }
+        return selectedRecords;
+    }
+    public void deleteSelectedRecords() {
+
+        for (int i = records.size() - 1; i >= 0; i--) {  // Start from the end of the list
+            Record record = records.get(i);
+
+            if (record.isSelected()) {
+
+                deleteRecordWithoutNotify(i);
+
+            }
+        }
+        notifyDataSetChanged();
+    }
+
+
+    // This method checks if all records are selected to handle button text changes
+    public boolean areAllSelected() {
+        for (Record record : records) {
+            if (!record.isSelected()) {
+                return false; // If any record is not selected, return false
+            }
+        }
+        return true; // All records are selected
+    }
     private void toPlaybackActivity(int position) {
         Intent intent = new Intent(context, PlayBackActivity.class);
         intent.putExtra("recordId", records.get(position).getId());
@@ -141,6 +200,9 @@ public class RecordAdapter extends BaseAdapter {
                 case "Search in file":
                     toSearchAudioActivity(position);
                     return true;
+                case "Share":
+                    shareRecord(position);
+                    return true;
                 default:
                     return false;
             }
@@ -148,6 +210,36 @@ public class RecordAdapter extends BaseAdapter {
         popupMenu.show();
     }
 //sd
+private void shareRecord(int position) {
+    Record record = records.get(position);
+    File file = new File(record.getFilePath());
+
+    if (!file.exists()) {
+        Toast.makeText(context, "File does not exist", Toast.LENGTH_SHORT).show();
+        return;
+    }
+
+    try {
+        Uri fileUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", file);
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("audio/*"); // MIME type for audio
+        shareIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
+        shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        context.startActivity(Intent.createChooser(shareIntent, "Share Audio File"));
+    } catch (IllegalArgumentException e) {
+        Toast.makeText(context, "File not found", Toast.LENGTH_SHORT).show();
+    }
+}
+
+
+
+    private void deleteRecordWithoutNotify(int position) {
+        int recordId = records.get(position).getId();
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        databaseHelper.updateDeletedState(recordId, 1);
+        records.remove(position);
+
+    }
     private void deleteRecord(int position) {
         int recordId = records.get(position).getId();
         DatabaseHelper databaseHelper = new DatabaseHelper(context);

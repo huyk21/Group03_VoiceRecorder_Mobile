@@ -35,18 +35,21 @@ public class DeletedRecordsAdapter extends BaseAdapter {
         inflater = LayoutInflater.from(ctx);
     }
     @Override
-    public int getCount() {
-        return deletedRecords.size();
-    }
-
-    @Override
     public Object getItem(int position) {
-        return null;
+        return deletedRecords.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return deletedRecords.get(position).getId();
+    }
+    @Override
+    public int getCount() {
+        return deletedRecords.size();
+    }
+
+    public void clearRecords() {
+        deletedRecords.clear();
     }
 
     @Override

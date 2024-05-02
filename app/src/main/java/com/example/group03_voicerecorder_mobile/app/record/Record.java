@@ -14,6 +14,16 @@ public class Record {
     private int bookmarked;
     private int deleted;
     private ArrayList<Integer> amplitudes;
+    private boolean isSelected;
+    // existing properties like id, filename, etc.
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
     public Record() {
         this.filename = "";
         this.filePath = "";
@@ -21,6 +31,7 @@ public class Record {
         this.timestamp = new Date();
         this.bookmarked = 0;
         this.deleted = 0;
+        this.isSelected = false;
     }
     // Getter and Setter
     public ArrayList<Integer> getAmplitudes() {

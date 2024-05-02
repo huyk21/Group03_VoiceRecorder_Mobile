@@ -1,31 +1,37 @@
 package com.example.group03_voicerecorder_mobile.app.settings;
 
-import static com.example.group03_voicerecorder_mobile.utils.PreferenceHelper.loadSettingsState;
-
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
 import com.example.group03_voicerecorder_mobile.R;
 import com.example.group03_voicerecorder_mobile.app.GlobalConstants;
+import com.example.group03_voicerecorder_mobile.app.iocheck.SoundTestActivity;
 import com.example.group03_voicerecorder_mobile.app.statistics.StatisticsActivity;
 import com.example.group03_voicerecorder_mobile.utils.PreferenceHelper;
 import com.example.group03_voicerecorder_mobile.utils.Utilities;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class SettingsActivity extends AppCompatActivity {
     private ImageButton btnBack;
@@ -33,16 +39,18 @@ public class SettingsActivity extends AppCompatActivity {
     private SwitchCompat swAutoRecord;
     private SwitchCompat swNoiseReduction;
     private SwitchCompat swSilenceRemoval;
+    private SwitchCompat swPhoneActive;
     private SwitchCompat swTranscript;
     private Spinner fileFormat;
     private Spinner themeList;
     private TextView selectedFormat;
     private TextView selectedTheme;
-    private ImageButton btnToScheduledRecording;
-    private boolean settingsChanged = false;
-    private boolean isUserTriggeredTheme = true;
-    private boolean isUserTriggeredFormat = true;
-
+    private EditText editTextDateTime;
+    private ImageButton btnToSoundTest;
+    private static boolean settingsChanged = false;
+    private static boolean isUserTriggeredTheme = true;
+    private static boolean isUserTriggeredFormat = true;
+    private static boolean isDeleteSchedule = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Utilities.setCustomTheme(this);
@@ -59,12 +67,53 @@ public class SettingsActivity extends AppCompatActivity {
         themeList = findViewById(R.id.themes_dropdown);
         selectedFormat = findViewById(R.id.formatType);
         selectedTheme = findViewById(R.id.themeType);
-        btnToScheduledRecording = findViewById(R.id.scheduledRecording);
+        swPhoneActive = findViewById(R.id.swPhoneActive);
+        btnToSoundTest = findViewById(R.id.btnToSoundTest);
+        editTextDateTime = findViewById(R.id.editTextDateTime);
 
+        setUpDateTimePicker();
         createExtensionList();
         createThemeList();
         loadSettings();
         setUpListeners();
+    }
+
+    private void deleteScheduledTime() {
+
+
+        // Optionally, update the EditText to reflect that the time has been cleared
+        EditText editTextDateTime = findViewById(R.id.editTextDateTime);
+        editTextDateTime.setText("");  // Clear the text field
+
+
+    }
+    private void setUpDateTimePicker() {
+        editTextDateTime.setOnClickListener(v -> {
+            final Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year1, monthOfYear, dayOfMonth) -> {
+                calendar.set(Calendar.YEAR, year1);
+                calendar.set(Calendar.MONTH, monthOfYear);
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                TimePickerDialog timePickerDialog = new TimePickerDialog(this, (view1, hourOfDay, minute) -> {
+                    calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                    calendar.set(Calendar.MINUTE, minute);
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+                    String formattedDateTime = dateFormat.format(calendar.getTime());
+
+                    editTextDateTime.setText(formattedDateTime);
+                    PreferenceHelper.saveSelectedFormat(this, "selectedDateTime", formattedDateTime);
+                }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
+                timePickerDialog.show();
+            }, year, month, day);
+            datePickerDialog.show();
+
+        });
+
     }
 
     private void createExtensionList() {
@@ -79,36 +128,67 @@ public class SettingsActivity extends AppCompatActivity {
         themeList.setAdapter(adapter);
     }
 
-    private void loadSettings() {
-        boolean isAutoRecord = PreferenceHelper.loadSettingsState(this, "isAutoRecord");
-        boolean isNoiseReduction = PreferenceHelper.loadSettingsState(this, "isNoiseReduction");
-        boolean isSilenceRemoval = PreferenceHelper.loadSettingsState(this, "isSilenceRemoval");
-        boolean isTranscript = PreferenceHelper.loadSettingsState(this, "isTranscript");
-        String theme = PreferenceHelper.getSelectedTheme(this, "selectedTheme");
-        String format = PreferenceHelper.getSelectedFormat(this, "selectedFormat");
+        private void loadSettings() {
+            ImageButton btnDeleteSchedule = findViewById(R.id.btnDeleteSchedule);
+            btnDeleteSchedule.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    deleteScheduledTime();
 
-        int themePosition = Arrays.asList(GlobalConstants.THEMES).indexOf(theme);
-        if (themePosition != -1) {
-            isUserTriggeredTheme = false;
-            themeList.setSelection(themePosition);
+                    isDeleteSchedule = true;
+
+
+                }
+
+
+            });
+            boolean isAutoRecord = PreferenceHelper.loadSettingsState(this, "isAutoRecord");
+            boolean isNoiseReduction = PreferenceHelper.loadSettingsState(this, "isNoiseReduction");
+            boolean isSilenceRemoval = PreferenceHelper.loadSettingsState(this, "isSilenceRemoval");
+            boolean isTranscript = PreferenceHelper.loadSettingsState(this, "isTranscript");
+            boolean isPhoneActive = PreferenceHelper.loadSettingsState(this, "isPhoneActive");
+            String dateTime = PreferenceHelper.getSelectedDate(this, "selectedDateTime");
+            if(isDeleteSchedule){
+                PreferenceHelper.removeSetting(this, "selectedDateTime");
+                dateTime="";
+                isDeleteSchedule = false;
+            }
+            String theme = PreferenceHelper.getSelectedTheme(this, "selectedTheme");
+            String format = PreferenceHelper.getSelectedFormat(this, "selectedFormat");
+
+            int themePosition = Arrays.asList(GlobalConstants.THEMES).indexOf(theme);
+            if (themePosition != -1) {
+                isUserTriggeredTheme = false;
+                themeList.setSelection(themePosition);
+            }
+
+            int formatPosition = Arrays.asList(GlobalConstants.FORMATS_SUPPORTED).indexOf(format);
+            if (formatPosition != -1) {
+                isUserTriggeredFormat = false;
+                fileFormat.setSelection(formatPosition);
+            }
+
+            swAutoRecord.setChecked(isAutoRecord);
+            swNoiseReduction.setChecked(isNoiseReduction);
+            swSilenceRemoval.setChecked(isSilenceRemoval);
+            swTranscript.setChecked(isTranscript);
+            swPhoneActive.setChecked(isPhoneActive);
+            selectedTheme.setText(theme);
+            selectedFormat.setText(format);
+            if (!dateTime.isEmpty()) {
+                editTextDateTime.setText(dateTime);
+            } else {
+                editTextDateTime.setText("");  // Clear or set to a default hint if necessary
+            }
         }
-
-        int formatPosition = Arrays.asList(GlobalConstants.FORMATS_SUPPORTED).indexOf(format);
-        if (formatPosition != -1) {
-            isUserTriggeredFormat = false;
-            fileFormat.setSelection(formatPosition);
-        }
-
-        swAutoRecord.setChecked(isAutoRecord);
-        swNoiseReduction.setChecked(isNoiseReduction);
-        swSilenceRemoval.setChecked(isSilenceRemoval);
-        swTranscript.setChecked(isTranscript);
-        selectedTheme.setText(theme);
-        selectedFormat.setText(format);
-    }
 
     private void toStatisticsActivity() {
         Intent intent = new Intent(this, StatisticsActivity.class);
+        startActivity(intent);
+    }
+
+    private void toSoundTestActivity() {
+        Intent intent = new Intent(this, SoundTestActivity.class);
         startActivity(intent);
     }
 
@@ -116,6 +196,8 @@ public class SettingsActivity extends AppCompatActivity {
         btnBack.setOnClickListener(v -> onBackPressed());
 
         btnToStatistics.setOnClickListener(v -> toStatisticsActivity());
+
+        btnToSoundTest.setOnClickListener(v -> toSoundTestActivity());
 
         swAutoRecord.setOnCheckedChangeListener((buttonView, isChecked) -> {
             PreferenceHelper.saveSettingsState(this, "isAutoRecord", isChecked);
@@ -137,8 +219,9 @@ public class SettingsActivity extends AppCompatActivity {
             settingsChanged = true;
         });
 
-        btnToScheduledRecording.setOnClickListener(v -> {
-
+        swPhoneActive.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            PreferenceHelper.saveSettingsState(this, "isPhoneActive", isChecked);
+            settingsChanged = true;
         });
 
         fileFormat.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -175,6 +258,8 @@ public class SettingsActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {}
         });
     }
+
+
 
     private void restartApp() {
         Intent i = getBaseContext().getPackageManager()

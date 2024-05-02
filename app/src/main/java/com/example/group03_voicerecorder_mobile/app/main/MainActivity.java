@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -33,6 +35,7 @@ import com.example.group03_voicerecorder_mobile.data.database.DatabaseHelper;
 import com.example.group03_voicerecorder_mobile.utils.PreferenceHelper;
 import com.example.group03_voicerecorder_mobile.utils.Utilities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -43,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton btn_record;
     private DatabaseHelper databaseHelper;
     private AudioListener audioListener;
-
+    private Button btnSelectAllOrDelete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         searchBar = findViewById(R.id.searchBar);
         btn_record = findViewById(R.id.recordButton);
         databaseHelper = new DatabaseHelper(this);
-
+        btnSelectAllOrDelete = findViewById(R.id.btnSelectAllOrDelete);
         if (isFirstTime()) {
             startActivity(new Intent(this, WelcomeActivity.class));
             finish();
@@ -68,19 +71,18 @@ public class MainActivity extends AppCompatActivity {
 
         // Fetch records from the database
         List<Record> recordList = databaseHelper.getAllUndeletedRecords();
-        if (!recordList.isEmpty()) {
-            // Populate ListView with records
-            RecordAdapter recordAdapter = new RecordAdapter(this, recordList);
-            records.setAdapter(recordAdapter);
-            records.setOnItemClickListener((parent, view, position, id) -> {
-                view.setBackgroundResource(R.drawable.list_selector_pressed);
-            });
-        }
+        RecordAdapter recordAdapter = new RecordAdapter(this, recordList);
+        records.setAdapter(recordAdapter);
+
+        setupSelectAllDeleteButton(recordAdapter);
+        records.setOnItemClickListener((parent, view, position, id) -> {
+            view.setBackgroundResource(R.drawable.list_selector_pressed);
+        });
 
         btn_record.setOnClickListener(this::toRecordActivity);
 
         btn_more.setOnClickListener(this::showPopupMenu);
-
+        
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -94,8 +96,39 @@ public class MainActivity extends AppCompatActivity {
                 fetchAndPopulateRecords(query);
             }
         });
-
     }
+
+    private void setupSelectAllDeleteButton(RecordAdapter adapter) {
+        Button btnSelectAllOrDelete = findViewById(R.id.btnSelectAllOrDelete);
+        btnSelectAllOrDelete.setOnClickListener(v -> {
+            if ("Select All".equals(btnSelectAllOrDelete.getText().toString())) {
+                adapter.selectAllRecords();
+                btnSelectAllOrDelete.setText("Delete Selected");
+            } else {
+                // Prompt for confirmation before deletion
+                new AlertDialog.Builder(this)
+                        .setTitle("Confirm Deletion")
+                        .setMessage("Do you really want to delete all selected records?")
+                        .setPositiveButton("Delete", (dialog, which) -> {
+                            adapter.deleteSelectedRecords();
+                            records.setAdapter(null);
+                            records.setAdapter(adapter);
+
+                            btnSelectAllOrDelete.setText("Select All");
+
+
+                            // Check if all items are removed or update accordingly
+                            if (adapter.getCount() == 0) {
+                                Toast.makeText(this, "All records deleted", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+            }
+        });
+    }
+
+
 
     private void initAutoRecord() {
         audioListener = new AudioListener(this);
@@ -136,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
             // Populate ListView with records
             RecordAdapter recordAdapter = new RecordAdapter(this, recordList);
             records.setAdapter(recordAdapter);
+            setupSelectAllDeleteButton(recordAdapter);
             records.setOnItemClickListener((parent, view, position, id) -> {
                 view.setBackgroundResource(R.drawable.list_selector_pressed);
             });

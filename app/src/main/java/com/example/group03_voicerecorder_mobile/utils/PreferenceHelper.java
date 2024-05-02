@@ -2,10 +2,13 @@ package com.example.group03_voicerecorder_mobile.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.widget.Toast;
 
 import com.example.group03_voicerecorder_mobile.app.GlobalConstants;
 
 public class PreferenceHelper {
+
+
     public static void saveSettingsState(Context context, String key, boolean value) {
         SharedPreferences preferences = context.getSharedPreferences(GlobalConstants.SHARED_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -43,7 +46,19 @@ public class PreferenceHelper {
         editor.putString(key, value);
         editor.apply();
     }
+    public static void removeSetting(Context context, String key) {
+        SharedPreferences prefs = context.getSharedPreferences(GlobalConstants.SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
 
+        editor.remove(key);
+
+        editor.apply();
+
+    }
+    public static String getSelectedDate(Context context, String key) {
+        SharedPreferences preferences = context.getSharedPreferences(GlobalConstants.SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        return preferences.getString(key, "");
+    }
     public static String getSelectedFormat(Context context, String key) {
         SharedPreferences preferences = context.getSharedPreferences(GlobalConstants.SHARED_PREFERENCES, Context.MODE_PRIVATE);
         return preferences.getString(key, GlobalConstants.FORMAT_M4A);

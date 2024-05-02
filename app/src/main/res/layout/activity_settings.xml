@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:viewBindingIgnore="true">
+    tools:viewBindingIgnore="true"
+    android:background="@color/md_grey_800xxx">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -394,6 +395,94 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Schedule Recording"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:layout_marginEnd="16dp"/>
+
+            <EditText
+                android:id="@+id/editTextDateTime"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+
+                android:hint="Select date and time"
+                android:padding="10dp"
+
+                android:textSize="14sp" />
+            <ImageButton
+                android:id="@+id/btnDeleteSchedule"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginEnd="0dp"
+                android:background="@color/md_black_1000"
+                android:contentDescription="@string/toRecordingStatistics"
+                android:padding="20dp"
+                android:src="@drawable/baseline_delete_sweep_36" />  <!-- Updated icon reference -->
+
+
+        </LinearLayout>
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="80dp"
+                android:orientation="vertical"
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="0dp"
+                    android:paddingStart="16dp"
+
+                    android:text="Input/Output Check"
+
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="16dp"
+                    android:text="Test the microphone/speaker for record     "
+
+                    android:textColor="#b3ffffff"
+
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btnToSoundTest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginEnd="0dp"
+                android:background="@color/md_black_1000"
+                android:contentDescription="@string/toSoundTest"
+                android:padding="20dp"
+                android:src="@drawable/baseline_keyboard_arrow_right_24" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -403,13 +492,11 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="200dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="0dp"
                     android:paddingStart="16dp"
-
-                    android:text="Scheduled Recording"
-
+                    android:text="Record When Phone Active"
                     android:textColor="@color/white"
                     android:textSize="18sp" />
 
@@ -417,24 +504,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingStart="16dp"
-                    android:text="Scheduled or Application-Based Recording"
-
+                    android:text="Record when the app Phone is active       "
                     android:textColor="#b3ffffff"
-
                     android:textSize="14sp" />
             </LinearLayout>
 
-            <ImageButton
-                android:id="@+id/scheduledRecording"
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/swPhoneActive"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginEnd="0dp"
-                android:background="@color/md_black_1000"
-                android:contentDescription="@string/toScheduledRecording"
-                android:padding="20dp"
-                android:src="@drawable/baseline_keyboard_arrow_right_24" />
+                android:layout_gravity="center_vertical"
+                android:scaleX="1.25"
+                android:scaleY="1.25"
+                android:thumbTint="@color/white"
+                android:trackTint="@color/material_dynamic_neutral_variant100" />
         </LinearLayout>
     </LinearLayout>
+
+
 
 </LinearLayout>
