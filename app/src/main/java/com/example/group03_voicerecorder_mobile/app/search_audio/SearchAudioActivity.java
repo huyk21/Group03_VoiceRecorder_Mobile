@@ -59,6 +59,7 @@ public class SearchAudioActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 performSearch(editTextSearchQuery.getText().toString(), convertedText);
+                textViewResults.setVisibility(View.VISIBLE);
             }
         });
     }
