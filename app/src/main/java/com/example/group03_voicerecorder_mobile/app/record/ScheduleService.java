@@ -29,7 +29,6 @@ public class ScheduleService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(this, "Recording scheduled.", Toast.LENGTH_SHORT).show();
         try {
             scheduleRecording();
         } catch (ParseException e) {
@@ -58,7 +57,7 @@ public class ScheduleService extends Service {
         if (timeInMillis > System.currentTimeMillis()) {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
         } else {
-            // Handle past date or log error
+
         }
     }
 

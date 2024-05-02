@@ -8,6 +8,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaRecorder;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -89,6 +90,7 @@ public class RecordService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
         if ("ACTION_START_RECORDING".equals(intent.getAction())) {
             startForegroundService();
             startRecording();
@@ -102,6 +104,8 @@ public class RecordService extends Service {
         }
         return START_STICKY;
     }
+
+
 
     private void startRecording() {
         // Retrieve the selected format key from shared preferences
