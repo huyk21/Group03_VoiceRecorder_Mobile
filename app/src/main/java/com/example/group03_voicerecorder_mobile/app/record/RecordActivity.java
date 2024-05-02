@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -116,6 +118,7 @@ public class RecordActivity extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         Utilities.setCustomTheme(this);
@@ -138,7 +141,7 @@ public class RecordActivity extends AppCompatActivity {
         // Setup button click listeners
         setupButtonClickListeners();
         broadcastReceiver = new MyBroadcastReceiver();
-        registerReceiver(broadcastReceiver, new IntentFilter(RECORDING_STATUS_UPDATE));
+        registerReceiver(broadcastReceiver, new IntentFilter(RECORDING_STATUS_UPDATE), Context.RECEIVER_NOT_EXPORTED);
     }
 
     private void setupButtonClickListeners() {
