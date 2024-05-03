@@ -3,6 +3,7 @@ package com.example.group03_voicerecorder_mobile.app.statistics;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.group03_voicerecorder_mobile.R;
@@ -14,7 +15,7 @@ import com.example.group03_voicerecorder_mobile.utils.Utilities;
 public class StatisticsActivity extends AppCompatActivity {
     private TextView totalRecords;
     private TextView totalDuration;
-
+    private ImageButton btnBack;
     private DatabaseHelper databaseHelper;
 
     @Override
@@ -26,6 +27,7 @@ public class StatisticsActivity extends AppCompatActivity {
 
         totalRecords = findViewById(R.id.totalRecords);
         totalDuration = findViewById(R.id.totalDuration);
+        btnBack = findViewById(R.id.btnBack);
 
         databaseHelper = new DatabaseHelper(this);
 
@@ -34,6 +36,6 @@ public class StatisticsActivity extends AppCompatActivity {
 
         totalRecords.setText(totalRecords.getText().toString() + totalRecordsFromDB);
         totalDuration.setText(totalDuration.getText().toString() + totalDurationFromDB);
-
+        btnBack.setOnClickListener(v-> getOnBackPressedDispatcher().onBackPressed());
     }
 }
