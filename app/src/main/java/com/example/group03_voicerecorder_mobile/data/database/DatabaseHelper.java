@@ -150,7 +150,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         Date date = Utilities.stringToDate(timestamp, pattern);
                         if (date == null) continue;
 
-                        // Modify the constructor call to include the deleted field
                         Record recording = new Record(id, recordFilename, duration, date, bookmarked, deletedValue, filePath);
                         recording.setTimestamp(Utilities.stringToDate(timestamp, pattern));
                         recordingList.add(recording);
@@ -199,6 +198,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[]{String.valueOf(recordId)});
     }
 
+    public int updateDurationState(long recordId, int duration) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_DURATION, duration);
+        return db.update(TABLE_RECORDINGS, values, KEY_ID + " = ?",
+                new String[]{String.valueOf(recordId)});
+    }
+
     public int countRecords() {
         SQLiteDatabase db = this.getReadableDatabase();
         int count = 0;
@@ -222,7 +229,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return count;
     }
-
 
     public int totalDuration() {
         SQLiteDatabase db = this.getReadableDatabase();

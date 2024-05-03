@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"> <!-- Black background -->
+
+    <!-- Go Back button -->
+    <ImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="?android:selectableItemBackground"
+        android:contentDescription="@string/go_back"
+        android:src="@drawable/ic_arrow_back" />
+
+    <!-- Properties button -->
+    <ImageButton
+        android:id="@+id/button_properties"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:background="?android:selectableItemBackground"
+        android:contentDescription="@string/properties"
+        android:src="@drawable/ic_more_vert" />
+
+    <!-- File Name TextView -->
+    <TextView
+        android:id="@+id/textView_fileName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/chronometer_playback"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:text="Filename"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/white" /> <!-- Customise the color as needed -->
+
+    <com.example.group03_voicerecorder_mobile.app.main.WaveformView
+        android:id="@+id/waveform_view"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@id/textView_fileName"
+        android:layout_marginTop="126dp"
+        android:background="#FF333333" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@+id/waveform_view">
+        <EditText
+            android:id="@+id/editText_startTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Start time:"/>
+
+        <EditText
+            android:id="@+id/editText_endTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="End time:"/>
+
+        <Button
+            android:id="@+id/btnTrimAudio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Trim Audio"
+            android:enabled="true" />
+    </LinearLayout>
+
+</RelativeLayout>

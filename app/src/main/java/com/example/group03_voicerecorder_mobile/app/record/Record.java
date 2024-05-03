@@ -1,11 +1,12 @@
 package com.example.group03_voicerecorder_mobile.app.record;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-public class Record {
+public class Record implements Serializable {
     private Integer id;
     private String filename;
     private String filePath;

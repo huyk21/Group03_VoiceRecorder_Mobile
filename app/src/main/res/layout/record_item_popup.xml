@@ -17,4 +17,20 @@
         android:id="@+id/audioShare"
         android:title="Share"
         />
+    <item
+        android:id="@+id/removeSilence"
+        android:title="Remove silence"
+        />
+    <item
+        android:id="@+id/reduceNoise"
+        android:title="Reduce noise"
+        />
+    <item
+        android:id="@+id/info"
+        android:title="Info"
+        />
+    <item
+        android:id="@+id/trimAudio"
+        android:title="Trim audio"
+        />
 </menu>

@@ -91,7 +91,7 @@ public class UploadActivity extends AppCompatActivity implements AdapterView.OnI
         RequestBody format = RequestBody.create(MediaType.parse("text/plain"), selectedFormat);
 
         ApiService service = RetrofitClient.getClient().create(ApiService.class);
-        Call<JsonObject> call = service.uploadAudioFile(body, selectedFormat);
+        Call<JsonObject> call = service.uploadAudioFile(body, format);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
