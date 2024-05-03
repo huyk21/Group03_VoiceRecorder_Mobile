@@ -26,7 +26,7 @@
             android:layout_weight="1"
 
             android:text="Records"
-            android:textColor="@color/md_black_1000"
+            android:textColor="@color/white"
             android:textSize="30sp" />
 
         <Button
