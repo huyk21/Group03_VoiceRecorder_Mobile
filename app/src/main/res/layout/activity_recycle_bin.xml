@@ -26,6 +26,9 @@
             android:layout_height="match_parent"
             android:textColor="@color/white"
             android:textSize="18sp"
+
+            android:layout_marginRight="45dp"
+
             android:text="@string/deleted_title"
             android:gravity="center"
             android:layout_weight="1"/>
@@ -48,6 +51,8 @@
         android:background="@drawable/rounded_border"
         android:baselineAligned="false"
         android:drawableStart="@drawable/baseline_search_24"
+        android:paddingStart="25dp"
+        android:layout_marginHorizontal="15dp"
         android:inputType="text"
         android:hint="@string/searchPlaceholder"
         android:textColorHint="@color/white"

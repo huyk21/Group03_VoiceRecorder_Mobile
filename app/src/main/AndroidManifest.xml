@@ -106,7 +106,6 @@
         <service
             android:name=".app.record.RecordService"
             android:foregroundServiceType="microphone" />
-
         <service
             android:name=".app.record.ScheduleService"
             android:enabled="true"

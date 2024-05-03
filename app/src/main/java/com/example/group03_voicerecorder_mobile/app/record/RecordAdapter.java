@@ -1,5 +1,4 @@
 package com.example.group03_voicerecorder_mobile.app.record;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -32,12 +31,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 public class RecordAdapter extends BaseAdapter {
     Context context;
     List<Record> records;
     LayoutInflater inflater;
-
     public RecordAdapter(Context ctx, List<Record> records) {
         this.context = ctx;
         this.records = records;
@@ -47,23 +44,19 @@ public class RecordAdapter extends BaseAdapter {
         this.records = updatedRecords;
         notifyDataSetChanged();
     }
-
     @Override
     public int getCount() {
         return records.size();
     }
-
     @Override
     public Object getItem(int position) {
         Record record = records.get(position);
         return record;
     }
-
     @Override
     public long getItemId(int position) {
         return 0;
     }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -146,8 +139,6 @@ public class RecordAdapter extends BaseAdapter {
         }
         notifyDataSetChanged();
     }
-
-
     // This method checks if all records are selected to handle button text changes
     public boolean areAllSelected() {
         for (Record record : records) {
@@ -164,7 +155,6 @@ public class RecordAdapter extends BaseAdapter {
         intent.putExtra("recordName", records.get(position).getFilename());
         context.startActivity(intent);
     }
-
     private void toUploadActivity(int position) {
         Intent intent = new Intent(context, UploadActivity.class);
         intent.putExtra("recordId", records.get(position).getId());
@@ -172,7 +162,6 @@ public class RecordAdapter extends BaseAdapter {
         intent.putExtra("recordName", records.get(position).getFilename());
         context.startActivity(intent);
     }
-
     private void toSearchAudioActivity(int position) {
         Intent intent = new Intent(context, SearchAudioActivity.class);
         intent.putExtra("recordId", records.get(position).getId());
@@ -180,8 +169,6 @@ public class RecordAdapter extends BaseAdapter {
         intent.putExtra("recordName", records.get(position).getFilename());
         context.startActivity(intent);
     }
-
-
     @SuppressLint({"ResourceType", "NonConstantResourceId"})
     private void showPopupMenu(View anchorView, int position) {
         PopupMenu popupMenu = new PopupMenu(context, anchorView);
@@ -209,8 +196,7 @@ public class RecordAdapter extends BaseAdapter {
         });
         popupMenu.show();
     }
-//sd
-private void shareRecord(int position) {
+    private void shareRecord(int position) {
     Record record = records.get(position);
     File file = new File(record.getFilePath());
 
@@ -230,9 +216,6 @@ private void shareRecord(int position) {
         Toast.makeText(context, "File not found", Toast.LENGTH_SHORT).show();
     }
 }
-
-
-
     private void deleteRecordWithoutNotify(int position) {
         int recordId = records.get(position).getId();
         DatabaseHelper databaseHelper = new DatabaseHelper(context);

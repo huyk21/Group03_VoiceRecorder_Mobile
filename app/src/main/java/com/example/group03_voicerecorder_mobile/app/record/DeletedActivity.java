@@ -51,7 +51,7 @@ public class DeletedActivity extends AppCompatActivity {
         // Fetch records from the database
         List<Record> recordList = dbHelper.getAllDeletedRecords();
         if (recordList.isEmpty()) {
-            Toast.makeText(DeletedActivity.this, "No records found1", Toast.LENGTH_SHORT).show();
+            Toast.makeText(DeletedActivity.this, "No records found", Toast.LENGTH_SHORT).show();
         } else {
             // Populate ListView with records
             Toast.makeText(this, recordList.size() + " records found", Toast.LENGTH_SHORT).show();
