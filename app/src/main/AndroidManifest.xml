@@ -53,7 +53,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         tools:targetApi="31">
 
-
         <receiver
             android:name=".app.record.CallReceiver"
             android:enabled="true"
@@ -102,14 +101,17 @@
         <activity
             android:name=".app.iocheck.SoundTestActivity"
             android:screenOrientation="portrait" />
-
+        <activity android:name=".app.details.DetailsActivities"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".audio.TrimAudioActivity"
+            android:screenOrientation="portrait"/>
         <service
             android:name=".app.record.RecordService"
             android:foregroundServiceType="microphone" />
         <service
             android:name=".app.record.ScheduleService"
             android:enabled="true"
-            android:exported="true"/>
+            android:exported="true" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
