@@ -24,7 +24,7 @@
             android:layout_marginEnd="10dp"
             android:paddingLeft="15dp"
             android:layout_weight="1"
-            android:background="@color/md_grey_100_75"
+
             android:text="Records"
             android:textColor="@color/md_black_1000"
             android:textSize="30sp" />
