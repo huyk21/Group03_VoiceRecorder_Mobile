@@ -3,7 +3,10 @@ package com.example.group03_voicerecorder_mobile.app.search_audio;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.BackgroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +24,7 @@ import com.example.group03_voicerecorder_mobile.utils.Utilities;
 import com.google.gson.JsonObject;
 
 import java.io.File;
+import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -96,6 +100,14 @@ public class SearchAudioActivity extends AppCompatActivity {
     }
 
     private void performSearch(String pattern, String text) {
-        StringAlgorithms.search(text, pattern, 101);
+        List<Integer> result = StringAlgorithms.search(text, pattern, 101);
+        SpannableString str = new SpannableString(text);
+        if (result == null) {
+            textViewResults.setText("Cannot find words or sentences in audio file!");
+            return;
+        }
+        for (Integer start : result)
+            str.setSpan(new BackgroundColorSpan(Color.BLACK), start, start + pattern.length(), 0);
+        textViewResults.setText(str);
     }
 }

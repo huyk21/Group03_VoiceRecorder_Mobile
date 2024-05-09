@@ -48,4 +48,6 @@ dependencies {
     // Gson for JSON parsing
     implementation ("com.google.code.gson:gson:2.8.9")
 
+    // Range bar for trim audio
+    implementation("com.google.android.material:material:1.9.0")
 }

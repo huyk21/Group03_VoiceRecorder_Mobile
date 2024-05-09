@@ -44,11 +44,10 @@ public class AudioAPI {
                     JsonObject jsonObject = response.body();
                     String message = jsonObject.get("message").getAsString();
                     String downloadUrl = jsonObject.get("download_url").getAsString();
-                    String duration = jsonObject.get("trimmed_duration_ms").getAsString();
+                    System.out.println("success: " + message);
                     downloadFile(context, downloadUrl);
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
                 } else {
-                    // Handle failure
                     Toast.makeText(context, "Failed to remove silence: " + response.message(), Toast.LENGTH_SHORT).show();
                 }
             }

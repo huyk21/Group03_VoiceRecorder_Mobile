@@ -1,12 +1,16 @@
 package com.example.group03_voicerecorder_mobile.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class StringAlgorithms {
     public static final int d = 256;
 
-    public static void search(String txt, String pat, int q) {
+    public static List<Integer> search(String txt, String pat, int q) {
+        List<Integer> result = new ArrayList<>();
         if (txt == null || pat == null) {
             System.out.println("txt is null or pat is null");
-            return;
+            return null;
         }
         int n = txt.length();
         int m = pat.length();
@@ -26,7 +30,6 @@ public class StringAlgorithms {
 
         // Slide the pattern over the text
         for (int i = 0; i <= n - m; i++) {
-
             // Check if the current hash values match
             if (p == t) {
                 // Pattern found
@@ -38,6 +41,7 @@ public class StringAlgorithms {
                     }
                 }
                 if (found) {
+                    result.add(i);
                     System.out.println("Pattern found at index " + i);
                 }
             }
@@ -50,5 +54,6 @@ public class StringAlgorithms {
                 }
             }
         }
+        return result;
     }
 }

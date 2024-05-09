@@ -219,6 +219,7 @@ public class RecordAdapter extends BaseAdapter {
                     shareRecord(position);
                     return true;
                 case "Remove silence":
+                    System.out.println("remove silence");
                     AudioAPI.removeSilence(context, records.get(position).getFilePath());
                     return true;
                 case "Reduce noise":
